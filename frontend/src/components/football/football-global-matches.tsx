@@ -70,6 +70,10 @@ function TeamMark({ name, logo }: { name: string; logo: string | null }) {
 export default function FootballGlobalMatches() {
   const [date, setDate] = useState(todayInYemen);
   const [filter, setFilter] = useState<Filter>("all");
+  const [teamInput, setTeamInput] = useState("");
+  const [competitionInput, setCompetitionInput] = useState("");
+  const [teamFilter, setTeamFilter] = useState("");
+  const [competitionFilter, setCompetitionFilter] = useState("");
   const [matches, setMatches] = useState<GlobalMatch[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -82,6 +86,8 @@ export default function FootballGlobalMatches() {
     setError(null);
     try {
       const params = new URLSearchParams({ date });
+      if (teamFilter) params.set("team", teamFilter);
+      if (competitionFilter) params.set("competition", competitionFilter);
       const response = await fetch(`/api/football/global-matches?${params.toString()}`, {
         headers: { Accept: "application/json" },
         cache: "no-store",
@@ -97,7 +103,7 @@ export default function FootballGlobalMatches() {
       setLoading(false);
       setRefreshing(false);
     }
-  }, [date]);
+  }, [date, teamFilter, competitionFilter]);
 
   useEffect(() => {
     void load();
@@ -134,6 +140,12 @@ export default function FootballGlobalMatches() {
           تحديث
         </button>
       </div>
+
+      <form onSubmit={(event) => { event.preventDefault(); setTeamFilter(teamInput.trim()); setCompetitionFilter(competitionInput.trim()); }} className="grid gap-2 rounded-2xl border border-dark-700 bg-dark-800 p-3 sm:grid-cols-[1fr_1fr_auto]">
+        <input value={teamInput} onChange={(event) => setTeamInput(event.target.value)} placeholder="فلترة باسم الفريق" className="min-w-0 rounded-xl border border-dark-700 bg-dark-900 px-3 py-2 text-sm text-dark-100 outline-none placeholder:text-dark-500"/>
+        <input value={competitionInput} onChange={(event) => setCompetitionInput(event.target.value)} placeholder="فلترة باسم البطولة" className="min-w-0 rounded-xl border border-dark-700 bg-dark-900 px-3 py-2 text-sm text-dark-100 outline-none placeholder:text-dark-500"/>
+        <button type="submit" className="rounded-xl bg-primary-500 px-4 py-2 text-sm font-bold text-white">تطبيق الفلاتر</button>
+      </form>
 
       <div className="flex flex-wrap items-center justify-between gap-3">
         <label className="flex items-center gap-3 rounded-xl border border-dark-700 bg-dark-800 px-3 py-2">
