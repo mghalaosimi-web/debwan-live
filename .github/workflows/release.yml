@@ -21,7 +21,7 @@ permissions:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAMESPACE: ${{ github.repository_owner }}/tivify
+  IMAGE_NAMESPACE: ${{ github.repository_owner }}/debwan-live
 
 jobs:
   # ---------------------------------------------------------------------------
@@ -111,7 +111,7 @@ jobs:
             type=sha,format=short
             type=raw,value=latest,enable=true
           labels: |
-            org.opencontainers.image.title=TIVIFY ${{ matrix.image.name }}
+            org.opencontainers.image.title=DEBWAN LIVE ${{ matrix.image.name }}
             org.opencontainers.image.version=${{ needs.meta.outputs.version }}
             org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
             org.opencontainers.image.revision=${{ needs.meta.outputs.sha }}
@@ -190,12 +190,12 @@ jobs:
           cat > bundle/VERSION <<EOF
           ${{ needs.meta.outputs.version }}
           EOF
-          tar -czf tivify-deploy-${{ needs.meta.outputs.version }}.tar.gz -C bundle .
+          tar -czf debwan-live-deploy-${{ needs.meta.outputs.version }}.tar.gz -C bundle .
 
       - name: Upload bundle to release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ needs.meta.outputs.tag }}
-          files: tivify-deploy-${{ needs.meta.outputs.version }}.tar.gz
+          files: debwan-live-deploy-${{ needs.meta.outputs.version }}.tar.gz
           fail_on_unmatched_files: true
           generate_release_notes: true
