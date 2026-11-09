@@ -569,6 +569,9 @@ export default function ChannelsPage() {
       stopEmissionPolling();
       setEmissionStatus(null);
     }
+
+    // Always stop the interval when this page unmounts or the modal state changes.
+    return () => stopEmissionPolling();
   }, [modalOpen, stopEmissionPolling]);
 
   // Auto-poll when emission is starting or running
