@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useAuth } from "@/context/auth-context";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
@@ -25,7 +24,6 @@ export default function UserLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  const { user } = useAuth();
   const { t } = useTranslation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -84,30 +82,10 @@ export default function UserLayout({
 
             <div className="hidden md:flex items-center gap-4">
               <GlobalSearch />
-              {user?.role === "admin" && (
-                <Link
-                  href="/admin"
-                  className="text-dark-400 hover:text-primary-400 text-sm transition-colors"
-                >
-                  {t("nav.admin")}
-                </Link>
-              )}
-              <Link
-                href="/settings"
-                className="text-dark-300 hover:text-dark-100 text-sm transition-colors"
-              >
-                {user?.username}
-              </Link>
             </div>
 
             <div className="md:hidden flex items-center gap-2">
               <GlobalSearch />
-              <Link
-                href="/settings"
-                className="text-dark-300 text-sm"
-              >
-                {user?.username}
-              </Link>
             </div>
           </div>
         </div>
@@ -134,16 +112,7 @@ export default function UserLayout({
                 );
               })}
             </nav>
-            <div className="px-4 py-3 border-t border-dark-700 space-y-1">
-              {user?.role === "admin" && (
-                <Link
-                  href="/admin"
-                  className="block px-3 py-2.5 rounded-lg text-sm text-dark-400 hover:text-primary-400 hover:bg-dark-800 transition-colors"
-                >
-                  {t("nav.adminPanel")}
-                </Link>
-              )}
-            </div>
+            <div className="border-t border-dark-700 px-4 py-3 text-xs text-dark-500">تصفح مفتوح للجميع</div>
           </div>
         )}
       </header>
