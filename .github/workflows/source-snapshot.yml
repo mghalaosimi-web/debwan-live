@@ -1,0 +1,47 @@
+name: Create Debwan Live source snapshot
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: debwan-live-source-snapshot
+  cancel-in-progress: false
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Debwan Live
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Download complete upstream source archive
+        env:
+          SOURCE_ARCHIVE: https://github.com/AntonioVVilla/tivify/archive/refs/heads/main.zip
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/debwan-source
+          curl --fail --location --retry 3 "$SOURCE_ARCHIVE" -o /tmp/tivify.zip
+          unzip -q /tmp/tivify.zip -d /tmp/debwan-source
+          SOURCE_DIR="$(find /tmp/debwan-source -mindepth 1 -maxdepth 1 -type d | head -n 1)"
+          test -n "$SOURCE_DIR"
+          test -f "$SOURCE_DIR/LICENSE"
+          test -f "$SOURCE_DIR/README.md"
+          rsync -a --delete --exclude='.git' "$SOURCE_DIR/" "$GITHUB_WORKSPACE/"
+
+      - name: Create a fresh Debwan Live snapshot commit
+        run: |
+          set -euo pipefail
+          git config user.name "mghalaosimi-web"
+          git config user.email "251923787+mghalaosimi-web@users.noreply.github.com"
+          git add --all
+          if git diff --cached --quiet; then
+            echo "No source changes to commit."
+            exit 0
+          fi
+          git commit -m "chore: add Debwan Live source snapshot"
+          git push origin HEAD:main
