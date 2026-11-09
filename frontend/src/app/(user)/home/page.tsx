@@ -30,7 +30,7 @@ export default function HomePage() {
   }, [fetchData]);
 
   useEffect(() => {
-    document.title = `${t("home.title")} | TIVIFY`;
+    document.title = `${t("home.title")} | DEBWAN LIVE`;
   }, [t]);
 
   if (loading) {
