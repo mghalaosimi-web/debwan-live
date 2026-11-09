@@ -16,7 +16,7 @@ import (
 
 const (
 	dockerSocket        = "/var/run/docker.sock"
-	tailscaleContainer  = "tivify-tailscale"
+	tailscaleContainer  = "debwan-tailscale"
 	dockerClientTimeout = 10 * time.Second
 )
 
