@@ -548,14 +548,14 @@ func TestPlaylistService_GenerateMasterPlaylist_MultipleItems(t *testing.T) {
 	for _, mediaID := range []int{10, 20} {
 		hlsDir := fmt.Sprintf("%s/local/%d", tmpDir, mediaID)
 		os.MkdirAll(hlsDir, 0755)
-		indexContent := fmt.Sprintf(`#EXTM3U
+		indexContent := `#EXTM3U
 #EXT-X-VERSION:3
 #EXT-X-TARGETDURATION:6
 #EXT-X-MEDIA-SEQUENCE:0
 #EXTINF:6.000000,
 segment_0.ts
 #EXT-X-ENDLIST
-`)
+`
 		os.WriteFile(hlsDir+"/index.m3u8", []byte(indexContent), 0644)
 	}
 
