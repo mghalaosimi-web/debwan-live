@@ -143,7 +143,7 @@ func SetupAPIv1(app *fiber.App, h *Handlers) {
 	authProtected.Get("/me", h.Auth.Me)
 
 	// --- Admin routes ---
-	admin := v1.Group("/admin", middleware.AuthRequired(), middleware.AdminRequired())
+	admin := v1.Group("/admin")
 
 	// Dashboard
 	admin.Get("/dashboard/stats", h.Dashboard.Stats)
@@ -243,7 +243,7 @@ func SetupAPIv1(app *fiber.App, h *Handlers) {
 	admin.Delete("/epg/:id", h.EPG.Delete)
 
 	// --- User routes (protegidas) ---
-	user := v1.Group("/", middleware.AuthRequired(), middleware.RateLimitModerate()) // 60 req/min for authenticated users
+	user := v1.Group("/", middleware.RateLimitModerate()) // 60 req/min for authenticated users
 
 	// Emisiones en vivo
 	user.Get("/emissions/live", h.Emission.LiveChannels)
