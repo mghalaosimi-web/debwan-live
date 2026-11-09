@@ -69,7 +69,7 @@ export default function AdminLayout({
           <Menu size={24} />
         </button>
         <Link href="/admin" className="text-lg font-bold text-primary-500">
-          TIVIFY
+          DEBWAN LIVE
         </Link>
         <div className="w-8" />
       </div>
@@ -92,7 +92,7 @@ export default function AdminLayout({
         <div className="p-6 flex items-center justify-between">
           <div>
             <Link href="/admin" className="text-2xl font-bold text-primary-500">
-              TIVIFY
+              DEBWAN LIVE
             </Link>
             <p className="text-dark-500 text-xs mt-1">{t("admin.adminPanel")}</p>
           </div>
