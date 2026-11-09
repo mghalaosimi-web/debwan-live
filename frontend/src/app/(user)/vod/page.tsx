@@ -59,7 +59,7 @@ export default function VODPage() {
   }, [fetchVODs]);
 
   useEffect(() => {
-    document.title = `${t("vod.title")} | TIVIFY`;
+    document.title = `${t("vod.title")} | DEBWAN LIVE`;
   }, [t]);
 
   const handleCategoryChange = (categoryId: number | undefined) => {
