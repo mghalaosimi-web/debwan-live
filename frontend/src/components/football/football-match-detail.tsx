@@ -6,6 +6,7 @@ import { ArrowRight, CalendarClock, CircleAlert, ExternalLink, Goal, ShieldAlert
 
 type Incident = { time?: number | string; type?: string; side?: string; player?: string; home_score?: number; away_score?: number };
 type Stat = { label?: string; home?: number | string; away?: number | string; home_pct?: number; away_pct?: number; suffix?: string };
+type H2H = { summary?: { team1_wins?: number; team2_wins?: number; draws?: number; meetings?: number }; matches?: Array<{ home?: string; away?: string; home_score?: number | string; away_score?: number | string; time?: string; competition?: string }> };
 type Match = {
   home: string; away: string; home_logo?: string; away_logo?: string;
   home_score?: number | string | null; away_score?: number | string | null;
@@ -21,13 +22,14 @@ function timeLabel(value?: string) {
 }
 export default function FootballMatchDetail({ slug }: { slug: string }) {
   const [match, setMatch] = useState<Match | null>(null);
+  const [h2h, setH2h] = useState<H2H | null>(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
   useEffect(() => {
     let active = true;
     fetch(`/api/football/match?slug=${encodeURIComponent(slug)}`, { headers: { Accept: "application/json" } })
       .then(async (r) => { const p = await r.json(); if (!r.ok || !p.success) throw new Error(p.message || "تعذر تحميل المباراة."); return p; })
-      .then((p) => { if (active) setMatch(p.match as Match); })
+      .then((p) => { if (active) { setMatch(p.match as Match); setH2h(p.h2h as H2H | null); } })
       .catch((e) => { if (active) setError(e instanceof Error ? e.message : "حدث خطأ."); })
       .finally(() => { if (active) setLoading(false); });
     return () => { active = false; };
@@ -57,6 +59,13 @@ export default function FootballMatchDetail({ slug }: { slug: string }) {
             {match.stats?.length ? <div className="mt-4 space-y-4">{match.stats.map((s,i)=><div key={i}><div className="mb-2 flex justify-between gap-3 text-xs text-dark-200"><b>{s.home ?? 0}{s.suffix || ""}</b><span className="text-dark-400">{s.label || "إحصائية"}</span><b>{s.away ?? 0}{s.suffix || ""}</b></div><div className="flex h-2 overflow-hidden rounded-full bg-dark-700"><span className="bg-primary-400" style={{width:`${Math.max(0,Math.min(100,s.home_pct ?? 50))}%`}}/><span className="bg-emerald-400" style={{width:`${Math.max(0,Math.min(100,s.away_pct ?? 50))}%`}}/></div></div>)}</div> : <p className="mt-4 text-sm text-dark-400">الإحصائيات التفصيلية غير متاحة لهذه المباراة حتى الآن.</p>}
           </article>
         </section>
+        {h2h && (
+          <section className="rounded-2xl border border-dark-700 bg-dark-800 p-5">
+            <h2 className="text-lg font-bold text-dark-100">المواجهات المباشرة السابقة</h2>
+            {h2h.summary && <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4 text-center"><div className="rounded-xl bg-dark-900 p-3"><b className="block text-xl text-white">{h2h.summary.team1_wins ?? 0}</b><span className="text-[11px] text-dark-400">فوز {match.home}</span></div><div className="rounded-xl bg-dark-900 p-3"><b className="block text-xl text-white">{h2h.summary.draws ?? 0}</b><span className="text-[11px] text-dark-400">تعادل</span></div><div className="rounded-xl bg-dark-900 p-3"><b className="block text-xl text-white">{h2h.summary.team2_wins ?? 0}</b><span className="text-[11px] text-dark-400">فوز {match.away}</span></div><div className="rounded-xl bg-dark-900 p-3"><b className="block text-xl text-white">{h2h.summary.meetings ?? 0}</b><span className="text-[11px] text-dark-400">مواجهة</span></div></div>}
+            {h2h.matches?.length ? <div className="mt-4 space-y-2">{h2h.matches.map((game,i)=><div key={i} className="flex flex-wrap items-center justify-between gap-2 rounded-lg bg-dark-900 px-3 py-2 text-xs"><span className="text-dark-300">{game.home} — {game.away}</span><b className="text-white">{game.home_score ?? "—"} : {game.away_score ?? "—"}</b><span className="text-dark-500">{game.competition || ""}</span></div>)}</div> : null}
+          </section>
+        )}
         <section className="rounded-2xl border border-dark-700 bg-dark-800 p-5">
           <h2 className="text-lg font-bold text-dark-100">التشكيلات</h2>
           {match.lineups ? <pre className="mt-3 overflow-x-auto whitespace-pre-wrap text-xs text-dark-300">{JSON.stringify(match.lineups,null,2)}</pre> : <p className="mt-2 text-sm text-dark-400">لم يعلن مزود البيانات التشكيلات لهذه المباراة بعد.</p>}
