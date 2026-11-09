@@ -360,11 +360,12 @@ describe('AdminChannelsPage - coverage gaps', () => {
 
     // Advance timer past the polling interval (5000ms) to trigger fetchEmissionStatus (line 555)
     await act(async () => {
-      jest.advanceTimersByTime(5500)
+      await jest.advanceTimersByTimeAsync(5500)
     })
 
-    // Allow async fetchEmissionStatus to resolve
+    // Flush the polling request and its state update.
     await act(async () => {
+      await Promise.resolve()
       await Promise.resolve()
     })
 
