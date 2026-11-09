@@ -4,8 +4,8 @@ services:
     runtime: docker
     repo: https://github.com/mghalaosimi-web/debwan-live
     branch: feature/football-hub-official-free-sources
-    dockerContext: backend
-    dockerfilePath: Dockerfile
+    dockerContext: ./backend
+    dockerfilePath: ./backend/Dockerfile
     plan: free
     region: frankfurt
     autoDeploy: true
