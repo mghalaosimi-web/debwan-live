@@ -10,17 +10,12 @@ export const metadata: Metadata = {
   },
   description: "Debwan Live — plataforma autoalojada de televisión en directo, películas y series.",
   keywords: ["Debwan Live", "streaming", "televisión en directo", "IPTV", "películas", "series", "VOD"],
-  metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || "https://example.com"),
+  metadataBase: process.env.NEXT_PUBLIC_BASE_URL ? new URL(process.env.NEXT_PUBLIC_BASE_URL) : undefined,
   manifest: "/site.webmanifest",
   icons: {
-    icon: [
-      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
-      { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
-      { url: "/icon.svg", type: "image/svg+xml" },
-    ],
-    apple: "/apple-touch-icon.png",
+    icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
   },
-  themeColor: "#4f46e5",
+  themeColor: "#172B4D",
   robots: {
     index: true,
     follow: true,
