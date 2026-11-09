@@ -459,11 +459,11 @@ export default function FootballMatches() {
       setLoading(false);
       setRefreshing(false);
     }
-  }, [league, date, team, season]);
+  }, [league, date, appliedTeam, appliedSeason]);
 
   useEffect(() => {
     void loadMatches();
-    const interval = window.setInterval(() => void loadMatches(true), 300000);
+    const interval = window.setInterval(() => void loadMatches(true), 1800000);
     return () => window.clearInterval(interval);
   }, [loadMatches]);
 
@@ -553,6 +553,13 @@ export default function FootballMatches() {
             className="w-full bg-transparent py-1 text-sm text-dark-100 outline-none"
           />
         </label>
+        <button
+          type="button"
+          onClick={() => { setAppliedTeam(team); setAppliedSeason(season); }}
+          className="sm:col-span-2 justify-self-start rounded-xl bg-primary-500 px-4 py-2 text-sm font-bold text-white hover:bg-primary-400"
+        >
+          تطبيق بحث الفريق والموسم
+        </button>
       </div>
 
       <div className="flex flex-wrap gap-2" role="tablist" aria-label="تصفية المباريات">
@@ -651,7 +658,7 @@ export default function FootballMatches() {
       )}
 
       <div className="flex flex-wrap items-center justify-between gap-2 text-[11px] text-dark-500">
-        <span>المصدر: API Ninjas · تحديث تلقائي كل 5 دقائق</span>
+        <span>المصدر: API Ninjas · تحديث تلقائي كل 30 دقيقة</span>
         {fetchedAt && <span>آخر جلب: {new Intl.DateTimeFormat("ar-YE", { timeZone: "Asia/Aden", hour: "2-digit", minute: "2-digit" }).format(new Date(fetchedAt))}</span>}
       </div>
       <p className="text-[11px] leading-5 text-dark-500">
