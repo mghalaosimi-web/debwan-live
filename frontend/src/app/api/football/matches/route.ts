@@ -143,7 +143,7 @@ export async function GET(request: NextRequest) {
     );
   }
 
-  if (season && !/^20\\d{2}$/.test(season)) {
+  if (season && !/^20\d{2}$/.test(season)) {
     return NextResponse.json(
       { success: false, code: "INVALID_SEASON", message: "الموسم يجب أن يكون سنة من أربعة أرقام." },
       { status: 400 }
@@ -158,7 +158,7 @@ export async function GET(request: NextRequest) {
     );
   }
 
-  if (offset && (!/^\\d+$/.test(offset) || Number(offset) > 5000)) {
+  if (offset && (!/^\d+$/.test(offset) || Number(offset) > 5000)) {
     return NextResponse.json(
       { success: false, code: "INVALID_OFFSET", message: "قيمة ترقيم النتائج غير صالحة." },
       { status: 400 }
