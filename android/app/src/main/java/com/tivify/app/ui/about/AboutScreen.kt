@@ -126,7 +126,7 @@ fun AboutScreen(
         }
 
         Text(
-            text = "TIVIFY",
+            text = "DEBWAN LIVE",
             color = TextPrimary,
             fontSize = 28.sp,
             fontWeight = FontWeight.Bold
