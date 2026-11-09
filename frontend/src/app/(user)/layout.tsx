@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useAuth } from "@/context/auth-context";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -25,37 +25,13 @@ export default function UserLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  const router = useRouter();
-  const { user, isLoading, isAuthenticated, logout } = useAuth();
+  const { user } = useAuth();
   const { t } = useTranslation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
-      router.replace("/login");
-    }
-  }, [isLoading, isAuthenticated, router]);
-
-  useEffect(() => {
     setMobileMenuOpen(false);
   }, [pathname]);
-
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-pulse text-dark-400">{t("common.loading")}</div>
-      </div>
-    );
-  }
-
-  if (!isAuthenticated) {
-    return null;
-  }
-
-  const handleLogout = async () => {
-    await logout();
-    router.push("/login");
-  };
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -122,12 +98,6 @@ export default function UserLayout({
               >
                 {user?.username}
               </Link>
-              <button
-                onClick={handleLogout}
-                className="text-dark-400 hover:text-red-400 text-sm transition-colors"
-              >
-                {t("auth.logoutShort")}
-              </button>
             </div>
 
             <div className="md:hidden flex items-center gap-2">
@@ -173,12 +143,6 @@ export default function UserLayout({
                   {t("nav.adminPanel")}
                 </Link>
               )}
-              <button
-                onClick={handleLogout}
-                className="block w-full text-left px-3 py-2.5 rounded-lg text-sm text-dark-400 hover:text-red-400 hover:bg-dark-800 transition-colors"
-              >
-                {t("auth.logout")}
-              </button>
             </div>
           </div>
         )}
