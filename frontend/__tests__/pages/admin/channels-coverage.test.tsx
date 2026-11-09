@@ -330,7 +330,9 @@ describe('AdminChannelsPage - coverage gaps', () => {
 
   // Line 555: startEmissionPolling interval fires fetchEmissionStatus
   it('polls emission status at interval when emission is running (line 555)', async () => {
-    // Return emission status as "running" to trigger startEmissionPolling
+    // This test exercises a real 5-second interval; fake timers can race with
+    // React's effect scheduling and make the polling assertion nondeterministic.
+    jest.useRealTimers()
     mockGetEmissionStatus.mockResolvedValue({
       data: { data: { status: 'running', channel_id: 1, pid: 123 } },
     })
@@ -343,35 +345,14 @@ describe('AdminChannelsPage - coverage gaps', () => {
     fireEvent.click(editButtons[0])
     await waitFor(() => {
       expect(screen.getByTestId('modal')).toBeInTheDocument()
-    })
-
-    // Wait for initial emission status call to resolve and set state
-    await waitFor(() => {
       expect(mockGetEmissionStatus).toHaveBeenCalledWith(1)
     })
 
-    // Allow the resolved promise to propagate and trigger state update + useEffect
-    await act(async () => {
-      await Promise.resolve()
-      await Promise.resolve()
-    })
-
     const initialCalls = mockGetEmissionStatus.mock.calls.length
+    await new Promise((resolve) => setTimeout(resolve, 5200))
 
-    // Advance timer past the polling interval (5000ms) to trigger fetchEmissionStatus (line 555)
-    await act(async () => {
-      await jest.advanceTimersByTimeAsync(5500)
-    })
-
-    // Flush the polling request and its state update.
-    await act(async () => {
-      await Promise.resolve()
-      await Promise.resolve()
-    })
-
-    // fetchEmissionStatus should have been called again by the polling interval
     expect(mockGetEmissionStatus.mock.calls.length).toBeGreaterThan(initialCalls)
-  })
+  }, 10000)
 
   // Line 643: buildFullUrl fallback when typeof window === "undefined"
   // This is hard to test directly since window always exists in jsdom.
