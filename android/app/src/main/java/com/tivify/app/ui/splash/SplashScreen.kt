@@ -20,7 +20,7 @@ import kotlinx.coroutines.delay
  * Pantalla splash con animacion tipo Netflix.
  *
  * Fases:
- * 1. Fade in + Scale up del logo "TIVIFY" (0-800ms)
+ * 1. Fade in + Scale up del logo "DEBWAN LIVE" (0-800ms)
  * 2. Resplandor indigo detras del texto (400-1200ms)
  * 3. Mantiene y fade out (1800-2500ms)
  */
@@ -101,7 +101,7 @@ fun SplashScreen(onFinished: () -> Unit) {
     ) {
         // Capa glow (detras del texto principal)
         Text(
-            text = "TIVIFY",
+            text = "DEBWAN LIVE",
             fontSize = 56.sp,
             fontWeight = FontWeight.Bold,
             color = Primary500,
@@ -116,7 +116,7 @@ fun SplashScreen(onFinished: () -> Unit) {
 
         // Capa glow cercana
         Text(
-            text = "TIVIFY",
+            text = "DEBWAN LIVE",
             fontSize = 56.sp,
             fontWeight = FontWeight.Bold,
             color = FocusGlow,
@@ -135,7 +135,7 @@ fun SplashScreen(onFinished: () -> Unit) {
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Text(
-                text = "TIVIFY",
+                text = "DEBWAN LIVE",
                 fontSize = 52.sp,
                 fontWeight = FontWeight.Bold,
                 color = Primary500,
