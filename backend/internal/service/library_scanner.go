@@ -722,8 +722,7 @@ func (s *LibraryScannerService) importMovie(item *model.LibraryScanItem) error {
 	}
 
 	// Find or create VOD category
-	var categoryID *uint
-	categoryID = s.findOrCreateCategory("Peliculas", "vod")
+	categoryID := s.findOrCreateCategory("Peliculas", "vod")
 
 	vod := &model.VOD{
 		Title:           title,
