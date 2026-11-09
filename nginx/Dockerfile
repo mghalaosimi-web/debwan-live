@@ -1,5 +1,5 @@
 # SECURITY: Pinned base image version for reproducible builds
-FROM nginx:1.25.5-alpine
+FROM nginx:1.31.8-alpine
 
 RUN rm /etc/nginx/conf.d/default.conf
 
