@@ -27,6 +27,30 @@ It is **not yet verified as a consumer-ready Debwan Live service comparable in u
 | Arabic/RTL | `frontend/src/lib/i18n.ts`, `frontend/src/app/layout.tsx` | Spanish and English resources; root HTML language is Spanish | Arabic translation and RTL implementation absent from inspected setup |
 | CI | `.github/workflows/ci.yml` | Build/test pipeline defined | Latest run must be rechecked after changes; Android lint is non-blocking |
 
+## Additional Android and backend findings
+
+### Android is a meaningful reusable client, not a blank shell
+
+The Android source tree contains dedicated screens and ViewModels for Home, Channels, Player, EPG, Favorites, History, VOD, Series, Login, and Profile. It uses Retrofit, Jetpack Compose, Media3/ExoPlayer, Hilt, and a responsive home layout that adjusts card widths for phone/tablet/large TV-like screens. The home screen currently has Continue Watching, Live Channels, Recent Movies, and Series rows.
+
+However, several visible labels in the inspected home and channels screens are hard-coded in Spanish (for example, "Tivify", "En Vivo", "Peliculas Recientes", and "Canales"). The Android API interface also uses the upstream name `TivifyApi`. The actual package namespace remains `com.tivify.app`. This is a controlled brand/localization backlog, not a reason to rename the package prematurely.
+
+The Android player source selects a preferred active stream, loads EPG for a live channel, and uses Media3 HLS/Progressive media sources. This is useful foundation, but the inspected excerpt does not prove a tested automatic alternate-source failover. Android and web need a shared behavioral acceptance matrix.
+
+### Backend route protection
+
+The inspected router places administrative endpoints behind both `AuthRequired` and `AdminRequired`; authenticated user catalog endpoints are separately protected by `AuthRequired`. This is a positive source-level access-control boundary. It still requires authorization tests for every route and object-level access behavior.
+
+### IPTV import security and operational concerns
+
+The admin-only M3U importer accepts a caller-provided URL, creates an HTTP request, and uses Go's default redirect-following HTTP client. The inspected fetch path does not show an allowlist or explicit blocking of loopback, private, link-local, or cloud metadata destinations, and it does not revalidate redirect targets. This creates a potential server-side request forgery (SSRF) exposure if an admin account is abused or compromised. Prioritize URL/scheme validation, DNS/IP resolution checks, redirect validation, and network egress restrictions before exposing importer access to less-trusted operators.
+
+The importer also reads up to 100 MiB into memory, while the configured HTTP timeout is ten minutes. That may be acceptable for a controlled administrative import, but should be bounded with explicit configuration, context cancellation, content-length limits, and operational observability. More importantly, when `Replace=true`, existing channels from the selected source are deleted before all new channels and EPG have been fully imported. A failure during subsequent import may therefore leave a partial catalog. A staged import plus transactional/atomic source swap is safer.
+
+### EPG timezone behavior
+
+The EPG service parses a date string with `time.Parse("2006-01-02", dateStr)`, which yields a UTC-based date boundary, while the product must display schedules in the viewer's selected timezone. The XMLTV parser and importer need explicit timezone normalization and tests around midnight, daylight-saving transitions, and Yemen's local offset. The Android player excerpt also parses timestamps with a formatter that does not explicitly set a timezone. Treat timezone correctness as a P1 correctness issue.
+
 ## Confirmed product gaps from inspected source
 
 ### 1. Home/discovery experience
@@ -37,7 +61,7 @@ The root page redirects unauthenticated visitors to `/login`, and the user layou
 
 ### 2. Sports and match data
 
-The inspected API reference exposes channels, VOD, series, categories, EPG, favorites, history, search, and admin content operations. No sports fixtures, competitions, teams, scores, or sports provider integration is described there. This is a genuine product capability gap, not a matter of styling.
+The inspected API reference and router expose channels, VOD, series, categories, EPG, favorites, history, search, and admin content operations. The Android navigation likewise includes Home, Channels, VOD, Series, EPG, Favorites, History, and Profile, but no Sports or Matches screen. No sports fixtures, competitions, teams, scores, or sports provider integration was found in the inspected API/router/mobile navigation. This is a genuine product capability gap, not a matter of styling.
 
 Required future module: sports data provider adapter, normalized competition/team/event models, timezone-aware schedule, status/score updates, and optional lawful event-stream association. No match or stream data should be fabricated.
 
@@ -63,6 +87,14 @@ Several inspected files still use the upstream label in browser document titles 
 - CDN or equivalent media delivery strategy if audience and bandwidth justify it.
 - TLS, strong secrets, backups, monitoring, log retention, incident/recovery procedures.
 - Android signing credentials and a release pipeline before public production distribution.
+
+## Additional prioritized risks
+
+1. **P0 security:** constrain M3U/EPG remote fetch destinations and redirects to mitigate SSRF; add request-size and timeout controls.
+2. **P0 data integrity:** do not delete a source's existing channel catalog before the replacement import is validated and ready to commit.
+3. **P1 timezone:** normalize XMLTV timestamps and EPG query windows to UTC internally, then render in the selected viewer timezone.
+4. **P1 Android parity:** remove hard-coded Spanish labels and provide Arabic/English localization; confirm Android TV focus/remote behavior on a real device.
+5. **P1 playback parity:** implement and test the same bounded source failover policy in Web and Android, with clear retry limits and telemetry.
 
 ## Priority backlog
 
