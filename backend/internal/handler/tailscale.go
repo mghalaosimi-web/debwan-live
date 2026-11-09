@@ -38,15 +38,6 @@ func NewTailscaleHandler() *TailscaleHandler {
 	return &TailscaleHandler{client: client}
 }
 
-// containerState representa el estado relevante del contenedor Docker.
-type containerState struct {
-	Status     string `json:"status"`
-	Running    bool   `json:"running"`
-	StartedAt  string `json:"started_at,omitempty"`
-	FinishedAt string `json:"finished_at,omitempty"`
-	Error      string `json:"error,omitempty"`
-}
-
 // dockerInspectResponse es un subset de la respuesta de /containers/{id}/json.
 type dockerInspectResponse struct {
 	State struct {
