@@ -15,6 +15,9 @@ export function cn(...inputs: ClassValue[]) {
  * @throws Error if the URL is invalid
  */
 export function resolveUrl(url: string): string {
+  // A closed/empty player has no source yet; keep it inert instead of throwing during prerender.
+  if (!url) return "";
+
   // Allow absolute URLs
   if (url.startsWith("http://") || url.startsWith("https://")) {
     return url;
