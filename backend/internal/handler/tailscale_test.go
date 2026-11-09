@@ -7,26 +7,6 @@ import (
 	"testing"
 )
 
-// newTestTailscaleHandler creates a TailscaleHandler with a custom HTTP client
-// that routes to the provided mock server instead of the Docker socket.
-func newTestTailscaleHandler(mockServer *httptest.Server) *TailscaleHandler {
-	return &TailscaleHandler{
-		client: mockServer.Client(),
-	}
-}
-
-// overrideTailscaleBaseURL is a helper to make the handler use the mock server URL.
-// Since doDockerRequest builds URLs as http://localhost/..., we need a mock that
-// intercepts those requests. We achieve this by replacing the handler's client
-// with one that uses the test server's transport.
-func setupTailscaleTest(handler http.HandlerFunc) (*TailscaleHandler, *httptest.Server) {
-	server := httptest.NewServer(handler)
-	h := &TailscaleHandler{
-		client: server.Client(),
-	}
-	return h, server
-}
-
 func TestTailscaleHandler_Status_ContainerRunning(t *testing.T) {
 	// Mock Docker API response for inspect
 	mockResp := map[string]interface{}{
