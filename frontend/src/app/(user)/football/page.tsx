@@ -5,6 +5,7 @@ import FootballGlobalMatches from "@/components/football/football-global-matches
 import FootballMatches from "@/components/football/football-matches";
 import FootballStandings from "@/components/football/football-standings";
 import FootballDirectory from "@/components/football/football-directory";
+import FootballScorers from "@/components/football/football-scorers";
 import {
   ArrowUpRight,
   CalendarDays,
@@ -91,6 +92,8 @@ export default function FootballPage() {
       <FootballStandings />
 
       <FootballDirectory />
+
+      <FootballScorers />
 
       <section id="official-sources" className="space-y-4">
         <div className="flex flex-wrap items-end justify-between gap-3">
