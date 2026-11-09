@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Play, Film, Tv, BookOpen } from "lucide-react";
+import { Play, Film, Tv, BookOpen, Trophy } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { userAPI } from "@/lib/api";
 import type { WatchHistoryEntry } from "@/lib/types";
@@ -102,7 +102,17 @@ export default function HomePage() {
 
       <section>
         <h2 className="text-lg font-semibold text-dark-200 mb-4">{t("home.explore")}</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <Link
+            href="/football"
+            className="card hover:border-primary-500/50 transition-colors flex items-center gap-4 p-6"
+          >
+            <Trophy size={32} className="text-emerald-400" />
+            <div>
+              <p className="text-dark-100 font-semibold">كرة القدم</p>
+              <p className="text-dark-400 text-sm">المباريات ومصادر البث الرسمية</p>
+            </div>
+          </Link>
           <Link
             href="/channels"
             className="card hover:border-primary-500/50 transition-colors flex items-center gap-4 p-6"
