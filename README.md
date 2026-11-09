@@ -1,12 +1,11 @@
 <p align="center">
-  <img src="frontend/public/icon-512.png" alt="TIVIFY Logo" width="120" />
 </p>
 
-<h1 align="center">TIVIFY</h1>
+<h1 align="center">DEBWAN LIVE</h1>
 
 <p align="center">
-  <strong>Self-hosted IPTV &amp; VOD streaming platform</strong><br>
-  Live TV, Video on Demand, Series, EPG, and a native Android client — all in one.
+  <strong>Self-hosted Live TV &amp; Video on Demand platform</strong><br>
+  Live channels, movies, series, EPG, and native Android support in one self-hosted platform.
 </p>
 
 <p align="center">
@@ -29,12 +28,11 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/%E2%9C%A8_vibecoded-with_Claude-blueviolet?style=for-the-badge" alt="Vibecoded with Claude" />
 </p>
 
 ---
 
-> **Vibecoded** — This project was built with significant AI assistance using [Claude](https://claude.ai) by Anthropic. The architecture, backend, frontend, Android app, and infrastructure were developed through an iterative human-AI collaboration process. Every line of code was reviewed and validated, but the DNA of this project is vibecoded through and through.
+> Debwan Live is maintained as an independent product distribution. It retains the original MIT license and required upstream copyright notice; see the attribution section below.
 
 ---
 
@@ -165,8 +163,8 @@ For detailed architecture documentation, see [docs/ARCHITECTURE.md](docs/ARCHITE
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/YOUR_USERNAME/tivify.git
-cd tivify
+git clone https://github.com/mghalaosimi-web/debwan-live.git
+cd debwan-live
 
 # 2. Configure environment
 cp .env.example .env
@@ -220,7 +218,7 @@ See [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) for the full development setup gu
 ## Project Structure
 
 ```
-tivify/
+debwan-live/
 ├── backend/                # Go/Fiber REST API
 │   ├── cmd/server/         #   Entry point (main.go)
 │   └── internal/           #   Config, models, repos, services, handlers, middleware
@@ -425,13 +423,7 @@ Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for gui
 
 ## Acknowledgments
 
-This project was **vibecoded** with [Claude](https://claude.ai) by Anthropic — an exercise in human-AI collaborative software development. The entire stack (Go backend, Next.js frontend, Kotlin Android app, Docker infrastructure, nginx configuration, and CI/CD pipeline) was developed through iterative prompting and refinement.
-
-**Tools used in development:**
-- [Claude Code](https://claude.ai/code) — AI-assisted development
-- [Claude](https://claude.ai) — Architecture design, code generation, debugging
-
----
+Debwan Live is a derivative work based on the **TIVIFY** project by [AntonioVVilla](https://github.com/AntonioVVilla/tivify), distributed under the MIT License. The upstream copyright and permission notice are preserved in [LICENSE](LICENSE). Debwan Live branding, configuration, and subsequent modifications are maintained in this repository.
 
 ## License
 
