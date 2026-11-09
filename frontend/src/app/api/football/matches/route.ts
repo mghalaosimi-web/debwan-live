@@ -1,0 +1,180 @@
+import { NextRequest, NextResponse } from "next/server";
+
+export const runtime = "nodejs";
+export const revalidate = 300;
+
+const ALLOWED_LEAGUES = new Set([
+  "epl",
+  "laliga",
+  "bundesliga",
+  "seriea",
+  "ligue1",
+  "ucl",
+  "uel",
+  "uecl",
+  "saudiproleague",
+  "cafcl",
+  "acl",
+  "brasileirao",
+  "mls",
+  "worldcup",
+  "afcon",
+]);
+
+type ProviderTeam = {
+  team_id?: string;
+  name?: string;
+  abbreviation?: string;
+};
+
+type ProviderMatch = {
+  game_id?: string;
+  league?: string;
+  season_label?: string;
+  round?: string | null;
+  date?: string;
+  start_time?: string;
+  status?: string;
+  home_team?: ProviderTeam;
+  away_team?: ProviderTeam;
+  home_score?: number | null;
+  away_score?: number | null;
+  venue?: { name?: string; city?: string; country?: string } | null;
+  updated_at?: string;
+};
+
+function isValidDate(value: string): boolean {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
+  const parsed = new Date(`${value}T00:00:00.000Z`);
+  return !Number.isNaN(parsed.getTime()) && parsed.toISOString().slice(0, 10) === value;
+}
+
+export async function GET(request: NextRequest) {
+  const apiKey = process.env.API_NINJAS_KEY;
+  if (!apiKey) {
+    return NextResponse.json(
+      {
+        success: false,
+        code: "FOOTBALL_PROVIDER_NOT_CONFIGURED",
+        message: "لم يتم إعداد مزود بيانات المباريات بعد. أضف API_NINJAS_KEY إلى متغيرات بيئة خادم الويب.",
+      },
+      { status: 503, headers: { "Cache-Control": "no-store" } }
+    );
+  }
+
+  const search = request.nextUrl.searchParams;
+  const league = (search.get("league") || "epl").toLowerCase();
+  const date = search.get("date");
+
+  if (!ALLOWED_LEAGUES.has(league)) {
+    return NextResponse.json(
+      { success: false, code: "UNSUPPORTED_LEAGUE", message: "البطولة المطلوبة غير مدعومة." },
+      { status: 400 }
+    );
+  }
+
+  if (date && !isValidDate(date)) {
+    return NextResponse.json(
+      { success: false, code: "INVALID_DATE", message: "صيغة التاريخ يجب أن تكون YYYY-MM-DD." },
+      { status: 400 }
+    );
+  }
+
+  const params = new URLSearchParams({ league });
+  if (date) params.set("date", date);
+
+  try {
+    const response = await fetch(
+      `https://api.api-ninjas.com/v1/soccermatches?${params.toString()}`,
+      {
+        method: "GET",
+        headers: { "X-Api-Key": apiKey, Accept: "application/json" },
+        next: { revalidate: 300 },
+        signal: AbortSignal.timeout(12000),
+      }
+    );
+
+    if (!response.ok) {
+      const status = response.status === 429 ? 429 : response.status === 401 || response.status === 403 ? 502 : 502;
+      return NextResponse.json(
+        {
+          success: false,
+          code: response.status === 429 ? "PROVIDER_RATE_LIMIT" : "PROVIDER_REQUEST_FAILED",
+          message:
+            response.status === 429
+              ? "وصلنا إلى حد الطلبات لدى مزود البيانات. حاول لاحقاً."
+              : "تعذر جلب بيانات المباريات من المزود حالياً.",
+        },
+        { status, headers: { "Cache-Control": "no-store" } }
+      );
+    }
+
+    const payload: unknown = await response.json();
+    if (!Array.isArray(payload)) {
+      return NextResponse.json(
+        { success: false, code: "INVALID_PROVIDER_RESPONSE", message: "استجابة مزود البيانات غير صالحة." },
+        { status: 502 }
+      );
+    }
+
+    const matches = (payload as ProviderMatch[])
+      .filter((match) =>
+        Boolean(
+          match.game_id &&
+            match.home_team?.name &&
+            match.away_team?.name &&
+            match.start_time &&
+            match.status
+        )
+      )
+      .map((match) => ({
+        id: match.game_id as string,
+        league: match.league || league,
+        season: match.season_label || null,
+        round: match.round || null,
+        date: match.date || null,
+        kickoff: match.start_time as string,
+        status: match.status as string,
+        home: {
+          id: match.home_team?.team_id || null,
+          name: match.home_team?.name as string,
+          abbreviation: match.home_team?.abbreviation || null,
+        },
+        away: {
+          id: match.away_team?.team_id || null,
+          name: match.away_team?.name as string,
+          abbreviation: match.away_team?.abbreviation || null,
+        },
+        // On the free plan the provider withholds in-progress scores.
+        homeScore: typeof match.home_score === "number" ? match.home_score : null,
+        awayScore: typeof match.away_score === "number" ? match.away_score : null,
+        venue: match.venue?.name || null,
+        updatedAt: match.updated_at || null,
+      }));
+
+    return NextResponse.json(
+      {
+        success: true,
+        provider: "API Ninjas",
+        league,
+        date: date || null,
+        fetchedAt: new Date().toISOString(),
+        matches,
+      },
+      {
+        headers: {
+          "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600",
+        },
+      }
+    );
+  } catch {
+    return NextResponse.json(
+      {
+        success: false,
+        code: "PROVIDER_UNAVAILABLE",
+        message: "تعذر الاتصال بمزود بيانات المباريات. تحقق من الاتصال وحاول مجدداً.",
+      },
+      { status: 502, headers: { "Cache-Control": "no-store" } }
+    );
+  }
+}
