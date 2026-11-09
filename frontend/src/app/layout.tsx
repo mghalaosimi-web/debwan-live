@@ -8,8 +8,8 @@ export const metadata: Metadata = {
     default: "Debwan Live",
     template: "%s | Debwan Live",
   },
-  description: "Plataforma de streaming IPTV con canales en vivo, películas y series",
-  keywords: ["IPTV", "streaming", "canales", "películas", "series", "contenido en vivo"],
+  description: "Debwan Live — plataforma autoalojada de televisión en directo, películas y series.",
+  keywords: ["Debwan Live", "streaming", "televisión en directo", "IPTV", "películas", "series", "VOD"],
   metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || "https://example.com"),
   manifest: "/site.webmanifest",
   icons: {
@@ -33,7 +33,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: "Debwan Live",
-    description: "Plataforma de streaming IPTV con canales en vivo, películas y series",
+    description: "Televisión en directo, películas y series en una plataforma autoalojada.",
     type: "website",
     siteName: "Debwan Live",
     locale: "es_ES",
@@ -41,7 +41,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Debwan Live",
-    description: "Plataforma de streaming IPTV",
+    description: "Televisión en directo, películas y series en una plataforma autoalojada.",
   },
   alternates: {
     canonical: "/",
