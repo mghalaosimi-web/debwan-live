@@ -42,32 +42,6 @@ func makeRequest(app *fiber.App, method, path string, body string) (*util.APIRes
 	return &result, resp.StatusCode
 }
 
-func makeAuthRequest(app *fiber.App, method, path, body string, userID uuid.UUID, role string) (*util.APIResponse, int) {
-	var reader io.Reader
-	if body != "" {
-		reader = strings.NewReader(body)
-	}
-	req := httptest.NewRequest(method, path, reader)
-	if body != "" {
-		req.Header.Set("Content-Type", "application/json")
-	}
-
-	// Middleware simulation: set user info in locals
-	app.Use(func(c *fiber.Ctx) error {
-		c.Locals("user_id", userID)
-		c.Locals("role", role)
-		return c.Next()
-	})
-
-	resp, _ := app.Test(req, -1)
-	defer resp.Body.Close()
-
-	data, _ := io.ReadAll(resp.Body)
-	var result util.APIResponse
-	json.Unmarshal(data, &result)
-	return &result, resp.StatusCode
-}
-
 // --- Mock Repos for service construction ---
 
 // mockUserRepoForHandler implements service.FullUserRepository
