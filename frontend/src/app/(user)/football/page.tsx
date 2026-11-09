@@ -1,7 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import FootballGlobalMatches from "@/components/football/football-global-matches";\nimport FootballMatches from "@/components/football/football-matches";\nimport FootballStandings from "@/components/football/football-standings";
+import FootballGlobalMatches from "@/components/football/football-global-matches";
+import FootballMatches from "@/components/football/football-matches";
+import FootballStandings from "@/components/football/football-standings";
 import {
   ArrowUpRight,
   CalendarDays,
@@ -81,7 +83,11 @@ export default function FootballPage() {
         </div>
       </section>
 
-      <FootballGlobalMatches />\n\n      <FootballMatches />\n\n      <FootballStandings />
+      <FootballGlobalMatches />
+
+      <FootballMatches />
+
+      <FootballStandings />
 
       <section id="official-sources" className="space-y-4">
         <div className="flex flex-wrap items-end justify-between gap-3">
