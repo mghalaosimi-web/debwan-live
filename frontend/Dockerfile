@@ -1,13 +1,13 @@
 # Stage 1: Dependencies
 # SECURITY: Pinned base image version for reproducible builds
-FROM node:20.11.0-alpine AS deps
+FROM node:26.13.0-alpine AS deps
 WORKDIR /app
 COPY package.json package-lock.json* ./
 RUN if [ -f package-lock.json ]; then npm ci; else npm install; fi
 
 # Stage 2: Build
 # SECURITY: Pinned base image version for reproducible builds
-FROM node:20.11.0-alpine AS builder
+FROM node:26.13.0-alpine AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
@@ -15,7 +15,7 @@ RUN npm run build
 
 # Stage 3: Runner
 # SECURITY: Pinned base image version for reproducible builds
-FROM node:20.11.0-alpine AS runner
+FROM node:26.13.0-alpine AS runner
 WORKDIR /app
 
 ENV NODE_ENV=production
