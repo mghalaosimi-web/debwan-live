@@ -21,20 +21,353 @@ type Match = {
 
 type Filter = "all" | "live" | "upcoming" | "finished";
 
-const competitions = [
-  { id: "saudiproleague", name: "دوري روشن السعودي" },
-  { id: "ucl", name: "دوري أبطال أوروبا" },
-  { id: "epl", name: "الدوري الإنجليزي" },
-  { id: "laliga", name: "الدوري الإسباني" },
-  { id: "bundesliga", name: "الدوري الألماني" },
-  { id: "seriea", name: "الدوري الإيطالي" },
-  { id: "ligue1", name: "الدوري الفرنسي" },
-  { id: "uel", name: "الدوري الأوروبي" },
-  { id: "cafcl", name: "دوري أبطال أفريقيا" },
-  { id: "acl", name: "دوري أبطال آسيا" },
-  { id: "afcon", name: "كأس أمم أفريقيا" },
-  { id: "worldcup", name: "كأس العالم" },
-];
+const competitionGroups = [
+  {
+    "label": "إنجلترا",
+    "items": [
+      [
+        "epl",
+        "الدوري الإنجليزي الممتاز"
+      ],
+      [
+        "championship",
+        "التشامبيونشيب"
+      ],
+      [
+        "leagueone",
+        "League One"
+      ],
+      [
+        "leaguetwo",
+        "League Two"
+      ],
+      [
+        "facup",
+        "كأس الاتحاد الإنجليزي"
+      ],
+      [
+        "eflcup",
+        "كأس الرابطة الإنجليزية"
+      ]
+    ]
+  },
+  {
+    "label": "أوروبا — الدوريات",
+    "items": [
+      [
+        "laliga",
+        "الدوري الإسباني"
+      ],
+      [
+        "laliga2",
+        "الدرجة الثانية الإسبانية"
+      ],
+      [
+        "bundesliga",
+        "الدوري الألماني"
+      ],
+      [
+        "bundesliga2",
+        "الدرجة الثانية الألمانية"
+      ],
+      [
+        "seriea",
+        "الدوري الإيطالي"
+      ],
+      [
+        "serieb",
+        "الدرجة الثانية الإيطالية"
+      ],
+      [
+        "ligue1",
+        "الدوري الفرنسي"
+      ],
+      [
+        "ligue2",
+        "الدرجة الثانية الفرنسية"
+      ],
+      [
+        "eredivisie",
+        "الدوري الهولندي"
+      ],
+      [
+        "primeiraliga",
+        "الدوري البرتغالي"
+      ],
+      [
+        "superlig",
+        "الدوري التركي"
+      ],
+      [
+        "belgianproleague",
+        "الدوري البلجيكي"
+      ],
+      [
+        "greeksuperleague",
+        "الدوري اليوناني"
+      ],
+      [
+        "austrianbundesliga",
+        "الدوري النمساوي"
+      ],
+      [
+        "danishsuperliga",
+        "الدوري الدنماركي"
+      ],
+      [
+        "scottishpremiership",
+        "الدوري الاسكتلندي"
+      ],
+      [
+        "allsvenskan",
+        "الدوري السويدي"
+      ],
+      [
+        "eliteserien",
+        "الدوري النرويجي"
+      ],
+      [
+        "rpl",
+        "الدوري الروسي"
+      ]
+    ]
+  },
+  {
+    "label": "البطولات الأوروبية",
+    "items": [
+      [
+        "ucl",
+        "دوري أبطال أوروبا"
+      ],
+      [
+        "uel",
+        "الدوري الأوروبي"
+      ],
+      [
+        "uecl",
+        "دوري المؤتمر الأوروبي"
+      ],
+      [
+        "supercup",
+        "كأس السوبر الأوروبي"
+      ]
+    ]
+  },
+  {
+    "label": "آسيا والشرق الأوسط",
+    "items": [
+      [
+        "saudiproleague",
+        "دوري روشن السعودي"
+      ],
+      [
+        "acl",
+        "دوري أبطال آسيا"
+      ],
+      [
+        "csl",
+        "الدوري الصيني"
+      ],
+      [
+        "isl",
+        "الدوري الهندي"
+      ],
+      [
+        "j1league",
+        "الدوري الياباني"
+      ],
+      [
+        "aleague",
+        "الدوري الأسترالي"
+      ]
+    ]
+  },
+  {
+    "label": "أفريقيا",
+    "items": [
+      [
+        "cafcl",
+        "دوري أبطال أفريقيا"
+      ],
+      [
+        "afcon",
+        "كأس أمم أفريقيا"
+      ]
+    ]
+  },
+  {
+    "label": "الأمريكتان",
+    "items": [
+      [
+        "mls",
+        "الدوري الأمريكي MLS"
+      ],
+      [
+        "uslc",
+        "دوري USL"
+      ],
+      [
+        "brasileirao",
+        "الدوري البرازيلي"
+      ],
+      [
+        "ligaprofesional",
+        "الدوري الأرجنتيني"
+      ],
+      [
+        "ligamx",
+        "الدوري المكسيكي"
+      ],
+      [
+        "libertadores",
+        "كأس ليبرتادوريس"
+      ],
+      [
+        "sudamericana",
+        "كأس سود أمريكانا"
+      ],
+      [
+        "leaguescup",
+        "كأس الدوريات"
+      ],
+      [
+        "concacafcc",
+        "دوري أبطال الكونكاكاف"
+      ],
+      [
+        "usopencup",
+        "كأس الولايات المتحدة"
+      ]
+    ]
+  },
+  {
+    "label": "الكؤوس المحلية",
+    "items": [
+      [
+        "copadelrey",
+        "كأس ملك إسبانيا"
+      ],
+      [
+        "dfbpokal",
+        "كأس ألمانيا"
+      ],
+      [
+        "coppaitalia",
+        "كأس إيطاليا"
+      ],
+      [
+        "coupedefrance",
+        "كأس فرنسا"
+      ]
+    ]
+  },
+  {
+    "label": "المنتخبات والبطولات الدولية",
+    "items": [
+      [
+        "worldcup",
+        "كأس العالم"
+      ],
+      [
+        "wcqeurope",
+        "تصفيات أوروبا لكأس العالم"
+      ],
+      [
+        "wcqsouthamerica",
+        "تصفيات أمريكا الجنوبية"
+      ],
+      [
+        "wcqnorthamerica",
+        "تصفيات أمريكا الشمالية"
+      ],
+      [
+        "wcqasia",
+        "تصفيات آسيا"
+      ],
+      [
+        "wcqafrica",
+        "تصفيات أفريقيا"
+      ],
+      [
+        "nationsleague",
+        "دوري الأمم"
+      ],
+      [
+        "euro",
+        "كأس أمم أوروبا"
+      ],
+      [
+        "euroqualifying",
+        "تصفيات أمم أوروبا"
+      ],
+      [
+        "copaamerica",
+        "كوبا أمريكا"
+      ],
+      [
+        "asiancup",
+        "كأس آسيا"
+      ],
+      [
+        "goldcup",
+        "الكأس الذهبية"
+      ],
+      [
+        "concacafnationsleague",
+        "دوري أمم الكونكاكاف"
+      ],
+      [
+        "friendlies",
+        "مباريات ودية"
+      ],
+      [
+        "clubworldcup",
+        "كأس العالم للأندية"
+      ]
+    ]
+  },
+  {
+    "label": "كرة القدم النسائية",
+    "items": [
+      [
+        "wsl",
+        "الدوري الإنجليزي للسيدات"
+      ],
+      [
+        "ligaf",
+        "الدوري الإسباني للسيدات"
+      ],
+      [
+        "premiereligue",
+        "الدوري الفرنسي للسيدات"
+      ],
+      [
+        "aleaguewomen",
+        "الدوري الأسترالي للسيدات"
+      ],
+      [
+        "nsl",
+        "الدوري الوطني للسيدات"
+      ],
+      [
+        "uslsuperleague",
+        "دوري USL للسيدات"
+      ],
+      [
+        "uwcl",
+        "دوري أبطال أوروبا للسيدات"
+      ],
+      [
+        "womensworldcup",
+        "كأس العالم للسيدات"
+      ],
+      [
+        "womenseuro",
+        "أمم أوروبا للسيدات"
+      ]
+    ]
+  }
+] as const;\n\nconst competitions = competitionGroups.flatMap((group) => group.items);
 
 function getTodayInYemen() {
   const parts = new Intl.DateTimeFormat("en", {
@@ -80,7 +413,7 @@ function statusLabel(status: string) {
 
 export default function FootballMatches() {
   const [league, setLeague] = useState("saudiproleague");
-  const [date, setDate] = useState(getTodayInYemen);
+  const [date, setDate] = useState(getTodayInYemen);\n  const [team, setTeam] = useState("");\n  const [season, setSeason] = useState("");
   const [filter, setFilter] = useState<Filter>("all");
   const [matches, setMatches] = useState<Match[]>([]);
   const [loading, setLoading] = useState(true);
@@ -95,7 +428,7 @@ export default function FootballMatches() {
     setError(null);
 
     try {
-      const params = new URLSearchParams({ league, date });
+      const params = new URLSearchParams({ league });\n      if (date) params.set("date", date);\n      if (team.trim()) params.set("team", team.trim());\n      if (season) params.set("season", season);
       const response = await fetch(`/api/football/matches?${params.toString()}`, {
         headers: { Accept: "application/json" },
         cache: "no-store",
@@ -119,7 +452,7 @@ export default function FootballMatches() {
       setLoading(false);
       setRefreshing(false);
     }
-  }, [league, date]);
+  }, [league, date, team, season]);
 
   useEffect(() => {
     void loadMatches();
@@ -147,7 +480,7 @@ export default function FootballMatches() {
         <div>
           <p className="text-xs font-semibold tracking-widest text-primary-400">FIXTURES & RESULTS</p>
           <h2 className="mt-1 text-2xl font-bold text-dark-100">المباريات والنتائج</h2>
-          <p className="mt-1 text-sm text-dark-400">بيانات المباريات من مزود رياضي خارجي، بتوقيت اليمن</p>
+          <p className="mt-1 text-sm text-dark-400">تغطية 74 بطولة ومسابقات للرجال والسيدات — بتوقيت اليمن</p>
         </div>
         <button
           type="button"
@@ -169,10 +502,12 @@ export default function FootballMatches() {
             onChange={(event) => setLeague(event.target.value)}
             className="min-w-0 flex-1 bg-transparent py-1 text-sm text-dark-100 outline-none"
           >
-            {competitions.map((competition) => (
-              <option key={competition.id} value={competition.id} className="bg-dark-900">
-                {competition.name}
-              </option>
+            {competitionGroups.map((group) => (
+              <optgroup key={group.label} label={group.label} className="bg-dark-900">
+                {group.items.map(([id, name]) => (
+                  <option key={id} value={id}>{name}</option>
+                ))}
+              </optgroup>
             ))}
           </select>
         </label>
@@ -184,6 +519,31 @@ export default function FootballMatches() {
             value={date}
             onChange={(event) => setDate(event.target.value)}
             className="min-w-0 bg-transparent py-1 text-sm text-dark-100 outline-none [color-scheme:dark]"
+          />
+        </label>
+      </div>
+
+      <div className="grid gap-3 sm:grid-cols-2">
+        <label className="rounded-xl border border-dark-700 bg-dark-800 px-3 py-2">
+          <span className="mb-1 block text-xs text-dark-400">الفريق (اختياري)</span>
+          <input
+            type="text"
+            value={team}
+            onChange={(event) => setTeam(event.target.value)}
+            placeholder="اسم الفريق أو رمزه مثل ARS"
+            className="w-full bg-transparent py-1 text-sm text-dark-100 outline-none"
+          />
+        </label>
+        <label className="rounded-xl border border-dark-700 bg-dark-800 px-3 py-2">
+          <span className="mb-1 block text-xs text-dark-400">الموسم (اختياري)</span>
+          <input
+            type="number"
+            min="2000"
+            max="2100"
+            value={season}
+            onChange={(event) => setSeason(event.target.value)}
+            placeholder="مثال: 2026"
+            className="w-full bg-transparent py-1 text-sm text-dark-100 outline-none"
           />
         </label>
       </div>
@@ -231,7 +591,7 @@ export default function FootballMatches() {
         <div className="rounded-xl border border-dark-700 bg-dark-800 p-8 text-center">
           <CalendarDays className="mx-auto text-dark-500" size={28} />
           <p className="mt-3 font-semibold text-dark-200">لا توجد مباريات ضمن هذا الاختيار</p>
-          <p className="mt-1 text-sm text-dark-400">غيّر التاريخ أو البطولة لعرض مباريات أخرى.</p>
+          <p className="mt-1 text-sm text-dark-400">غيّر التاريخ أو البطولة أو الفريق أو الموسم لعرض مباريات أخرى.</p>
         </div>
       ) : (
         <div className="grid gap-3 lg:grid-cols-2">
