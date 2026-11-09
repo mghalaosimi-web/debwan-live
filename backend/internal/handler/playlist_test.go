@@ -191,7 +191,7 @@ func TestPlaylistHandler_RemoveItem_Success(t *testing.T) {
 	app := testApp()
 	app.Delete("/api/admin/channels/:id/playlist/items/:itemId", h.RemoveItem)
 
-	result, status := makeRequest(app, "DELETE", fmt.Sprintf("/api/admin/channels/1/playlist/items/1"), "")
+	result, status := makeRequest(app, "DELETE", "/api/admin/channels/1/playlist/items/1", "")
 	if status != 200 {
 		t.Errorf("RemoveItem() status = %d, want 200", status)
 	}
