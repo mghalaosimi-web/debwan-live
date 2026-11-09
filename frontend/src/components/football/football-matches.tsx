@@ -367,7 +367,7 @@ const competitionGroups = [
       ]
     ]
   }
-] as const;\n\nconst competitions = competitionGroups.flatMap((group) => group.items);
+] as const;\n\nconst competitions = competitionGroups.flatMap((group) => group.items.map(([id, name]) => ({ id, name })));
 
 function getTodayInYemen() {
   const parts = new Intl.DateTimeFormat("en", {
