@@ -82,7 +82,7 @@ export default function UserLayout({
                 href="/home"
                 className="text-xl font-bold text-primary-500"
               >
-                TIVIFY
+                DEBWAN LIVE
               </Link>
               <nav className="hidden md:flex items-center gap-1" aria-label="Main navigation">
                 {navKeys.map((link) => {
