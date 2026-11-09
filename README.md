@@ -1,4 +1,5 @@
 <p align="center">
+  <img src="frontend/public/icon.svg" alt="Debwan Live logo" width="112" />
 </p>
 
 <h1 align="center">DEBWAN LIVE</h1>
@@ -177,6 +178,7 @@ Edit `.env` and change **at minimum**:
 | `DB_PASSWORD` | Strong database password |
 | `REDIS_PASSWORD` | Strong Redis password |
 | `JWT_SECRET` | Random string, 32+ characters |
+| `NEXT_PUBLIC_BASE_URL` | Public HTTPS origin used for canonical and social metadata |
 | `ADMIN_PASSWORD` | Admin account password |
 
 ```bash
@@ -229,7 +231,7 @@ debwan-live/
 │       ├── context/        #   Auth & toast providers
 │       └── lib/            #   API client, types, utilities
 ├── android/                # Native Android app (Kotlin/Compose)
-│   └── app/src/main/java/com/tivify/app/
+│   └── app/src/main/java/com/tivify/app/  # Android namespace retained for upgrade compatibility
 │       ├── ui/             #   Compose screens (splash, login, home, player, ...)
 │       ├── data/           #   API client, models, DTOs
 │       ├── util/           #   TokenManager, constants
@@ -406,6 +408,12 @@ The APK will appear in the [Releases](../../releases) page within minutes.
 - **Role-based access** — admin middleware on privileged routes
 
 > **Important:** Always change the default credentials in `.env` before deploying to production. See `.env.example` for all configurable values.
+
+---
+
+## Media Sources & Legal Use
+
+Debwan Live is a self-hosted media management and playback platform. **No TV channels, IPTV subscriptions, paid playlists, or third-party stream credentials are bundled with this repository.** You must configure sources that you own or are explicitly authorized to access and distribute. You are responsible for complying with the laws and provider terms that apply in your jurisdiction.
 
 ---
 
