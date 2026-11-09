@@ -48,7 +48,7 @@ describe('AdminLayout', () => {
   it('renders sidebar with nav links', () => {
     render(<AdminLayout><div>child content</div></AdminLayout>)
 
-    expect(screen.getAllByText('TIVIFY').length).toBeGreaterThan(0)
+    expect(screen.getAllByText('DEBWAN LIVE').length).toBeGreaterThan(0)
     expect(screen.getByText('admin.adminPanel')).toBeInTheDocument()
     expect(screen.getByText('admin.dashboard')).toBeInTheDocument()
     expect(screen.getByText('admin.channels')).toBeInTheDocument()
