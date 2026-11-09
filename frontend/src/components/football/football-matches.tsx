@@ -367,7 +367,9 @@ const competitionGroups = [
       ]
     ]
   }
-] as const;\n\nconst competitions = competitionGroups.flatMap((group) => group.items.map(([id, name]) => ({ id, name })));
+] as const;
+
+const competitions = competitionGroups.flatMap((group) => group.items.map(([id, name]) => ({ id, name })));
 
 function getTodayInYemen() {
   const parts = new Intl.DateTimeFormat("en", {
@@ -413,7 +415,9 @@ function statusLabel(status: string) {
 
 export default function FootballMatches() {
   const [league, setLeague] = useState("saudiproleague");
-  const [date, setDate] = useState(getTodayInYemen);\n  const [team, setTeam] = useState("");\n  const [season, setSeason] = useState("");
+  const [date, setDate] = useState(getTodayInYemen);
+  const [team, setTeam] = useState("");
+  const [season, setSeason] = useState("");
   const [filter, setFilter] = useState<Filter>("all");
   const [matches, setMatches] = useState<Match[]>([]);
   const [loading, setLoading] = useState(true);
@@ -428,7 +432,10 @@ export default function FootballMatches() {
     setError(null);
 
     try {
-      const params = new URLSearchParams({ league });\n      if (date) params.set("date", date);\n      if (team.trim()) params.set("team", team.trim());\n      if (season) params.set("season", season);
+      const params = new URLSearchParams({ league });
+      if (date) params.set("date", date);
+      if (team.trim()) params.set("team", team.trim());
+      if (season) params.set("season", season);
       const response = await fetch(`/api/football/matches?${params.toString()}`, {
         headers: { Accept: "application/json" },
         cache: "no-store",
