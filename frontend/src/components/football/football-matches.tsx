@@ -418,6 +418,8 @@ export default function FootballMatches() {
   const [date, setDate] = useState(getTodayInYemen);
   const [team, setTeam] = useState("");
   const [season, setSeason] = useState("");
+  const [appliedTeam, setAppliedTeam] = useState("");
+  const [appliedSeason, setAppliedSeason] = useState("");
   const [filter, setFilter] = useState<Filter>("all");
   const [matches, setMatches] = useState<Match[]>([]);
   const [loading, setLoading] = useState(true);
@@ -434,8 +436,8 @@ export default function FootballMatches() {
     try {
       const params = new URLSearchParams({ league });
       if (date) params.set("date", date);
-      if (team.trim()) params.set("team", team.trim());
-      if (season) params.set("season", season);
+      if (appliedTeam.trim()) params.set("team", appliedTeam.trim());
+      if (appliedSeason) params.set("season", appliedSeason);
       const response = await fetch(`/api/football/matches?${params.toString()}`, {
         headers: { Accept: "application/json" },
         cache: "no-store",
