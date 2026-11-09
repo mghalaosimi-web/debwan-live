@@ -61,7 +61,7 @@ describe('RootLayout - extended', () => {
 
   it('exports metadata with openGraph config', () => {
     expect(metadata.openGraph).toBeDefined()
-    expect((metadata.openGraph as any).title).toBe('TIVIFY')
+    expect((metadata.openGraph as any).title).toBe('Debwan Live')
     expect((metadata.openGraph as any).type).toBe('website')
     expect((metadata.openGraph as any).locale).toBe('es_ES')
   })
