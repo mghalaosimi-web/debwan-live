@@ -18,7 +18,7 @@ i18n
     },
     detection: {
       order: ["localStorage", "navigator"],
-      lookupLocalStorage: "tivify_lang",
+      lookupLocalStorage: "debwan_lang",
       caches: ["localStorage"],
     },
   });
