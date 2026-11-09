@@ -11,14 +11,73 @@ const ALLOWED_LEAGUES = new Set([
   "ligue1",
   "ucl",
   "uel",
-  "uecl",
-  "saudiproleague",
-  "cafcl",
-  "acl",
-  "brasileirao",
   "mls",
+  "championship",
+  "leagueone",
+  "leaguetwo",
+  "scottishpremiership",
+  "laliga2",
+  "bundesliga2",
+  "serieb",
+  "ligue2",
+  "eredivisie",
+  "primeiraliga",
+  "superlig",
+  "belgianproleague",
+  "greeksuperleague",
+  "austrianbundesliga",
+  "danishsuperliga",
+  "allsvenskan",
+  "eliteserien",
+  "rpl",
+  "uecl",
+  "brasileirao",
+  "libertadores",
+  "sudamericana",
+  "uslc",
+  "saudiproleague",
+  "csl",
+  "isl",
+  "aleague",
+  "acl",
+  "cafcl",
+  "ligamx",
+  "ligaprofesional",
+  "j1league",
+  "facup",
+  "eflcup",
+  "copadelrey",
+  "dfbpokal",
+  "coppaitalia",
+  "coupedefrance",
+  "usopencup",
+  "leaguescup",
+  "concacafcc",
+  "clubworldcup",
+  "wsl",
+  "ligaf",
+  "premiereligue",
+  "aleaguewomen",
+  "nsl",
+  "uslsuperleague",
+  "uwcl",
   "worldcup",
+  "wcqeurope",
+  "wcqsouthamerica",
+  "wcqnorthamerica",
+  "wcqasia",
+  "wcqafrica",
+  "nationsleague",
+  "euro",
+  "euroqualifying",
+  "copaamerica",
   "afcon",
+  "asiancup",
+  "goldcup",
+  "concacafnationsleague",
+  "friendlies",
+  "womensworldcup",
+  "womenseuro",
 ]);
 
 type ProviderTeam = {
@@ -65,10 +124,43 @@ export async function GET(request: NextRequest) {
   const search = request.nextUrl.searchParams;
   const league = (search.get("league") || "epl").toLowerCase();
   const date = search.get("date");
+  const team = search.get("team")?.trim();
+  const season = search.get("season");
+  const status = search.get("status");
+  const offset = search.get("offset");
 
   if (!ALLOWED_LEAGUES.has(league)) {
     return NextResponse.json(
       { success: false, code: "UNSUPPORTED_LEAGUE", message: "البطولة المطلوبة غير مدعومة." },
+      { status: 400 }
+    );
+  }
+
+  if (team && (team.length > 100 || /[<>]/.test(team))) {
+    return NextResponse.json(
+      { success: false, code: "INVALID_TEAM", message: "اسم الفريق غير صالح." },
+      { status: 400 }
+    );
+  }
+
+  if (season && !/^20\\d{2}$/.test(season)) {
+    return NextResponse.json(
+      { success: false, code: "INVALID_SEASON", message: "الموسم يجب أن يكون سنة من أربعة أرقام." },
+      { status: 400 }
+    );
+  }
+
+  const allowedStatuses = new Set(["scheduled", "in_progress", "final", "postponed", "canceled", "suspended", "delayed"]);
+  if (status && !allowedStatuses.has(status)) {
+    return NextResponse.json(
+      { success: false, code: "INVALID_STATUS", message: "حالة المباراة غير صالحة." },
+      { status: 400 }
+    );
+  }
+
+  if (offset && (!/^\\d+$/.test(offset) || Number(offset) > 5000)) {
+    return NextResponse.json(
+      { success: false, code: "INVALID_OFFSET", message: "قيمة ترقيم النتائج غير صالحة." },
       { status: 400 }
     );
   }
@@ -82,6 +174,10 @@ export async function GET(request: NextRequest) {
 
   const params = new URLSearchParams({ league });
   if (date) params.set("date", date);
+  if (team) params.set("team", team);
+  if (season) params.set("season", season);
+  if (status) params.set("status", status);
+  if (offset) params.set("offset", offset);
 
   try {
     const response = await fetch(
