@@ -84,11 +84,11 @@ export default function Home() {
 
           <div className="mt-9 flex flex-wrap gap-3">
             <Link
-              href="/login"
+              href="/home"
               className="inline-flex items-center justify-center gap-3 rounded-xl bg-emerald-300 px-6 py-3.5 text-sm font-extrabold text-[#062018] shadow-lg shadow-emerald-900/20 transition hover:-translate-y-0.5 hover:bg-emerald-200"
             >
               <Play size={17} fill="currentColor" />
-              استكشف المنصة
+              ابدأ المشاهدة
               <ArrowUpLeft size={17} />
             </Link>
             <a
