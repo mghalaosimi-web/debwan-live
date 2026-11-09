@@ -49,7 +49,7 @@ export async function GET(request: NextRequest) {
       (active && !["true", "false"].includes(active))) {
     return NextResponse.json({ success: false, code: "INVALID_FILTER", message: "أحد معايير البحث غير صالح." }, { status: 400 });
   }
-  if (type === "players" && !league && !playerId && !(team || name)) {
+  if (type === "players" && !playerId && !(team || name)) {
     return NextResponse.json({ success: false, code: "SEARCH_REQUIRED", message: "اختر بطولة أو ابحث باسم لاعب أو فريق." }, { status: 400 });
   }
 
