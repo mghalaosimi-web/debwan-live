@@ -1,9 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useAuth } from "@/context/auth-context";
 import {
   ArrowLeft,
   ArrowUpLeft,
@@ -19,7 +16,7 @@ const features = [
   {
     icon: Tv,
     title: "التلفزيون المباشر",
-    description: "استكشف القنوات التلفزيونية المضافة إلى مكتبتك عند تسجيل الدخول.",
+    description: "استكشف القنوات التلفزيونية المتاحة في مكتبة المنصة.",
     accent: "text-sky-300",
   },
   {
@@ -31,32 +28,12 @@ const features = [
   {
     icon: Clapperboard,
     title: "الأفلام والمسلسلات",
-    description: "مكتبة ترفيهية منظمة، مع متابعة المشاهدة والمفضلة للحسابات المسجلة.",
+    description: "مكتبة ترفيهية منظمة للأفلام والمسلسلات.",
     accent: "text-violet-300",
   },
 ];
 
 export default function Home() {
-  const router = useRouter();
-  const { isAuthenticated, isLoading, user } = useAuth();
-
-  useEffect(() => {
-    if (!isLoading && isAuthenticated) {
-      router.replace(user?.role === "admin" ? "/admin" : "/home");
-    }
-  }, [isAuthenticated, isLoading, user, router]);
-
-  if (isLoading || isAuthenticated) {
-    return (
-      <main className="flex min-h-screen items-center justify-center bg-[#07111f]" aria-live="polite">
-        <div className="flex items-center gap-3 text-slate-300">
-          <span className="h-2.5 w-2.5 animate-pulse rounded-full bg-emerald-400" />
-          جاري تجهيز دبوان لايف...
-        </div>
-      </main>
-    );
-  }
-
   return (
     <main dir="rtl" className="min-h-screen overflow-hidden bg-[#07111f] text-white">
       <div className="pointer-events-none fixed inset-0" aria-hidden="true">
@@ -77,10 +54,10 @@ export default function Home() {
           </Link>
 
           <Link
-            href="/login"
+            href="/home"
             className="inline-flex items-center gap-2 rounded-xl border border-white/15 px-4 py-2.5 text-sm font-bold text-slate-100 transition hover:border-emerald-300/50 hover:bg-white/5"
           >
-            تسجيل الدخول
+            ابدأ المشاهدة
             <ArrowLeft size={16} />
           </Link>
         </div>
@@ -111,7 +88,7 @@ export default function Home() {
               className="inline-flex items-center justify-center gap-3 rounded-xl bg-emerald-300 px-6 py-3.5 text-sm font-extrabold text-[#062018] shadow-lg shadow-emerald-900/20 transition hover:-translate-y-0.5 hover:bg-emerald-200"
             >
               <Play size={17} fill="currentColor" />
-              ادخل إلى المنصة
+              استكشف المنصة
               <ArrowUpLeft size={17} />
             </Link>
             <a
@@ -159,7 +136,7 @@ export default function Home() {
               </div>
             </div>
             <p className="mt-5 text-center text-[11px] leading-6 text-slate-500">
-              المحتوى الفعلي يتوقف على المصادر والقنوات التي يضيفها مدير المنصة.
+              تتوفر الأقسام وفق المصادر التي تم إعدادها وتشغيلها في المنصة.
             </p>
           </div>
         </div>
@@ -171,7 +148,7 @@ export default function Home() {
             <p className="text-xs font-bold tracking-[0.2em] text-emerald-300">EXPLORE DEBWAN</p>
             <h2 className="mt-3 text-2xl font-extrabold sm:text-3xl">كل ما تحتاجه في مكان واحد</h2>
             <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-400">
-              ادخل بحسابك للوصول إلى المكتبة والميزات الشخصية. لا يلزم تسجيل الدخول لاستكشاف هذه الصفحة التعريفية.
+              تصفح أقسام المنصة مباشرة دون إنشاء حساب أو إدخال كلمة مرور.
             </p>
           </div>
 
