@@ -163,7 +163,7 @@ func TestLocalMediaService_List_Empty(t *testing.T) {
 	if total != 0 {
 		t.Errorf("total = %d, want 0", total)
 	}
-	if responses != nil && len(responses) != 0 {
+	if len(responses) != 0 {
 		t.Errorf("expected empty responses, got %d", len(responses))
 	}
 }
