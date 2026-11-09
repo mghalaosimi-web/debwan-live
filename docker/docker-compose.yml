@@ -9,11 +9,11 @@
 services:
   postgres:
     image: postgres:16-alpine
-    container_name: tivify-postgres
+    container_name: debwan-postgres
     restart: unless-stopped
     environment:
-      POSTGRES_DB: ${DB_NAME:-tivify}
-      POSTGRES_USER: ${DB_USER:-tivify}
+      POSTGRES_DB: ${DB_NAME:-debwan}
+      POSTGRES_USER: ${DB_USER:-debwan}
       POSTGRES_PASSWORD: ${DB_PASSWORD:-changeme}
     command:
       - "postgres"
@@ -30,7 +30,7 @@ services:
           cpus: '1'
           memory: 1024M
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-tivify}"]
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-debwan}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -61,7 +61,7 @@ services:
       dockerfile: Dockerfile
       args:
         APP_VERSION: "1.0.0"
-    container_name: tivify-backend
+    container_name: debwan-backend
     restart: unless-stopped
     env_file:
       - path: ../.env
@@ -71,8 +71,8 @@ services:
       APP_PORT: 8080
       DB_HOST: postgres
       DB_PORT: 5432
-      DB_NAME: ${DB_NAME:-tivify}
-      DB_USER: ${DB_USER:-tivify}
+      DB_NAME: ${DB_NAME:-debwan}
+      DB_USER: ${DB_USER:-debwan}
       DB_PASSWORD: ${DB_PASSWORD:-changeme}
       DB_SSLMODE: ${DB_SSLMODE:-disable}
       REDIS_HOST: redis
@@ -81,7 +81,7 @@ services:
       JWT_SECRET: ${JWT_SECRET:-}
       ADMIN_USERNAME: ${ADMIN_USERNAME:-admin}
       ADMIN_PASSWORD: ${ADMIN_PASSWORD:-}
-      ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@tivify.local}
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@debwan.local}
       BASE_URL: ${BASE_URL:-http://localhost}
       MEDIA_PATH: /media
       FFMPEG_PATH: /usr/bin/ffmpeg
@@ -115,7 +115,7 @@ services:
     build:
       context: ../frontend
       dockerfile: Dockerfile
-    container_name: tivify-frontend
+    container_name: debwan-frontend
     restart: unless-stopped
     env_file:
       - path: ../.env
@@ -143,7 +143,7 @@ services:
     build:
       context: ../nginx
       dockerfile: Dockerfile
-    container_name: tivify-nginx
+    container_name: debwan-nginx
     restart: unless-stopped
     ports:
       - "80:80"
@@ -176,7 +176,7 @@ services:
     build:
       context: ./tailscale
       dockerfile: Dockerfile
-    container_name: tivify-tailscale
+    container_name: debwan-tailscale
     restart: unless-stopped
     network_mode: "service:nginx"
     env_file:
@@ -184,7 +184,7 @@ services:
         required: false
     environment:
       TS_AUTHKEY: ${TS_AUTHKEY:-}
-      TS_HOSTNAME: ${TS_HOSTNAME:-tivify}
+      TS_HOSTNAME: ${TS_HOSTNAME:-debwan-live}
       TS_SERVE_MODE: ${TS_SERVE_MODE:-https}
     volumes:
       - tailscale_data:/var/lib/tailscale
@@ -200,7 +200,7 @@ services:
     build:
       context: ../android
       dockerfile: Dockerfile
-    container_name: tivify-android-build
+    container_name: debwan-android-build
     profiles:
       - build-apk
     volumes:
