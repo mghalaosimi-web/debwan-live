@@ -5,8 +5,8 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: {
-    default: "TIVIFY",
-    template: "%s | TIVIFY",
+    default: "Debwan Live",
+    template: "%s | Debwan Live",
   },
   description: "Plataforma de streaming IPTV con canales en vivo, películas y series",
   keywords: ["IPTV", "streaming", "canales", "películas", "series", "contenido en vivo"],
@@ -32,15 +32,15 @@ export const metadata: Metadata = {
     },
   },
   openGraph: {
-    title: "TIVIFY",
+    title: "Debwan Live",
     description: "Plataforma de streaming IPTV con canales en vivo, películas y series",
     type: "website",
-    siteName: "TIVIFY",
+    siteName: "Debwan Live",
     locale: "es_ES",
   },
   twitter: {
     card: "summary_large_image",
-    title: "TIVIFY",
+    title: "Debwan Live",
     description: "Plataforma de streaming IPTV",
   },
   alternates: {
