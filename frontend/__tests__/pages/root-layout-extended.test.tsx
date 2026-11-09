@@ -24,11 +24,11 @@ import RootLayout, { metadata } from '@/app/layout'
 describe('RootLayout - extended', () => {
   it('exports metadata with correct title default', () => {
     expect(metadata).toBeDefined()
-    expect((metadata.title as any).default).toBe('TIVIFY')
+    expect((metadata.title as any).default).toBe('Debwan Live')
   })
 
   it('exports metadata with correct title template', () => {
-    expect((metadata.title as any).template).toBe('%s | TIVIFY')
+    expect((metadata.title as any).template).toBe('%s | Debwan Live')
   })
 
   it('exports metadata with correct description', () => {
