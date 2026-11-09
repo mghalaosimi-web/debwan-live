@@ -51,37 +51,47 @@ export async function GET(request: NextRequest) {
     );
   }
 
-  const params = new URLSearchParams({ sport: "football", date, limit: "200" });
-  if (status) params.set("status", status);
-  if (competition) params.set("competition", competition);
-  if (team) params.set("team", team);
-
-  try {
+  const requestedDate = new Date(`${date}T00:00:00.000Z`);
+  const previousUtcDate = new Date(requestedDate.getTime() - 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
+  const fetchDate = async (utcDate: string) => {
+    const params = new URLSearchParams({ sport: "football", date: utcDate, limit: "200" });
+    if (status) params.set("status", status);
+    if (competition) params.set("competition", competition);
+    if (team) params.set("team", team);
     const response = await fetch(`https://sportscore.com/api/v1/fixtures/?${params.toString()}`, {
       headers: { Accept: "application/json" },
       next: { revalidate: 60 },
       signal: AbortSignal.timeout(12000),
     });
     if (!response.ok) {
-      return NextResponse.json(
-        {
-          success: false,
-          code: response.status === 429 ? "PROVIDER_RATE_LIMIT" : "PROVIDER_REQUEST_FAILED",
-          message: response.status === 429 ? "تم بلوغ حد الطلبات لدى مزود النتائج." : "تعذر جلب المباريات العالمية حالياً.",
-        },
-        { status: response.status === 429 ? 429 : 502, headers: { "Cache-Control": "no-store" } }
-      );
+      const error = new Error(response.status === 429 ? "RATE_LIMIT" : "UPSTREAM_ERROR");
+      (error as Error & { status?: number }).status = response.status;
+      throw error;
     }
+    const payload = await response.json() as { matches?: ProviderMatch[] };
+    if (!Array.isArray(payload.matches)) throw new Error("INVALID_PROVIDER_RESPONSE");
+    return payload.matches;
+  };
 
-    const payload = await response.json() as { sport?: string; date?: string; count?: number; matches?: ProviderMatch[] };
-    if (!Array.isArray(payload.matches)) {
-      return NextResponse.json(
-        { success: false, code: "INVALID_PROVIDER_RESPONSE", message: "استجابة مزود المباريات غير صالحة." },
-        { status: 502 }
-      );
-    }
+  try {
+    // The viewer selects a Yemen calendar day (UTC+3), so include the previous UTC
+    // day as well, then retain only kickoffs that fall on the requested Yemen date.
+    const [previousMatches, currentMatches] = await Promise.all([
+      fetchDate(previousUtcDate),
+      fetchDate(date),
+    ]);
+    const localDateMatches = [...previousMatches, ...currentMatches].filter((match) => {
+      if (!match.time) return false;
+      const kickoffDate = new Intl.DateTimeFormat("en-CA", {
+        timeZone: "Asia/Aden",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+      }).format(new Date(match.time));
+      return kickoffDate === date;
+    });
 
-    const matches = payload.matches
+    const matches = localDateMatches
       .filter((match) => Boolean(match.home && match.away && match.time && match.status))
       .map((match) => ({
         home: match.home as string,
@@ -109,9 +119,14 @@ export async function GET(request: NextRequest) {
       },
       { headers: { "Cache-Control": "public, s-maxage=60, stale-while-revalidate=120" } }
     );
-  } catch {
+  } catch (error) {
+    const statusCode = (error as Error & { status?: number }).status;
     return NextResponse.json(
-      { success: false, code: "PROVIDER_UNAVAILABLE", message: "تعذر الاتصال بمزود النتائج العالمية." },
+      {
+        success: false,
+        code: statusCode === 429 ? "PROVIDER_RATE_LIMIT" : "PROVIDER_UNAVAILABLE",
+        message: statusCode === 429 ? "تم بلوغ حد الطلبات لدى مزود النتائج." : "تعذر الاتصال بمزود النتائج العالمية.",
+      },
       { status: 502, headers: { "Cache-Control": "no-store" } }
     );
   }
