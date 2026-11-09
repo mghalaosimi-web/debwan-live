@@ -1,6 +1,6 @@
 # Stage 1: Build
 # SECURITY: Pinned base image version for reproducible builds
-FROM golang:1.22.6-alpine AS builder
+FROM golang:1.27.3-alpine AS builder
 
 RUN apk add --no-cache git
 
