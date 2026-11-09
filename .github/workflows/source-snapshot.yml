@@ -36,7 +36,7 @@ jobs:
           test -n "$SOURCE_DIR"
           test -f "$SOURCE_DIR/LICENSE"
           test -f "$SOURCE_DIR/README.md"
-          rsync -a --delete --exclude='.git' "$SOURCE_DIR/" "$GITHUB_WORKSPACE/"
+          rsync -a --delete --exclude='.git' --exclude='.github/workflows/***' "$SOURCE_DIR/" "$GITHUB_WORKSPACE/"
 
       - name: Create a fresh Debwan Live snapshot commit
         run: |
