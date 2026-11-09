@@ -74,7 +74,7 @@ fun LoginScreen(
             verticalArrangement = Arrangement.spacedBy(14.dp)
         ) {
             Text(
-                text = "TIVIFY",
+                text = "DEBWAN LIVE",
                 fontSize = 36.sp,
                 fontWeight = FontWeight.Bold,
                 color = Primary500
