@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
   const competition = search.get("competition") || "english-premier-league";
   const stat = search.get("stat") || "goals";
   const limit = search.get("limit") || "20";
-  if (!COMPETITIONS.has(competition) || !["goals", "assists"].includes(stat) || !/^\\d{1,2}$/.test(limit) || Number(limit) < 1 || Number(limit) > 50) {
+  if (!COMPETITIONS.has(competition) || !["goals", "assists"].includes(stat) || !/^\d{1,2}$/.test(limit) || Number(limit) < 1 || Number(limit) > 50) {
     return NextResponse.json({ success: false, code: "INVALID_FILTER", message: "اختيار البطولة أو نوع الإحصائية غير صالح." }, { status: 400 });
   }
   try {
