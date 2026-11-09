@@ -352,6 +352,12 @@ describe('AdminChannelsPage - coverage gaps', () => {
     await new Promise((resolve) => setTimeout(resolve, 5200))
 
     expect(mockGetEmissionStatus.mock.calls.length).toBeGreaterThan(initialCalls)
+
+    // Closing the modal must stop the active polling interval.
+    fireEvent.click(screen.getByText('Close'))
+    await waitFor(() => {
+      expect(screen.queryByTestId('modal')).not.toBeInTheDocument()
+    })
   }, 10000)
 
   // Line 643: buildFullUrl fallback when typeof window === "undefined"
