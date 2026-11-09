@@ -139,14 +139,14 @@ describe('UserLayout', () => {
     expect(mockReplace).toHaveBeenCalledWith('/login')
   })
 
-  it('renders TIVIFY brand link', () => {
+  it('renders DEBWAN LIVE brand link', () => {
     render(
       <UserLayout>
         <div>Content</div>
       </UserLayout>
     )
 
-    const brandLink = screen.getByText('TIVIFY')
+    const brandLink = screen.getByText('DEBWAN LIVE')
     expect(brandLink.closest('a')).toHaveAttribute('href', '/home')
   })
 
