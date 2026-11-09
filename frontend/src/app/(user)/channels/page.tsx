@@ -31,6 +31,20 @@ const officialLiveSources = [
     href: "https://www.alarabiya.net/live-stream",
     accent: "border-sky-400/25",
   },
+  {
+    name: "سكاي نيوز عربية",
+    description: "صفحة البث المباشر الرسمية لقناة سكاي نيوز عربية.",
+    category: "أخبار عربية",
+    href: "https://www.skynewsarabia.com/livestream-%D8%A7%D9%84%D8%A8%D8%AB-%D8%A7%D9%84%D9%85%D8%A8%D8%A7%D8%B4%D8%B1",
+    accent: "border-cyan-400/25",
+  },
+  {
+    name: "منصات الشرق",
+    description: "بوابة البث المباشر الرسمية لقنوات الشرق، وتشمل الشرق للأخبار والشرق Bloomberg وقنوات وثائقية وثقافية وراديو الشرق.",
+    category: "أخبار ومنوعات",
+    href: "https://now.asharq.com/live/",
+    accent: "border-violet-400/25",
+  },
 ];
 
 export default function ChannelsPage() {
