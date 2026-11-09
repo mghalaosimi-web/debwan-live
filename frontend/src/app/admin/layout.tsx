@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useAuth } from "@/context/auth-context";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -27,37 +27,13 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  const router = useRouter();
-  const { user, isLoading, logout } = useAuth();
+  const { user } = useAuth();
   const { t } = useTranslation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
-    if (!isLoading && (!user || user.role !== "admin")) {
-      router.replace("/login");
-    }
-  }, [user, isLoading, router]);
-
-  useEffect(() => {
     setSidebarOpen(false);
   }, [pathname]);
-
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-pulse text-dark-400">{t("common.loading")}</div>
-      </div>
-    );
-  }
-
-  if (!user || user.role !== "admin") {
-    return null;
-  }
-
-  const handleLogout = async () => {
-    await logout();
-    router.push("/login");
-  };
 
   return (
     <div className="flex min-h-screen">
@@ -131,18 +107,10 @@ export default function AdminLayout({
         <div className="p-4 border-t border-dark-700">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-dark-200">
-                {user.username}
-              </p>
-              <p className="text-xs text-dark-500">{user.role}</p>
+              <p className="text-sm font-medium text-dark-200">Open access mode</p>
+              <p className="text-xs text-dark-500">Authentication postponed</p>
               <p className="text-xs text-dark-600 mt-1">v{process.env.NEXT_PUBLIC_APP_VERSION}</p>
             </div>
-            <button
-              onClick={handleLogout}
-              className="text-dark-400 hover:text-red-400 text-sm transition-colors"
-            >
-              {t("auth.logoutShort")}
-            </button>
           </div>
         </div>
       </aside>
