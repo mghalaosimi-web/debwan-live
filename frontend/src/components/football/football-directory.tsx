@@ -29,17 +29,23 @@ export default function FootballDirectory() {
   const [mode, setMode] = useState<Mode>("teams");
   const [league, setLeague] = useState("epl");
   const [query, setQuery] = useState("");
+  const [teamQuery, setTeamQuery] = useState("");
   const [items, setItems] = useState<(Team | Player)[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [searched, setSearched] = useState(false);
 
   const load = useCallback(async () => {
+    if (mode === "players" && !query.trim() && !teamQuery.trim()) {
+      setError("أدخل اسم لاعب أو اسم النادي لعرض قائمة اللاعبين.");
+      setItems([]); setSearched(false); return;
+    }
     setLoading(true); setError("");
     try {
       const params = new URLSearchParams({ type: mode });
       if (league) params.set("league", league);
       if (query.trim()) params.set(mode === "teams" ? "team" : "name", query.trim());
+      if (mode === "players" && teamQuery.trim()) params.set("team", teamQuery.trim());
       if (mode === "teams") params.set("active", "true");
       const response = await fetch(`/api/football/directory?${params.toString()}`, { headers: { Accept: "application/json" } });
       const payload = await response.json();
@@ -49,7 +55,7 @@ export default function FootballDirectory() {
     } catch (err) {
       setItems([]); setError(err instanceof Error ? err.message : "حدث خطأ أثناء البحث.");
     } finally { setLoading(false); }
-  }, [mode, league, query]);
+  }, [mode, league, query, teamQuery]);
 
   useEffect(() => { void load(); }, [load]);
 
@@ -61,8 +67,8 @@ export default function FootballDirectory() {
         <p className="mt-1 text-sm text-dark-400">ابحث عن الأندية وقوائم اللاعبين وبياناتهم الأساسية من مزود البيانات.</p>
       </div>
       <div className="flex flex-wrap gap-2" role="tablist" aria-label="نوع الدليل">
-        <button type="button" onClick={() => { setMode("teams"); setQuery(""); }} aria-selected={mode === "teams"} className={`inline-flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold ${mode === "teams" ? "bg-primary-500 text-white" : "border border-dark-700 bg-dark-800 text-dark-300"}`}><Users size={16}/> الأندية</button>
-        <button type="button" onClick={() => { setMode("players"); setQuery(""); }} aria-selected={mode === "players"} className={`inline-flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold ${mode === "players" ? "bg-primary-500 text-white" : "border border-dark-700 bg-dark-800 text-dark-300"}`}><UserRound size={16}/> اللاعبون</button>
+        <button type="button" onClick={() => { setMode("teams"); setQuery(""); setTeamQuery(""); }} aria-pressed={mode === "teams"} className={`inline-flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold ${mode === "teams" ? "bg-primary-500 text-white" : "border border-dark-700 bg-dark-800 text-dark-300"}`}><Users size={16}/> الأندية</button>
+        <button type="button" onClick={() => { setMode("players"); setQuery(""); setTeamQuery(""); }} aria-pressed={mode === "players"} className={`inline-flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold ${mode === "players" ? "bg-primary-500 text-white" : "border border-dark-700 bg-dark-800 text-dark-300"}`}><UserRound size={16}/> اللاعبون</button>
       </div>
       <div className="grid gap-3 md:grid-cols-[1fr_1.4fr_auto]">
         <select value={league} onChange={(e) => setLeague(e.target.value)} className="rounded-xl border border-dark-700 bg-dark-800 px-3 py-3 text-sm text-dark-100">
@@ -74,6 +80,7 @@ export default function FootballDirectory() {
         </label>
         <button type="button" onClick={() => void load()} disabled={loading} className="inline-flex items-center justify-center gap-2 rounded-xl bg-primary-500 px-5 py-3 text-sm font-bold text-white disabled:opacity-50"><RefreshCw size={15} className={loading ? "animate-spin" : ""}/> بحث</button>
       </div>
+      {mode === "players" && <label className="flex items-center gap-2 rounded-xl border border-dark-700 bg-dark-800 px-3"><Users size={17} className="text-dark-400"/><input value={teamQuery} onChange={(e) => setTeamQuery(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter") void load(); }} placeholder="اختياري: اسم النادي لعرض قائمته" className="min-w-0 flex-1 bg-transparent py-3 text-sm text-dark-100 outline-none"/></label>}
       {error ? <div className="rounded-xl border border-red-500/20 bg-red-500/[0.06] p-4 text-sm text-red-200">{error}</div> : loading ? <div className="rounded-xl border border-dark-700 bg-dark-800 p-8 text-center text-sm text-dark-300">جارٍ تحميل البيانات...</div> : items.length === 0 ? <div className="rounded-xl border border-dark-700 bg-dark-800 p-8 text-center text-sm text-dark-300">{searched ? "لا توجد نتائج لهذا البحث." : "ابدأ البحث لعرض البيانات."}</div> :
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {mode === "teams" ? (items as Team[]).map((team) => (
@@ -89,7 +96,7 @@ export default function FootballDirectory() {
           ))}
         </div>
       }
-      <p className="text-[11px] text-dark-500">بيانات الأندية واللاعبين مقدمة من API Ninjas؛ التغطية تختلف حسب البطولة والخطة المتاحة.</p>
+      <p className="text-[11px] text-dark-500">بيانات الأندية واللاعبين مقدمة من API Ninjas؛ قوائم اللاعبين تتطلب البحث باسم لاعب أو نادٍ.</p>
     </section>
   );
 }
