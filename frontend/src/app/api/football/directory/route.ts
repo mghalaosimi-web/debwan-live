@@ -17,7 +17,7 @@ const ALLOWED_LEAGUES = new Set([
   "asiancup","goldcup","concacafnationsleague","friendlies","womensworldcup","womenseuro",
 ]);
 
-function validText(value: string | null, max = 100) {
+function validText(value: string | null | undefined, max = 100) {
   return !value || (value.trim().length <= max && !/[<>]/.test(value));
 }
 
@@ -45,7 +45,7 @@ export async function GET(request: NextRequest) {
   }
   if (!validText(team) || !validText(name) || !validText(playerId) ||
       (position && !["G", "D", "M", "F"].includes(position)) ||
-      !/^\\d{1,4}$/.test(offset) || Number(offset) > 5000 ||
+      !/^\d{1,4}$/.test(offset) || Number(offset) > 5000 ||
       (active && !["true", "false"].includes(active))) {
     return NextResponse.json({ success: false, code: "INVALID_FILTER", message: "أحد معايير البحث غير صالح." }, { status: 400 });
   }
