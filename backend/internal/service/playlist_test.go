@@ -514,7 +514,7 @@ segment_1.ts
 	}
 	if len(streamRepo.streams[1]) > 0 {
 		stream := streamRepo.streams[1][0]
-		expectedURL := fmt.Sprintf("/media/channels/1/playlist.m3u8")
+		expectedURL := "/media/channels/1/playlist.m3u8"
 		if stream.URL != expectedURL {
 			t.Errorf("stream URL = %q, want %q", stream.URL, expectedURL)
 		}
