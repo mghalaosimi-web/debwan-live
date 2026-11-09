@@ -204,7 +204,7 @@ jobs:
       - name: Upload debug APK
         uses: actions/upload-artifact@v4
         with:
-          name: tivify-debug-apk-${{ github.sha }}
+          name: debwan-live-debug-apk-${{ github.sha }}
           path: android/app/build/outputs/apk/debug/app-debug.apk
           retention-days: 14
 
@@ -224,11 +224,11 @@ jobs:
         # (`backend`, `frontend`) only exist inside the compose network, so
         # we inject fake hosts so the config validates without DNS noise.
         run: |
-          docker build -t tivify-nginx-test -f nginx/Dockerfile nginx/
+          docker build -t debwan-live-nginx-test -f nginx/Dockerfile nginx/
           docker run --rm \
             --add-host backend:127.0.0.1 \
             --add-host frontend:127.0.0.1 \
-            tivify-nginx-test nginx -t
+            debwan-live-nginx-test nginx -t
 
   # ---------------------------------------------------------------------------
   # Docker — verify each Dockerfile builds cleanly (no push).
@@ -265,7 +265,7 @@ jobs:
           file: ${{ matrix.image.dockerfile }}
           push: false
           load: true
-          tags: tivify-${{ matrix.image.name }}:ci
+          tags: debwan-live-${{ matrix.image.name }}:ci
           cache-from: type=gha,scope=${{ matrix.image.name }}
           cache-to: type=gha,scope=${{ matrix.image.name }},mode=max
 
