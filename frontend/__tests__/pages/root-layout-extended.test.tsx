@@ -32,7 +32,7 @@ describe('RootLayout - extended', () => {
   })
 
   it('exports metadata with correct description', () => {
-    expect(metadata.description).toContain('streaming IPTV')
+    expect(metadata.description).toContain('televisión en directo')
   })
 
   it('exports metadata with keywords array', () => {
@@ -50,7 +50,7 @@ describe('RootLayout - extended', () => {
   })
 
   it('exports metadata with themeColor', () => {
-    expect(metadata.themeColor).toBe('#4f46e5')
+    expect(metadata.themeColor).toBe('#172B4D')
   })
 
   it('exports metadata with robots config', () => {
