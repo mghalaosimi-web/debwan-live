@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 import { CalendarDays, Clock3, ExternalLink, Radio, RefreshCw } from "lucide-react";
 
 type GlobalMatch = {
@@ -189,10 +190,9 @@ export default function FootballGlobalMatches() {
                   <TeamMark name={match.away} logo={match.awayLogo} />
                 </div>
                 {match.sourceUrl && (
-                  <div className="border-t border-dark-700 pt-3 text-left">
-                    <a href={match.sourceUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-xs font-semibold text-primary-300 hover:text-primary-200">
-                      تفاصيل المباراة <ExternalLink size={13} />
-                    </a>
+                  <div className="flex flex-wrap items-center justify-between gap-3 border-t border-dark-700 pt-3">
+                    <Link href={(() => { const parts = new URL(match.sourceUrl).pathname.split("/").filter(Boolean); return parts[2] ? `/football/match/${parts[2]}` : "/football"; })()} className="inline-flex items-center gap-1 text-xs font-semibold text-primary-300 hover:text-primary-200">تفاصيل المباراة داخل دبوان</Link>
+                    <a href={match.sourceUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-xs text-dark-400 hover:text-dark-200">المصدر <ExternalLink size={13} /></a>
                   </div>
                 )}
               </article>
