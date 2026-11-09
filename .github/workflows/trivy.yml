@@ -22,7 +22,7 @@ jobs:
     name: Filesystem + dependency scan
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Trivy fs
         uses: aquasecurity/trivy-action@v0.36.0
@@ -54,7 +54,7 @@ jobs:
     name: Dockerfile / compose misconfig scan
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Trivy config
         uses: aquasecurity/trivy-action@v0.36.0
