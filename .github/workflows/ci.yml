@@ -100,13 +100,7 @@ jobs:
           install-go: false
 
       - name: go test (race + coverage)
-        # Two legacy IPTV EPG tests are flaky against the in-memory fixtures;
-        # they're tracked separately and skipped here so green CI stays
-        # meaningful. Remove the -skip when TestIPTVSeeder_ImportEPG_* is fixed.
-        run: |
-          go test -race -covermode=atomic -coverprofile=coverage.out \
-            -skip 'TestIPTVSeeder_ImportEPG_Gzip|TestIPTVSeeder_ImportEPG_MultipleProgrammes' \
-            ./...
+        run: go test -race -covermode=atomic -coverprofile=coverage.out ./...
 
       - name: Upload coverage
         if: always()
