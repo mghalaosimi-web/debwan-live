@@ -368,7 +368,6 @@ func TestChannelHandler_ListActive_WithSearch(t *testing.T) {
 	}
 }
 
-
 // Public channel details must not disclose custom upstream headers or user-agent
 // values, while the admin detail route retains them for channel management.
 func TestChannelHandler_PublicGetByIDRedactsStreamCredentials(t *testing.T) {
