@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 export const runtime = "nodejs";
-export const revalidate = 1800;
+export const revalidate = 300;
 
 const ALLOWED_LEAGUES = new Set([
   "epl",
@@ -185,7 +185,7 @@ export async function GET(request: NextRequest) {
       {
         method: "GET",
         headers: { "X-Api-Key": apiKey, Accept: "application/json" },
-        next: { revalidate: 1800 },
+        next: { revalidate: 300 },
         signal: AbortSignal.timeout(12000),
       }
     );
@@ -259,7 +259,7 @@ export async function GET(request: NextRequest) {
       },
       {
         headers: {
-          "Cache-Control": "public, s-maxage=1800, stale-while-revalidate=3600",
+          "Cache-Control": "public, s-maxage=300, stale-while-revalidate=600",
         },
       }
     );
