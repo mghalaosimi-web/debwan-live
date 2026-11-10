@@ -374,15 +374,15 @@ func TestChannelHandler_ListActive_WithSearch(t *testing.T) {
 func TestChannelHandler_PublicGetByIDRedactsStreamCredentials(t *testing.T) {
 	h, repo, _ := setupChannelHandler()
 	channel := &model.Channel{
-		Name: "Sports Channel",
-		Slug: "sports-channel",
+		Name:     "Sports Channel",
+		Slug:     "sports-channel",
 		IsActive: true,
 		Streams: []model.Stream{{
-			URL: "https://stream.example.test/live.m3u8",
+			URL:          "https://stream.example.test/live.m3u8",
 			StreamFormat: "hls",
-			IsActive: true,
-			UserAgent: "private-upstream-agent",
-			Headers: `{"Authorization":"Bearer private-token","Cookie":"session=private"}`,
+			IsActive:     true,
+			UserAgent:    "private-upstream-agent",
+			Headers:      `{"Authorization":"Bearer private-token","Cookie":"session=private"}`,
 		}},
 	}
 	repo.addChannel(channel)
