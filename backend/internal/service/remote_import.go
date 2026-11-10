@@ -11,6 +11,8 @@ import (
 	"time"
 )
 
+type remoteImportFunc func(context.Context, *http.Client, string, int64) ([]byte, http.Header, error)
+
 const maxRemoteRedirects = 3
 
 // newSafeRemoteHTTPClient pins each outbound connection to a freshly resolved,
