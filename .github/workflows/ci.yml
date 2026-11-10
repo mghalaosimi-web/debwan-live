@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [main]
+    branches: [main, feature/football-hub-official-free-sources]
   pull_request:
     branches: [main, feature/football-hub-official-free-sources]
   workflow_dispatch:
