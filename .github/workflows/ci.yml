@@ -83,6 +83,9 @@ jobs:
           if [ -n "$UNFMT" ]; then
             echo "The following files are not gofmt'd:"
             echo "$UNFMT"
+            while IFS= read -r file; do
+              gofmt -d "$file"
+            done <<< "$UNFMT"
             exit 1
           fi
 
