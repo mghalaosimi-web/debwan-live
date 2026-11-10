@@ -47,6 +47,7 @@ func TestValidateRemoteImportURLRejectsUnsafeURLs(t *testing.T) {
 		{name: "http is disabled", raw: "http://example.com/playlist.m3u"},
 		{name: "localhost", raw: "https://localhost/playlist.m3u"},
 		{name: "localhost subdomain", raw: "https://service.localhost/playlist.m3u"},
+		{name: "local suffix", raw: "https://internal.local/playlist.m3u"},
 		{name: "metadata host", raw: "https://metadata.google.internal/computeMetadata/v1/"},
 		{name: "loopback ipv4", raw: "https://127.0.0.1/playlist.m3u"},
 		{name: "loopback ipv6", raw: "https://[::1]/playlist.m3u"},
