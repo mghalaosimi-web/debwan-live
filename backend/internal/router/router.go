@@ -143,7 +143,10 @@ func SetupAPIv1(app *fiber.App, h *Handlers) {
 	authProtected.Get("/me", h.Auth.Me)
 
 	// --- Admin routes ---
+	// Protect every administrative endpoint by default. Public catalog browsing
+	// remains available through the separate user group below.
 	admin := v1.Group("/admin")
+	admin.Use(middleware.AuthRequired(), middleware.AdminRequired())
 
 	// Dashboard
 	admin.Get("/dashboard/stats", h.Dashboard.Stats)
