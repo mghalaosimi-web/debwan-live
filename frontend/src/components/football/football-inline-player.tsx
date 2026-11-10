@@ -8,7 +8,7 @@ import type { Channel, ChannelList, Stream } from "@/lib/types";
 import { resolveUrl } from "@/lib/utils";
 
 const SPORTS_CHANNEL_PATTERN =
-  /sport|football|soccer|رياض|كرو|كرة|bein|ssc|ثمانية|الكأس|الرياضية|أبوظبي|دبي/i;
+  /sport|deporte|football|soccer|رياض|كرو|كرة|bein|ssc|ثمانية|الكأس|الرياضية|أبوظبي|دبي/i;
 
 function isSportsChannel(channel: ChannelList): boolean {
   return channel.is_active &&
