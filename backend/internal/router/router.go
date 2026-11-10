@@ -252,7 +252,7 @@ func SetupAPIv1(app *fiber.App, h *Handlers) {
 	publicCatalog.Get("/emissions/live", h.Emission.LiveChannels)
 	publicCatalog.Get("/search", middleware.RateLimitRelaxed(), h.Search.Search)
 	publicCatalog.Get("/channels", middleware.RateLimitRelaxed(), h.Channel.ListActive)
-	publicCatalog.Get("/channels/:id", middleware.RateLimitRelaxed(), h.Channel.GetByID)
+	publicCatalog.Get("/channels/:id", middleware.RateLimitRelaxed(), h.Channel.GetPublicByID)
 	publicCatalog.Get("/vod", middleware.RateLimitRelaxed(), h.VOD.ListActive)
 	publicCatalog.Get("/vod/:id", middleware.RateLimitRelaxed(), h.VOD.GetByID)
 	publicCatalog.Get("/series", middleware.RateLimitRelaxed(), h.Series.ListActive)
