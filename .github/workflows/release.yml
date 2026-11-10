@@ -193,7 +193,7 @@ jobs:
           tar -czf debwan-live-deploy-${{ needs.meta.outputs.version }}.tar.gz -C bundle .
 
       - name: Upload bundle to release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           tag_name: ${{ needs.meta.outputs.tag }}
           files: debwan-live-deploy-${{ needs.meta.outputs.version }}.tar.gz
