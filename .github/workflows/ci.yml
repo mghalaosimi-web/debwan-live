@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
   pull_request:
-    branches: [main]
+    branches: [main, feature/football-hub-official-free-sources]
   workflow_dispatch:
 
 # Cancel in-flight runs for the same ref when new commits arrive.
