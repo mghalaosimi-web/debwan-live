@@ -39,13 +39,13 @@ const officialSources = [
     note: "تؤكد beIN رسمياً وجود قناتين مجانيتين Free-to-Air؛ لا يعني ذلك أن قنواتها المدفوعة أو كل المباريات مجانية.",
   },
   {
-    name: "FIFA+",
-    subtitle: "مباريات مباشرة مختارة من اتحادات ومسابقات مختلفة",
-    access: "مجاني — حسب البطولة والمنطقة",
-    href: "https://www.fifa.com/fifaplus",
+    name: "FIFA+ عبر DAZN",
+    subtitle: "مباريات مباشرة مختارة، إعادات وملخصات من مسابقات مختلفة",
+    access: "مجاني في المناطق المدعومة — قد يتطلب حساباً",
+    href: "https://www.dazn.com/fifaplus",
     icon: Radio,
     featured: false,
-    note: "توفر FIFA+ مباريات مباشرة مجانية مختارة، لكن قائمة المباريات وحقوق المشاهدة تختلف حسب البلد والبطولة.",
+    note: "انتقل محتوى FIFA+ إلى DAZN. يتغير توفر المباريات حسب البلد وحقوق البث، وقد يتطلب التسجيل؛ لا يعني ذلك أن كل البطولات متاحة مجاناً.",
   },
 ];
 
@@ -200,10 +200,10 @@ export default function FootballPage() {
       <section className="rounded-2xl border border-dark-700 bg-dark-800 p-5">
         <div className="flex items-center gap-3">
           <CalendarDays size={22} className="text-primary-300" />
-          <h2 className="text-lg font-bold text-dark-100">الخطوة التالية: المباريات والنتائج</h2>
+          <h2 className="text-lg font-bold text-dark-100">المباريات والنتائج والإحصاءات</h2>
         </div>
         <p className="mt-2 text-sm leading-6 text-dark-300">
-          سنضيف جدول المباريات المباشرة والقادمة والنتائج والبطولات بعد ربط مزود بيانات رياضية موثوق، مع فصل بيانات المباريات عن مصادر الفيديو.
+          تعرض الأقسام أعلاه المباريات والنتائج والجداول والهدافين والبطولات وتفاصيل الفرق واللاعبين. تُحدّث بيانات المباريات كل خمس دقائق وفق استجابة مزود البيانات، وقد لا تتوفر نتيجة أو أحداث مباشرة لبعض المسابقات في الخطة المجانية. الفيديو مصدر مستقل ولا يُستنتج من بيانات النتيجة.
         </p>
         <Link href="/channels" className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-primary-300 hover:text-primary-200">
           تصفح القنوات المضافة إلى مكتبتك
