@@ -10,6 +10,8 @@ The first football milestone provides a Debwan Live discovery page that directs 
 |---|---|---|---|
 | Thmanyah | Selected Saudi football matches are available free in its app; three satellite channels are free-to-air | https://app.thmanyah.com/ | Digital live sports are limited to the Arab rights territory, which includes Yemen. Satellite channels are on Arabsat Badr 8 only. |
 | beIN SPORTS | beIN confirms two free-to-air channels: beIN SPORTS and beIN SPORTS NEWS | https://connect.bein.com/ | This does not make paid beIN sports channels or all premium matches free. |
+| TOD | بث رياضي مدفوع عبر منصة beIN، تشمل حقوق مسابقات كبرى في أسواق MENA وتركيا | https://www.tod.tv/ | اشتراك مدفوع؛ تحقق من توفر البطولة والباقة في اليمن قبل الاشتراك. |
+| قنوات الكأس | قنوات رياضية قطرية مع جدول بث رسمي | https://www.alkass.net/tvguide | تحقق من جدول القناة والتوفر الرقمي والحقوق حسب الدولة؛ لا تفترض أن كل مباراة متاحة في اليمن. |
 | FIFA+ on DAZN | Selected live matches from FIFA member associations and competitions; free-to-view catalogue with an account | https://www.dazn.com/fifaplus | FIFA+ moved to DAZN in 2026. Catalogue, live events, and access vary by country and rights; registration may be required. Do not imply every competition or match is available in Yemen. |
 
 ## Thmanyah satellite tuning information
@@ -39,7 +41,9 @@ The satellite signal coverage includes Yemen. Satellite reception is not an inte
 - Thmanyah — broadcast rights geography and satellite tuning: https://ask.thmanyah.com/النطاق-الجغرافي-لحقوق-البث
 - Thmanyah — app availability and free access: https://ask.thmanyah.com/ما-هو-تطبيق-ثمانية
 - Thmanyah — official app match page and live viewing flow: https://ask.thmanyah.com/en/match-page-on-thamanyah-app
-- beIN — official FAQ confirming two free-to-air channels: https://www.bein.com/en/ufaq/does-bein-provide-free-channels/
+- beIN — official FAQ confirming two free-to-air channels and beIN CONNECT MENA availability: https://www.bein.com/en/faqs/
+- TOD — official beIN Media Group platform and rights portfolio: https://www.beinmediagroup.com/subsidiary/tod/
+- Al Kass — official broadcast schedule: https://www.alkass.net/tvguide
 - FIFA — FIFA+ transition to DAZN: https://www.fifa.com/ar/dazn
 - FIFA — FIFA+ launches on DAZN: https://inside.fifa.com/organisation/media-releases/fifa-plus-dazn-global-home-of-football
 - DAZN — FIFA+ availability and account requirements: https://www.dazn.com/en-CA/help/articles/36029102113053-fifa-on-dazn-everything-you-need-to-know
