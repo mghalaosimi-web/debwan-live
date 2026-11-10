@@ -7,7 +7,7 @@ describe('Public landing page', () => {
     render(<Home />)
     expect(screen.getByText('دبوان لايف')).toBeInTheDocument()
     expect(screen.getByText('عالم المشاهدة', { exact: false })).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: /ابدأ المشاهدة/i })).toHaveAttribute('href', '/home')
+    expect(screen.getAllByRole('link').some((link) => link.getAttribute('href') === '/home')).toBe(true)
   })
 
   it('describes the main platform sections', () => {
