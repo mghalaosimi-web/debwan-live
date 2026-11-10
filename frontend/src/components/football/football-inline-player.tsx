@@ -8,7 +8,7 @@ import type { Channel, ChannelList, Stream } from "@/lib/types";
 import { resolveUrl } from "@/lib/utils";
 
 const SPORTS_CHANNEL_PATTERN =
-  /sport|football|soccer|رياض|كرو|كرة|bein|ssc|ثمانية|الكأس|الرياضية|أبوظبي|دبي/i;
+  /sport|deporte|football|soccer|رياض|كرو|كرة|bein|ssc|ثمانية|الكأس|الرياضية|أبوظبي|دبي/i;
 
 function isSportsChannel(channel: ChannelList): boolean {
   return channel.is_active &&
@@ -30,9 +30,21 @@ export default function FootballInlinePlayer() {
     setLoadingChannels(true);
     setError("");
     try {
-      const response = await userAPI.getChannels(1, 100);
-      const all = Array.isArray(response.data.data) ? response.data.data : [];
-      const sports = all.filter(isSportsChannel);
+      const categoriesResponse = await userAPI.getCategories("live");
+      const categories = Array.isArray(categoriesResponse.data.data) ? categoriesResponse.data.data : [];
+      const sportsCategories = categories.filter((category) =>
+        SPORTS_CHANNEL_PATTERN.test(category.name)
+      );
+      const categoryResponses = await Promise.all(
+        sportsCategories.map((category) => userAPI.getChannels(1, 100, undefined, category.id))
+      );
+      const fromCategories = categoryResponses.flatMap((response) =>
+        Array.isArray(response.data.data) ? response.data.data : []
+      );
+      const allResponse = fromCategories.length > 0 ? null : await userAPI.getChannels(1, 100);
+      const all = allResponse && Array.isArray(allResponse.data.data) ? allResponse.data.data : [];
+      const combined = fromCategories.length > 0 ? fromCategories : all.filter(isSportsChannel);
+      const sports = Array.from(new Map(combined.filter((item) => item.is_active).map((item) => [item.id, item])).values());
       setChannels(sports);
       setSelectedId((current) => current && sports.some((item) => item.id === current)
         ? current
