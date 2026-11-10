@@ -101,6 +101,7 @@ type IPTVSeeder struct {
 	categoryRepo CategoryRepositoryInterface
 	epgRepo      EPGRepositoryInterface
 	httpClient   *http.Client
+	remoteImport remoteImportFunc
 
 	mu     sync.RWMutex
 	status IPTVImportStatus
@@ -118,6 +119,7 @@ func NewIPTVSeeder(
 		categoryRepo: categoryRepo,
 		epgRepo:      epgRepo,
 		httpClient:   newSafeRemoteHTTPClient(),
+		remoteImport: fetchRemoteImport,
 	}
 }
 
@@ -332,7 +334,7 @@ func (s *IPTVSeeder) fetchM3U(url string) (content string, epgURL string, err er
 }
 
 func (s *IPTVSeeder) fetchM3UContext(ctx context.Context, rawURL string) (content string, epgURL string, err error) {
-	data, _, err := fetchRemoteImport(ctx, s.httpClient, rawURL, 64*1024*1024)
+	data, _, err := s.remoteImport(ctx, s.httpClient, rawURL, 64*1024*1024)
 	if err != nil {
 		return "", "", err
 	}
@@ -563,7 +565,7 @@ func guessStreamFormat(url string) string {
 // ─── EPG (XMLTV) ─────────────────────────────────────────────────────────────
 
 func (s *IPTVSeeder) importEPG(ctx context.Context, epgURL string, channelIDMap map[string]uint) {
-	data, headers, err := fetchRemoteImport(ctx, s.httpClient, epgURL, 64*1024*1024)
+	data, headers, err := s.remoteImport(ctx, s.httpClient, epgURL, 64*1024*1024)
 	if err != nil {
 		log.Printf("[IPTV] Error descargando EPG: %v", err)
 		return
