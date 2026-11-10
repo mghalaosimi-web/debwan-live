@@ -6,6 +6,7 @@ describe('HomePage', () => {
   it('renders the Debwan Live home experience in Arabic RTL', () => {
     render(<HomePage />)
     expect(screen.getByText('DEBWAN LIVE')).toBeInTheDocument()
+    expect(document.querySelector('[dir="rtl"]')).toBeInTheDocument()
     expect(screen.getByText('بوابتك إلى القنوات المباشرة وكرة القدم والأفلام والمسلسلات. التصفح متاح الآن دون تسجيل دخول.')).toBeInTheDocument()
   })
 
