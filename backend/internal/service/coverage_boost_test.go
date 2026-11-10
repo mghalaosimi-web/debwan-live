@@ -111,6 +111,7 @@ https://example.com/stream2.m3u8
 	categoryRepo := newMockCategoryRepoForIPTV()
 	epgRepo := newMockEPGRepo()
 	seeder := NewIPTVSeeder(channelRepo, streamRepo, categoryRepo, epgRepo)
+	seeder.remoteImport = fetchLocalRemoteImportForTest
 
 	seeder.ImportWithOptionsContext(context.Background(), IPTVImportOptions{
 		M3UURL: server.URL,
@@ -147,6 +148,7 @@ https://example.com/stream2.m3u8
 	categoryRepo := newMockCategoryRepoForIPTV()
 	epgRepo := newMockEPGRepo()
 	seeder := NewIPTVSeeder(channelRepo, streamRepo, categoryRepo, epgRepo)
+	seeder.remoteImport = fetchLocalRemoteImportForTest
 
 	seeder.ImportWithOptionsContext(context.Background(), IPTVImportOptions{
 		M3UURL:    server.URL,
@@ -203,6 +205,7 @@ https://example.com/stream.m3u8
 	categoryRepo := newMockCategoryRepoForIPTV()
 	epgRepo := newMockEPGRepo()
 	seeder := NewIPTVSeeder(channelRepo, streamRepo, categoryRepo, epgRepo)
+	seeder.remoteImport = fetchLocalRemoteImportForTest
 
 	// Pre-add a channel from same source
 	channelRepo.Create(&model.Channel{Name: "Old", Slug: "old", Source: "test"})
@@ -245,6 +248,7 @@ https://example.com/stream.m3u8
 	categoryRepo := newMockCategoryRepoForIPTV()
 	epgRepo := newMockEPGRepo()
 	seeder := NewIPTVSeeder(channelRepo, streamRepo, categoryRepo, epgRepo)
+	seeder.remoteImport = fetchLocalRemoteImportForTest
 
 	seeder.ImportWithOptionsContext(context.Background(), IPTVImportOptions{
 		M3UURL: m3uServer.URL,
@@ -274,6 +278,7 @@ https://example.com/stream.m3u8
 	categoryRepo := newMockCategoryRepoForIPTV()
 	epgRepo := newMockEPGRepo()
 	seeder := NewIPTVSeeder(channelRepo, streamRepo, categoryRepo, epgRepo)
+	seeder.remoteImport = fetchLocalRemoteImportForTest
 
 	ctx, cancel := context.WithCancel(context.Background())
 
@@ -660,9 +665,10 @@ func TestIPTVSeeder_ImportEPG_Success(t *testing.T) {
 	categoryRepo := newMockCategoryRepoForIPTV()
 	epgRepo := newMockEPGRepo()
 	seeder := NewIPTVSeeder(channelRepo, streamRepo, categoryRepo, epgRepo)
+	seeder.remoteImport = fetchLocalRemoteImportForTest
 
 	channelMap := map[string]uint{"ch1": 1}
-	seeder.importEPG(server.URL, channelMap)
+	seeder.importEPG(context.Background(), server.URL, channelMap)
 
 	// Verify EPG entries were created
 	count, _ := epgRepo.Count()
@@ -674,7 +680,7 @@ func TestIPTVSeeder_ImportEPG_Success(t *testing.T) {
 func TestIPTVSeeder_ImportEPG_InvalidURL(t *testing.T) {
 	seeder := setupIPTVSeeder()
 	// Should not panic
-	seeder.importEPG("http://127.0.0.1:1/nonexistent", map[string]uint{"ch1": 1})
+	seeder.importEPG(context.Background(), "http://127.0.0.1:1/nonexistent", map[string]uint{"ch1": 1})
 }
 
 func TestIPTVSeeder_ImportEPG_InvalidXML(t *testing.T) {
@@ -686,7 +692,7 @@ func TestIPTVSeeder_ImportEPG_InvalidXML(t *testing.T) {
 
 	seeder := setupIPTVSeeder()
 	// Should not panic on invalid XML
-	seeder.importEPG(server.URL, map[string]uint{"ch1": 1})
+	seeder.importEPG(context.Background(), server.URL, map[string]uint{"ch1": 1})
 }
 
 // ============================================================================
@@ -812,6 +818,7 @@ https://example.com/stream.m3u8
 	categoryRepo := newMockCategoryRepoForIPTV()
 	epgRepo := newMockEPGRepo()
 	seeder := NewIPTVSeeder(channelRepo, streamRepo, categoryRepo, epgRepo)
+	seeder.remoteImport = fetchLocalRemoteImportForTest
 
 	seeder.SeedFromURL(server.URL)
 
@@ -831,6 +838,7 @@ func TestIPTVSeeder_ImportChannels_WithEmptyGroupTitle(t *testing.T) {
 	categoryRepo := newMockCategoryRepoForIPTV()
 	epgRepo := newMockEPGRepo()
 	seeder := NewIPTVSeeder(channelRepo, streamRepo, categoryRepo, epgRepo)
+	seeder.remoteImport = fetchLocalRemoteImportForTest
 
 	entries := []m3uEntry{
 		{TvgName: "Channel", GroupTitle: "", URL: "https://example.com/stream.m3u8"},
