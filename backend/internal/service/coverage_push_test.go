@@ -10,6 +10,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"testing"
+	"time"
 
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/tivify/backend/internal/dto"
@@ -999,16 +1000,18 @@ func TestLibraryScanner_CountVideoFiles_AllExtensions(t *testing.T) {
 // ============================================================================
 
 func TestIPTVSeeder_ImportEPG_Gzip(t *testing.T) {
-	epgXML := `<?xml version="1.0" encoding="UTF-8"?>
+	start := time.Now().UTC().Add(time.Hour)
+	end := start.Add(time.Hour)
+	epgXML := fmt.Sprintf(`<?xml version="1.0" encoding="UTF-8"?>
 <tv>
   <channel id="ch1">
     <display-name>Channel 1</display-name>
   </channel>
-  <programme start="20260321120000 +0000" stop="20260321130000 +0000" channel="ch1">
+  <programme start="%s" stop="%s" channel="ch1">
     <title>Test Show</title>
     <desc>Test description</desc>
   </programme>
-</tv>`
+</tv>`, start.Format("20060102150405 -0700"), end.Format("20060102150405 -0700"))
 
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Encoding", "gzip")
@@ -1035,15 +1038,17 @@ func TestIPTVSeeder_ImportEPG_Gzip(t *testing.T) {
 }
 
 func TestIPTVSeeder_ImportEPG_GzipURL(t *testing.T) {
-	epgXML := `<?xml version="1.0" encoding="UTF-8"?>
+	start := time.Now().UTC().Add(time.Hour)
+	end := start.Add(time.Hour)
+	epgXML := fmt.Sprintf(`<?xml version="1.0" encoding="UTF-8"?>
 <tv>
   <channel id="ch1">
     <display-name>Channel 1</display-name>
   </channel>
-  <programme start="20260321120000 +0000" stop="20260321130000 +0000" channel="ch1">
+  <programme start="%s" stop="%s" channel="ch1">
     <title>Test Show</title>
   </programme>
-</tv>`
+</tv>`, start.Format("20060102150405 -0700"), end.Format("20060102150405 -0700"))
 
 	// Server at .gz URL
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -1276,12 +1281,15 @@ func TestIPTVSeeder_ImportEPG_MultipleProgrammes(t *testing.T) {
 <tv>
   <channel id="ch1"><display-name>Channel 1</display-name></channel>`
 
-	// Add 250+ programmes to test the batch loop
+	// Add 250+ future programmes to test the batch loop.
+	base := time.Now().UTC().Add(time.Hour)
 	for i := 0; i < 250; i++ {
+		start := base.Add(time.Duration(i) * time.Minute)
+		end := start.Add(30 * time.Minute)
 		epgXML += fmt.Sprintf(`
-  <programme start="20260320%02d0000 +0000" stop="20260320%02d3000 +0000" channel="ch1">
+  <programme start="%s" stop="%s" channel="ch1">
     <title>Show %d</title>
-  </programme>`, i%24, i%24, i)
+  </programme>`, start.Format("20060102150405 -0700"), end.Format("20060102150405 -0700"), i)
 	}
 	epgXML += `</tv>`
 
