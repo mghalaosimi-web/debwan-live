@@ -117,7 +117,7 @@ func NewIPTVSeeder(
 		streamRepo:   streamRepo,
 		categoryRepo: categoryRepo,
 		epgRepo:      epgRepo,
-		httpClient: newSafeRemoteHTTPClient(),
+		httpClient:   newSafeRemoteHTTPClient(),
 	}
 }
 
