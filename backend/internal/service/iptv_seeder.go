@@ -2,6 +2,7 @@ package service
 
 import (
 	"bufio"
+	"bytes"
 	"compress/gzip"
 	"context"
 	"encoding/xml"
@@ -100,6 +101,7 @@ type IPTVSeeder struct {
 	categoryRepo CategoryRepositoryInterface
 	epgRepo      EPGRepositoryInterface
 	httpClient   *http.Client
+	remoteImport remoteImportFunc
 
 	mu     sync.RWMutex
 	status IPTVImportStatus
@@ -116,9 +118,8 @@ func NewIPTVSeeder(
 		streamRepo:   streamRepo,
 		categoryRepo: categoryRepo,
 		epgRepo:      epgRepo,
-		httpClient: &http.Client{
-			Timeout: 10 * time.Minute,
-		},
+		httpClient:   newSafeRemoteHTTPClient(),
+		remoteImport: fetchRemoteImport,
 	}
 }
 
@@ -236,7 +237,9 @@ func (s *IPTVSeeder) ImportWithOptionsContext(ctx context.Context, opts IPTVImpo
 	if opts.Replace {
 		s.setStatus(IPTVImportStatus{Running: true, Message: fmt.Sprintf("Eliminando canales de fuente '%s'...", opts.Source)})
 		if err := s.channelRepo.DeleteBySource(opts.Source); err != nil {
+			s.setStatus(IPTVImportStatus{Running: false, Error: fmt.Sprintf("No se pudo reemplazar la fuente %q: %v", opts.Source, err)})
 			log.Printf("[IPTV] Error eliminando canales de fuente '%s': %v", opts.Source, err)
+			return
 		}
 	}
 
@@ -264,7 +267,7 @@ func (s *IPTVSeeder) ImportWithOptionsContext(ctx context.Context, opts IPTVImpo
 			Percent: 100, Message: "Importando EPG...", Imported: len(epgIDtoChannelID),
 		})
 		log.Printf("[IPTV] Importando EPG desde %s", epgURL)
-		s.importEPG(epgURL, epgIDtoChannelID)
+		s.importEPG(ctx, epgURL, epgIDtoChannelID)
 	} else {
 		log.Printf("[IPTV] Sin URL de EPG disponible")
 	}
@@ -330,26 +333,11 @@ func (s *IPTVSeeder) fetchM3U(url string) (content string, epgURL string, err er
 	return s.fetchM3UContext(context.Background(), url)
 }
 
-func (s *IPTVSeeder) fetchM3UContext(ctx context.Context, url string) (content string, epgURL string, err error) {
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
+func (s *IPTVSeeder) fetchM3UContext(ctx context.Context, rawURL string) (content string, epgURL string, err error) {
+	data, _, err := s.remoteImport(ctx, s.httpClient, rawURL, 64*1024*1024)
 	if err != nil {
 		return "", "", err
 	}
-	resp, err := s.httpClient.Do(req)
-	if err != nil {
-		return "", "", err
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != 200 {
-		return "", "", fmt.Errorf("HTTP %d al descargar M3U desde %s", resp.StatusCode, url)
-	}
-
-	data, err := io.ReadAll(io.LimitReader(resp.Body, 100*1024*1024))
-	if err != nil {
-		return "", "", err
-	}
-
 	content = string(data)
 	epgURL = extractM3UHeader(content, reURLTvg)
 	return content, epgURL, nil
@@ -576,29 +564,33 @@ func guessStreamFormat(url string) string {
 
 // ─── EPG (XMLTV) ─────────────────────────────────────────────────────────────
 
-func (s *IPTVSeeder) importEPG(epgURL string, channelIDMap map[string]uint) {
-	resp, err := s.httpClient.Get(epgURL)
+func (s *IPTVSeeder) importEPG(ctx context.Context, epgURL string, channelIDMap map[string]uint) {
+	data, headers, err := s.remoteImport(ctx, s.httpClient, epgURL, 64*1024*1024)
 	if err != nil {
 		log.Printf("[IPTV] Error descargando EPG: %v", err)
 		return
 	}
-	defer resp.Body.Close()
 
-	var reader io.Reader = resp.Body
-	contentEncoding := resp.Header.Get("Content-Encoding")
-	if strings.HasSuffix(strings.ToLower(epgURL), ".gz") || contentEncoding == "gzip" {
-		gz, err := gzip.NewReader(resp.Body)
-		if err != nil {
-			log.Printf("[IPTV] Error abriendo gzip EPG: %v", err)
+	var reader io.Reader = bytes.NewReader(data)
+	if strings.HasSuffix(strings.ToLower(epgURL), ".gz") || strings.EqualFold(headers.Get("Content-Encoding"), "gzip") ||
+		strings.Contains(strings.ToLower(headers.Get("Content-Type")), "gzip") {
+		gz, gzipErr := gzip.NewReader(reader)
+		if gzipErr != nil {
+			log.Printf("[IPTV] Error abriendo gzip EPG: %v", gzipErr)
 			return
 		}
 		defer gz.Close()
 		reader = gz
 	}
 
-	data, err := io.ReadAll(io.LimitReader(reader, 300*1024*1024))
+	const maxExpandedEPGBytes = 256 * 1024 * 1024
+	data, err = io.ReadAll(io.LimitReader(reader, maxExpandedEPGBytes+1))
 	if err != nil {
 		log.Printf("[IPTV] Error leyendo EPG: %v", err)
+		return
+	}
+	if len(data) > maxExpandedEPGBytes {
+		log.Printf("[IPTV] EPG excede el límite de tamaño permitido")
 		return
 	}
 
@@ -611,6 +603,10 @@ func (s *IPTVSeeder) importEPG(epgURL string, channelIDMap map[string]uint) {
 	log.Printf("[IPTV] Importando %d entradas EPG...", len(entries))
 	const batchSize = 200
 	for i := 0; i < len(entries); i += batchSize {
+		if ctx.Err() != nil {
+			log.Printf("[IPTV] Importación EPG cancelada")
+			return
+		}
 		end := i + batchSize
 		if end > len(entries) {
 			end = len(entries)
@@ -648,7 +644,7 @@ func (s *IPTVSeeder) parseXMLTV(data []byte, channelIDMap map[string]uint) ([]mo
 			continue
 		}
 
-		if startTime.Before(now.Add(-1*time.Hour)) || startTime.After(horizon) {
+		if !endTime.After(startTime) || !endTime.After(now) || startTime.After(horizon) {
 			continue
 		}
 

@@ -40,8 +40,12 @@ func (r *EPGRepository) ListByChannel(channelID uint, date time.Time) ([]model.E
 	startOfDay := time.Date(date.Year(), date.Month(), date.Day(), 0, 0, 0, 0, date.Location())
 	endOfDay := startOfDay.Add(24 * time.Hour)
 
-	err := r.db.Where("channel_id = ? AND start_time >= ? AND start_time < ?", channelID, startOfDay, endOfDay).
-		Order("start_time ASC").
+	now := time.Now().UTC()
+	err := r.db.Model(&model.EPGEntry{}).
+		Joins("JOIN channels ON channels.id = epg_entries.channel_id").
+		Where("epg_entries.channel_id = ? AND channels.is_active = ? AND epg_entries.start_time >= ? AND epg_entries.start_time < ? AND epg_entries.end_time > ? AND epg_entries.end_time > epg_entries.start_time AND epg_entries.title <> ''",
+			channelID, true, startOfDay, endOfDay, now).
+		Order("epg_entries.start_time ASC").
 		Find(&entries).Error
 	return entries, err
 }

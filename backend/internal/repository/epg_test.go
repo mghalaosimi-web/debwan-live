@@ -106,15 +106,15 @@ func TestEPGRepository_ListByChannel(t *testing.T) {
 	repo := NewEPGRepository(db)
 
 	now := time.Now()
-	date := time.Date(2024, 6, 15, 12, 0, 0, 0, time.UTC)
-	startOfDay := time.Date(2024, 6, 15, 0, 0, 0, 0, time.UTC)
+	date := time.Now().UTC().Add(24 * time.Hour)
+	startOfDay := time.Date(date.Year(), date.Month(), date.Day(), 0, 0, 0, 0, time.UTC)
 	endOfDay := startOfDay.Add(24 * time.Hour)
 
-	start := time.Date(2024, 6, 15, 10, 0, 0, 0, time.UTC)
-	end := time.Date(2024, 6, 15, 11, 0, 0, 0, time.UTC)
+	start := startOfDay.Add(10 * time.Hour)
+	end := start.Add(time.Hour)
 
-	mock.ExpectQuery(`SELECT \* FROM "epg_entries" WHERE channel_id = \$1 AND start_time >= \$2 AND start_time < \$3`).
-		WithArgs(10, startOfDay, endOfDay).
+	mock.ExpectQuery(`SELECT .* FROM "epg_entries" JOIN channels .* WHERE .* ORDER BY epg_entries.start_time ASC`).
+		WithArgs(10, true, startOfDay, endOfDay, sqlmock.AnyArg()).
 		WillReturnRows(sqlmock.NewRows(epgColumns()).
 			AddRow(1, 10, "Morning Show", "Morning show desc", start, end, "talk", "es", "", now, now))
 
