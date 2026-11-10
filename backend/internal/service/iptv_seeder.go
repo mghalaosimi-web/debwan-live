@@ -642,7 +642,7 @@ func (s *IPTVSeeder) parseXMLTV(data []byte, channelIDMap map[string]uint) ([]mo
 			continue
 		}
 
-		if startTime.Before(now.Add(-1*time.Hour)) || startTime.After(horizon) {
+		if !endTime.After(startTime) || !endTime.After(now) || startTime.After(horizon) {
 			continue
 		}
 
