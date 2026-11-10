@@ -30,17 +30,23 @@ export default function FootballInlinePlayer() {
     setLoadingChannels(true);
     setError("");
     try {
-      const categoriesResponse = await userAPI.getCategories("live");
-      const categories = Array.isArray(categoriesResponse.data.data) ? categoriesResponse.data.data : [];
-      const sportsCategories = categories.filter((category) =>
-        SPORTS_CHANNEL_PATTERN.test(category.name)
-      );
-      const categoryResponses = await Promise.all(
-        sportsCategories.map((category) => userAPI.getChannels(1, 100, undefined, category.id))
-      );
-      const fromCategories = categoryResponses.flatMap((response) =>
-        Array.isArray(response.data.data) ? response.data.data : []
-      );
+      let fromCategories: ChannelList[] = [];
+      try {
+        const categoriesResponse = await userAPI.getCategories("live");
+        const categories = Array.isArray(categoriesResponse.data.data) ? categoriesResponse.data.data : [];
+        const sportsCategories = categories.filter((category) =>
+          SPORTS_CHANNEL_PATTERN.test(category.name)
+        );
+        const categoryResponses = await Promise.all(
+          sportsCategories.map((category) => userAPI.getChannels(1, 100, undefined, category.id))
+        );
+        fromCategories = categoryResponses.flatMap((response) =>
+          Array.isArray(response.data.data) ? response.data.data : []
+        );
+      } catch {
+        // Category lookup is optional; fall back to the public channel catalogue.
+      }
+
       const allResponse = fromCategories.length > 0 ? null : await userAPI.getChannels(1, 100);
       const all = allResponse && Array.isArray(allResponse.data.data) ? allResponse.data.data : [];
       const combined = fromCategories.length > 0 ? fromCategories : all.filter(isSportsChannel);
