@@ -245,37 +245,30 @@ func SetupAPIv1(app *fiber.App, h *Handlers) {
 	admin.Put("/epg/:id", h.EPG.Update)
 	admin.Delete("/epg/:id", h.EPG.Delete)
 
-	// --- User routes (protegidas) ---
-	user := v1.Group("/", middleware.RateLimitModerate()) // 60 req/min for authenticated users
+	// --- Public catalog routes ---
+	// Public browsing is intentionally available without an account; personal
+	// data and account mutations remain behind the authenticated group below.
+	publicCatalog := v1.Group("/", middleware.RateLimitModerate())
+	publicCatalog.Get("/emissions/live", h.Emission.LiveChannels)
+	publicCatalog.Get("/search", middleware.RateLimitRelaxed(), h.Search.Search)
+	publicCatalog.Get("/channels", middleware.RateLimitRelaxed(), h.Channel.ListActive)
+	publicCatalog.Get("/channels/:id", middleware.RateLimitRelaxed(), h.Channel.GetByID)
+	publicCatalog.Get("/vod", middleware.RateLimitRelaxed(), h.VOD.ListActive)
+	publicCatalog.Get("/vod/:id", middleware.RateLimitRelaxed(), h.VOD.GetByID)
+	publicCatalog.Get("/series", middleware.RateLimitRelaxed(), h.Series.ListActive)
+	publicCatalog.Get("/series/:id", middleware.RateLimitRelaxed(), h.Series.GetByID)
+	publicCatalog.Get("/series/:id/episodes", middleware.RateLimitRelaxed(), h.Series.GetEpisodes)
+	publicCatalog.Get("/categories", middleware.RateLimitRelaxed(), h.Category.ListByType)
+	publicCatalog.Get("/epg", middleware.RateLimitRelaxed(), h.EPG.ListByChannel)
 
-	// Emisiones en vivo
-	user.Get("/emissions/live", h.Emission.LiveChannels)
-
-	// Busqueda global - relaxed limit
-	user.Get("/search", middleware.RateLimitRelaxed(), h.Search.Search)
-
-	// Catalogo - relaxed limit for read operations
-	user.Get("/channels", middleware.RateLimitRelaxed(), h.Channel.ListActive)
-	user.Get("/channels/:id", middleware.RateLimitRelaxed(), h.Channel.GetByID)
-	user.Get("/vod", middleware.RateLimitRelaxed(), h.VOD.ListActive)
-	user.Get("/vod/:id", middleware.RateLimitRelaxed(), h.VOD.GetByID)
-	user.Get("/series", middleware.RateLimitRelaxed(), h.Series.ListActive)
-	user.Get("/series/:id", middleware.RateLimitRelaxed(), h.Series.GetByID)
-	user.Get("/series/:id/episodes", middleware.RateLimitRelaxed(), h.Series.GetEpisodes)
-	user.Get("/categories", middleware.RateLimitRelaxed(), h.Category.ListByType)
-	user.Get("/epg", middleware.RateLimitRelaxed(), h.EPG.ListByChannel)
-
-	// Favoritos
+	// --- Authenticated user routes ---
+	user := v1.Group("/", middleware.AuthRequired(), middleware.RateLimitModerate())
 	user.Get("/favorites", h.Favorite.List)
 	user.Post("/favorites/toggle", h.Favorite.Toggle)
-
-	// Historial
 	user.Get("/history/continue", h.WatchHistory.ContinueWatching)
 	user.Get("/history", h.WatchHistory.List)
 	user.Post("/history", h.WatchHistory.Record)
 	user.Delete("/history/:id", h.WatchHistory.Delete)
-
-	// Perfil
 	user.Put("/profile", h.Auth.UpdateProfile)
 	user.Put("/profile/password", h.Auth.ChangePassword)
 }
