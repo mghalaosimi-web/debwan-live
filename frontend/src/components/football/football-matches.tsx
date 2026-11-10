@@ -147,10 +147,6 @@ const competitionGroups = [
         "uecl",
         "دوري المؤتمر الأوروبي"
       ],
-      [
-        "supercup",
-        "كأس السوبر الأوروبي"
-      ]
     ]
   },
   {
@@ -465,7 +461,7 @@ export default function FootballMatches() {
 
   useEffect(() => {
     void loadMatches();
-    const interval = window.setInterval(() => void loadMatches(true), 1800000);
+    const interval = window.setInterval(() => void loadMatches(true), 300000);
     return () => window.clearInterval(interval);
   }, [loadMatches]);
 
