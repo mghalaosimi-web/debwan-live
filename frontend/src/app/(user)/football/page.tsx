@@ -36,7 +36,7 @@ const officialSources = [
     href: "https://connect.bein.com/",
     icon: Tv,
     featured: false,
-    note: "تؤكد beIN رسمياً وجود قناتين مجانيتين Free-to-Air؛ لا يعني ذلك أن قنواتها المدفوعة أو كل المباريات مجانية.",
+    note: "تؤكد beIN رسمياً وجود قناتين مجانيتين Free-to-Air، وتدرج اليمن ضمن مناطق beIN CONNECT؛ لا يعني ذلك أن قنواتها المدفوعة أو كل المباريات مجانية.",
   },
   {
     name: "TOD",
