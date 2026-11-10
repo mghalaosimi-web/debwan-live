@@ -74,7 +74,7 @@ export default function FootballPage() {
               className="inline-flex items-center gap-2 rounded-xl bg-emerald-400 px-5 py-3 text-sm font-bold text-slate-950 transition hover:bg-emerald-300"
             >
               <Radio size={18} />
-              افتح بث ثمانية الرسمي
+              افتح منصة ثمانية الرسمية
               <ArrowUpRight size={16} />
             </a>
             <a
@@ -108,7 +108,7 @@ export default function FootballPage() {
             <h2 className="mt-1 text-2xl font-bold text-dark-100">مصادر المشاهدة الرسمية</h2>
           </div>
           <span className="rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-1 text-xs text-emerald-300">
-            مصادر مجانية متاحة
+            روابط رسمية — التوفر حسب الحقوق
           </span>
         </div>
 
