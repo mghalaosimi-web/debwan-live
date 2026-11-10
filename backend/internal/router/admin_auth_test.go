@@ -57,18 +57,28 @@ func TestPersonalUserRoutesRequireAuthentication(t *testing.T) {
 	app := fiber.New()
 	SetupAPIv1(app, &Handlers{})
 
-	for _, path := range []string{
-		"/api/v1/favorites",
-		"/api/v1/history",
-	} {
-		req := httptest.NewRequest("GET", path, nil)
+	privateRoutes := []struct {
+		method string
+		path   string
+	}{
+		{http.MethodGet, "/api/v1/favorites"},
+		{http.MethodPost, "/api/v1/favorites/toggle"},
+		{http.MethodGet, "/api/v1/history/continue"},
+		{http.MethodGet, "/api/v1/history"},
+		{http.MethodPost, "/api/v1/history"},
+		{http.MethodDelete, "/api/v1/history/1"},
+		{http.MethodPut, "/api/v1/profile"},
+		{http.MethodPut, "/api/v1/profile/password"},
+	}
+	for _, route := range privateRoutes {
+		req := httptest.NewRequest(route.method, route.path, nil)
 		resp, err := app.Test(req, -1)
 		if err != nil {
-			t.Fatalf("request to %s failed: %v", path, err)
+			t.Fatalf("%s %s failed: %v", route.method, route.path, err)
 		}
 		resp.Body.Close()
 		if resp.StatusCode != fiber.StatusUnauthorized {
-			t.Fatalf("GET %s status = %d, want %d", path, resp.StatusCode, fiber.StatusUnauthorized)
+			t.Fatalf("%s %s status = %d, want %d", route.method, route.path, resp.StatusCode, fiber.StatusUnauthorized)
 		}
 	}
 }
