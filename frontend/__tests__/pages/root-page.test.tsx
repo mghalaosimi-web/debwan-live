@@ -1,70 +1,24 @@
 import React from 'react'
-import { render, screen, waitFor } from '@testing-library/react'
-
-const mockReplace = jest.fn()
-
-jest.mock('next/navigation', () => ({
-  useRouter: () => ({ replace: mockReplace }),
-}))
-
-const mockAuth: any = {
-  isAuthenticated: false,
-  isLoading: true,
-  user: null,
-}
-
-jest.mock('@/context/auth-context', () => ({
-  useAuth: () => mockAuth,
-}))
-
+import { render, screen } from '@testing-library/react'
 import Home from '@/app/page'
 
-describe('Home (root page)', () => {
-  beforeEach(() => {
-    jest.clearAllMocks()
-    mockAuth.isLoading = true
-    mockAuth.isAuthenticated = false
-    mockAuth.user = null
+describe('Public landing page', () => {
+  it('renders the Debwan Live brand and Arabic welcome content', () => {
+    render(<Home />)
+    expect(screen.getByText('دبوان لايف')).toBeInTheDocument()
+    expect(screen.getByText('عالم المشاهدة', { exact: false })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: /ابدأ المشاهدة/i })).toHaveAttribute('href', '/home')
   })
 
-  it('shows loading state while auth is loading', () => {
+  it('describes the main platform sections', () => {
     render(<Home />)
-    expect(screen.getByText('Cargando...')).toBeInTheDocument()
-    expect(mockReplace).not.toHaveBeenCalled()
+    expect(screen.getByText('التلفزيون المباشر')).toBeInTheDocument()
+    expect(screen.getByText('مركز كرة القدم')).toBeInTheDocument()
+    expect(screen.getByText('الأفلام والمسلسلات')).toBeInTheDocument()
   })
 
-  it('redirects to /login when not authenticated', async () => {
-    mockAuth.isLoading = false
-    mockAuth.isAuthenticated = false
-
+  it('offers public discovery without requiring an account', () => {
     render(<Home />)
-
-    await waitFor(() => {
-      expect(mockReplace).toHaveBeenCalledWith('/login')
-    })
-  })
-
-  it('redirects to /admin when user is admin', async () => {
-    mockAuth.isLoading = false
-    mockAuth.isAuthenticated = true
-    mockAuth.user = { role: 'admin' }
-
-    render(<Home />)
-
-    await waitFor(() => {
-      expect(mockReplace).toHaveBeenCalledWith('/admin')
-    })
-  })
-
-  it('redirects to /home when user is not admin', async () => {
-    mockAuth.isLoading = false
-    mockAuth.isAuthenticated = true
-    mockAuth.user = { role: 'user' }
-
-    render(<Home />)
-
-    await waitFor(() => {
-      expect(mockReplace).toHaveBeenCalledWith('/home')
-    })
+    expect(screen.getByText(/تصفح أقسام المنصة مباشرة دون إنشاء حساب أو إدخال كلمة مرور/)).toBeInTheDocument()
   })
 })
