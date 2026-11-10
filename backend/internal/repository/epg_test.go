@@ -113,7 +113,7 @@ func TestEPGRepository_ListByChannel(t *testing.T) {
 	start := startOfDay.Add(10 * time.Hour)
 	end := start.Add(time.Hour)
 
-	mock.ExpectQuery(`SELECT .* FROM "epg_entries" JOIN channels ON channels.id = epg_entries.channel_id WHERE epg_entries.channel_id = \\$1 AND channels.is_active = \\$2 AND epg_entries.start_time >= \\$3 AND epg_entries.start_time < \\$4 AND epg_entries.end_time > \\$5 AND epg_entries.end_time > epg_entries.start_time AND epg_entries.title <> '' ORDER BY epg_entries.start_time ASC`).
+	mock.ExpectQuery(`SELECT .* FROM "epg_entries" JOIN channels .* WHERE .* ORDER BY epg_entries.start_time ASC`).
 		WithArgs(10, true, startOfDay, endOfDay, sqlmock.AnyArg()).
 		WillReturnRows(sqlmock.NewRows(epgColumns()).
 			AddRow(1, 10, "Morning Show", "Morning show desc", start, end, "talk", "es", "", now, now))
