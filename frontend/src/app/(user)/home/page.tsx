@@ -1,139 +1,97 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
-import Image from "next/image";
-import { Play, Film, Tv, BookOpen } from "lucide-react";
+import { Film, Tv, BookOpen, Trophy, Radio, Play, Compass } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { userAPI } from "@/lib/api";
-import type { WatchHistoryEntry } from "@/lib/types";
-import LoadingSpinner from "@/components/ui/loading-spinner";
+
+const sections = [
+  {
+    href: "/channels",
+    title: "القنوات المباشرة",
+    description: "تصفح القنوات التلفزيونية المتاحة ومصادر بثها.",
+    icon: Tv,
+    accent: "text-sky-300",
+  },
+  {
+    href: "/football",
+    title: "مركز كرة القدم",
+    description: "المباريات والبطولات ومصادر المشاهدة الرسمية.",
+    icon: Trophy,
+    accent: "text-emerald-300",
+  },
+  {
+    href: "/vod",
+    title: "الأفلام",
+    description: "استكشف مكتبة الأفلام عند توفر المحتوى.",
+    icon: Film,
+    accent: "text-violet-300",
+  },
+  {
+    href: "/series",
+    title: "المسلسلات",
+    description: "تصفح المسلسلات والحلقات المتاحة.",
+    icon: BookOpen,
+    accent: "text-amber-300",
+  },
+];
 
 export default function HomePage() {
   const { t } = useTranslation();
-  const [continueWatching, setContinueWatching] = useState<WatchHistoryEntry[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  const fetchData = useCallback(async () => {
-    try {
-      const { data } = await userAPI.getContinueWatching(10);
-      setContinueWatching(data.data || []);
-    } catch {
-      // silent
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchData();
-  }, [fetchData]);
-
-  useEffect(() => {
-    document.title = `${t("home.title")} | TIVIFY`;
-  }, [t]);
-
-  if (loading) {
-    return <LoadingSpinner text={t("common.loading")} />;
-  }
 
   return (
-    <div>
-      <h1 className="text-2xl font-bold text-dark-100 mb-6">{t("home.title")}</h1>
-
-      <section className="mb-8">
-        <h2 className="text-lg font-semibold text-dark-200 mb-4">
-          {t("home.continueWatching")}
-        </h2>
-        {continueWatching.length > 0 ? (
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-            {continueWatching.map((item) => {
-              const progressPercent =
-                item.duration > 0
-                  ? Math.min((item.progress / item.duration) * 100, 100)
-                  : 0;
-              return (
-                <Link
-                  key={item.id}
-                  href={`/vod/${item.content_id}`}
-                  className="bg-dark-800 border border-dark-700 rounded-xl overflow-hidden hover:border-primary-500/50 transition-colors group block"
-                  aria-label={`Continue watching: ${item.content_name}`}
-                >
-                  <div className="aspect-[2/3] relative overflow-hidden">
-                    {item.content_poster ? (
-                      <Image
-                        src={item.content_poster}
-                        alt={`Poster for ${item.content_name}`}
-                        fill
-                        sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, 20vw"
-                        className="object-cover group-hover:scale-105 transition-transform"
-                      />
-                    ) : (
-                      <div className="w-full h-full bg-dark-700 flex items-center justify-center" role="img" aria-label="No poster available">
-                        <Film size={32} className="text-dark-500" />
-                      </div>
-                    )}
-                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/40">
-                      <Play size={40} className="text-white" />
-                    </div>
-                    <div className="absolute bottom-0 left-0 right-0 h-1 bg-dark-900/60">
-                      <div
-                        className="h-full bg-primary-500"
-                        style={{ width: `${progressPercent}%` }}
-                      />
-                    </div>
-                  </div>
-                  <div className="p-2">
-                    <p className="text-dark-100 text-xs font-medium truncate">
-                      {item.content_name}
-                    </p>
-                  </div>
-                </Link>
-              );
-            })}
+    <div dir="rtl" className="space-y-8">
+      <section className="relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-l from-[#12334a] via-[#10263c] to-[#101b2c] p-7 sm:p-10">
+        <div className="pointer-events-none absolute -left-16 -top-20 h-64 w-64 rounded-full bg-emerald-300/10 blur-3xl" />
+        <div className="relative max-w-3xl">
+          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-emerald-200/20 bg-emerald-200/10 px-3 py-1.5 text-xs font-bold text-emerald-200">
+            <Radio size={14} /> DEBWAN LIVE
           </div>
-        ) : (
-          <div className="text-center py-8 bg-dark-800/50 rounded-xl border border-dark-700">
-            <p className="text-dark-400">{t("home.nothingYet")}</p>
-            <p className="text-dark-500 text-sm mt-1">{t("home.exploreHint")}</p>
-          </div>
-        )}
+          <h1 className="text-3xl font-black text-white sm:text-4xl">{t("home.title")}</h1>
+          <p className="mt-4 max-w-2xl text-sm leading-8 text-slate-300 sm:text-base">
+            بوابتك إلى القنوات المباشرة وكرة القدم والأفلام والمسلسلات. التصفح متاح الآن دون تسجيل دخول.
+          </p>
+          <Link
+            href="/channels"
+            className="mt-6 inline-flex items-center gap-2 rounded-xl bg-emerald-300 px-5 py-3 text-sm font-extrabold text-slate-950 transition hover:bg-emerald-200"
+          >
+            <Play size={16} fill="currentColor" /> تصفح القنوات
+          </Link>
+        </div>
       </section>
 
       <section>
-        <h2 className="text-lg font-semibold text-dark-200 mb-4">{t("home.explore")}</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <Link
-            href="/channels"
-            className="card hover:border-primary-500/50 transition-colors flex items-center gap-4 p-6"
-          >
-            <Tv size={32} className="text-blue-400" />
-            <div>
-              <p className="text-dark-100 font-semibold">{t("nav.channels")}</p>
-              <p className="text-dark-400 text-sm">{t("home.liveTV")}</p>
-            </div>
-          </Link>
-          <Link
-            href="/vod"
-            className="card hover:border-primary-500/50 transition-colors flex items-center gap-4 p-6"
-          >
-            <Film size={32} className="text-purple-400" />
-            <div>
-              <p className="text-dark-100 font-semibold">{t("nav.vod")}</p>
-              <p className="text-dark-400 text-sm">{t("home.vodCatalog")}</p>
-            </div>
-          </Link>
-          <Link
-            href="/series"
-            className="card hover:border-primary-500/50 transition-colors flex items-center gap-4 p-6"
-          >
-            <BookOpen size={32} className="text-green-400" />
-            <div>
-              <p className="text-dark-100 font-semibold">{t("nav.series")}</p>
-              <p className="text-dark-400 text-sm">{t("home.episodesLabel")}</p>
-            </div>
-          </Link>
+        <div className="mb-5 flex items-center justify-between">
+          <div>
+            <h2 className="text-xl font-extrabold text-white">{t("home.explore")}</h2>
+            <p className="mt-1 text-sm text-slate-400">اختر القسم الذي تريد استكشافه</p>
+          </div>
+          <Compass className="text-emerald-300" size={24} />
         </div>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          {sections.map(({ href, title, description, icon: Icon, accent }) => (
+            <Link
+              key={href}
+              href={href}
+              className="group rounded-2xl border border-dark-700 bg-dark-800 p-5 transition hover:-translate-y-1 hover:border-primary-500/50"
+            >
+              <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/5">
+                <Icon size={25} className={accent} />
+              </span>
+              <h3 className="mt-5 font-bold text-white">{title}</h3>
+              <p className="mt-2 text-sm leading-7 text-slate-400">{description}</p>
+              <span className="mt-4 inline-flex items-center gap-2 text-xs font-bold text-emerald-300">
+                استكشف القسم <span aria-hidden="true">←</span>
+              </span>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      <section className="rounded-2xl border border-amber-200/15 bg-amber-200/[0.04] p-5">
+        <p className="text-sm font-bold text-amber-100">تنبيه حول توفر المحتوى</p>
+        <p className="mt-2 text-sm leading-7 text-slate-300">
+          تظهر القنوات والمكتبات بعد إضافة مصادرها والتحقق من صلاحية تشغيلها. لن نعرض روابط وهمية أو مصادر بث غير موثوقة على أنها تعمل.
+        </p>
       </section>
     </div>
   );

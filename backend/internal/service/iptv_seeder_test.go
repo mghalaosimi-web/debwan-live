@@ -3,6 +3,8 @@ package service
 import (
 	"context"
 	"fmt"
+	"io"
+	"net/http"
 	"testing"
 	"time"
 
@@ -87,12 +89,37 @@ func (m *mockCategoryRepoForIPTV) Count() (int64, error)        { return 0, nil 
 
 // --- Tests ---
 
+func fetchLocalRemoteImportForTest(ctx context.Context, _ *http.Client, rawURL string, maxBytes int64) ([]byte, http.Header, error) {
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, rawURL, nil)
+	if err != nil {
+		return nil, nil, err
+	}
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return nil, nil, err
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode != http.StatusOK {
+		return nil, nil, fmt.Errorf("remote import returned HTTP %d", resp.StatusCode)
+	}
+	body, err := io.ReadAll(io.LimitReader(resp.Body, maxBytes+1))
+	if err != nil {
+		return nil, nil, err
+	}
+	if int64(len(body)) > maxBytes {
+		return nil, nil, fmt.Errorf("remote import exceeds %d bytes", maxBytes)
+	}
+	return body, resp.Header.Clone(), nil
+}
+
 func setupIPTVSeeder() *IPTVSeeder {
 	channelRepo := newMockChannelRepoForIPTV()
 	streamRepo := newMockStreamRepoForEmission() // reuse from emission_test.go
 	categoryRepo := newMockCategoryRepoForIPTV()
 	epgRepo := newMockEPGRepo() // reuse from epg_test.go
-	return NewIPTVSeeder(channelRepo, streamRepo, categoryRepo, epgRepo)
+	seeder := NewIPTVSeeder(channelRepo, streamRepo, categoryRepo, epgRepo)
+	seeder.remoteImport = fetchLocalRemoteImportForTest
+	return seeder
 }
 
 func TestIPTVSeeder_NewIPTVSeeder(t *testing.T) {

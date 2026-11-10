@@ -10,6 +10,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"testing"
+	"time"
 
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/tivify/backend/internal/dto"
@@ -999,16 +1000,18 @@ func TestLibraryScanner_CountVideoFiles_AllExtensions(t *testing.T) {
 // ============================================================================
 
 func TestIPTVSeeder_ImportEPG_Gzip(t *testing.T) {
-	epgXML := `<?xml version="1.0" encoding="UTF-8"?>
+	start := time.Now().UTC().Add(time.Hour)
+	end := start.Add(time.Hour)
+	epgXML := fmt.Sprintf(`<?xml version="1.0" encoding="UTF-8"?>
 <tv>
   <channel id="ch1">
     <display-name>Channel 1</display-name>
   </channel>
-  <programme start="20260321120000 +0000" stop="20260321130000 +0000" channel="ch1">
+  <programme start="%s" stop="%s" channel="ch1">
     <title>Test Show</title>
     <desc>Test description</desc>
   </programme>
-</tv>`
+</tv>`, start.Format("20060102150405 -0700"), end.Format("20060102150405 -0700"))
 
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Encoding", "gzip")
@@ -1023,9 +1026,10 @@ func TestIPTVSeeder_ImportEPG_Gzip(t *testing.T) {
 	categoryRepo := newMockCategoryRepoForIPTV()
 	epgRepo := newMockEPGRepo()
 	seeder := NewIPTVSeeder(channelRepo, streamRepo, categoryRepo, epgRepo)
+	seeder.remoteImport = fetchLocalRemoteImportForTest
 
 	channelIDMap := map[string]uint{"ch1": 1}
-	seeder.importEPG(server.URL, channelIDMap)
+	seeder.importEPG(context.Background(), server.URL, channelIDMap)
 
 	// EPG entries should have been imported
 	if len(epgRepo.entries) == 0 {
@@ -1034,15 +1038,17 @@ func TestIPTVSeeder_ImportEPG_Gzip(t *testing.T) {
 }
 
 func TestIPTVSeeder_ImportEPG_GzipURL(t *testing.T) {
-	epgXML := `<?xml version="1.0" encoding="UTF-8"?>
+	start := time.Now().UTC().Add(time.Hour)
+	end := start.Add(time.Hour)
+	epgXML := fmt.Sprintf(`<?xml version="1.0" encoding="UTF-8"?>
 <tv>
   <channel id="ch1">
     <display-name>Channel 1</display-name>
   </channel>
-  <programme start="20260321120000 +0000" stop="20260321130000 +0000" channel="ch1">
+  <programme start="%s" stop="%s" channel="ch1">
     <title>Test Show</title>
   </programme>
-</tv>`
+</tv>`, start.Format("20060102150405 -0700"), end.Format("20060102150405 -0700"))
 
 	// Server at .gz URL
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -1057,10 +1063,11 @@ func TestIPTVSeeder_ImportEPG_GzipURL(t *testing.T) {
 	categoryRepo := newMockCategoryRepoForIPTV()
 	epgRepo := newMockEPGRepo()
 	seeder := NewIPTVSeeder(channelRepo, streamRepo, categoryRepo, epgRepo)
+	seeder.remoteImport = fetchLocalRemoteImportForTest
 
 	channelIDMap := map[string]uint{"ch1": 1}
 	// Use URL ending in .gz to trigger gzip decoding via URL suffix
-	seeder.importEPG(server.URL+"/guide.xml.gz", channelIDMap)
+	seeder.importEPG(context.Background(), server.URL+"/guide.xml.gz", channelIDMap)
 }
 
 func TestIPTVSeeder_ImportEPG_HTTPError(t *testing.T) {
@@ -1074,9 +1081,10 @@ func TestIPTVSeeder_ImportEPG_HTTPError(t *testing.T) {
 	categoryRepo := newMockCategoryRepoForIPTV()
 	epgRepo := newMockEPGRepo()
 	seeder := NewIPTVSeeder(channelRepo, streamRepo, categoryRepo, epgRepo)
+	seeder.remoteImport = fetchLocalRemoteImportForTest
 
 	// Should not panic on HTTP error
-	seeder.importEPG(server.URL, map[string]uint{})
+	seeder.importEPG(context.Background(), server.URL, map[string]uint{})
 }
 
 func TestIPTVSeeder_ImportEPG_BadXML(t *testing.T) {
@@ -1091,9 +1099,10 @@ func TestIPTVSeeder_ImportEPG_BadXML(t *testing.T) {
 	categoryRepo := newMockCategoryRepoForIPTV()
 	epgRepo := newMockEPGRepo()
 	seeder := NewIPTVSeeder(channelRepo, streamRepo, categoryRepo, epgRepo)
+	seeder.remoteImport = fetchLocalRemoteImportForTest
 
 	// Should not panic on invalid XML
-	seeder.importEPG(server.URL, map[string]uint{})
+	seeder.importEPG(context.Background(), server.URL, map[string]uint{})
 }
 
 func TestIPTVSeeder_ImportEPG_NetworkError(t *testing.T) {
@@ -1102,9 +1111,10 @@ func TestIPTVSeeder_ImportEPG_NetworkError(t *testing.T) {
 	categoryRepo := newMockCategoryRepoForIPTV()
 	epgRepo := newMockEPGRepo()
 	seeder := NewIPTVSeeder(channelRepo, streamRepo, categoryRepo, epgRepo)
+	seeder.remoteImport = fetchLocalRemoteImportForTest
 
 	// Should not panic on network error
-	seeder.importEPG("http://127.0.0.1:1/nonexistent", map[string]uint{})
+	seeder.importEPG(context.Background(), "http://127.0.0.1:1/nonexistent", map[string]uint{})
 }
 
 // ============================================================================
@@ -1117,6 +1127,7 @@ func TestIPTVSeeder_BuildCategories_EmptyGroup(t *testing.T) {
 	categoryRepo := newMockCategoryRepoForIPTV()
 	epgRepo := newMockEPGRepo()
 	seeder := NewIPTVSeeder(channelRepo, streamRepo, categoryRepo, epgRepo)
+	seeder.remoteImport = fetchLocalRemoteImportForTest
 
 	entries := []m3uEntry{
 		{GroupTitle: "", TvgName: "Channel 1", URL: "http://example.com/1"},
@@ -1134,6 +1145,7 @@ func TestIPTVSeeder_BuildCategories_ExistingCat(t *testing.T) {
 	categoryRepo := newMockCategoryRepoForIPTV()
 	epgRepo := newMockEPGRepo()
 	seeder := NewIPTVSeeder(channelRepo, streamRepo, categoryRepo, epgRepo)
+	seeder.remoteImport = fetchLocalRemoteImportForTest
 
 	// Pre-create a category
 	categoryRepo.Create(&model.Category{Name: "News", Slug: "news", Type: "live"})
@@ -1154,6 +1166,7 @@ func TestIPTVSeeder_BuildCategories_MultipleGroups(t *testing.T) {
 	categoryRepo := newMockCategoryRepoForIPTV()
 	epgRepo := newMockEPGRepo()
 	seeder := NewIPTVSeeder(channelRepo, streamRepo, categoryRepo, epgRepo)
+	seeder.remoteImport = fetchLocalRemoteImportForTest
 
 	entries := []m3uEntry{
 		{GroupTitle: "News", TvgName: "CNN", URL: "http://example.com/cnn"},
@@ -1177,6 +1190,7 @@ func TestIPTVSeeder_SeedFromURL_ExistingChannels_NoSeed(t *testing.T) {
 	categoryRepo := newMockCategoryRepoForIPTV()
 	epgRepo := newMockEPGRepo()
 	seeder := NewIPTVSeeder(channelRepo, streamRepo, categoryRepo, epgRepo)
+	seeder.remoteImport = fetchLocalRemoteImportForTest
 
 	// Pre-add channels so SeedFromURL skips
 	channelRepo.Create(&model.Channel{Name: "Existing", Slug: "existing"})
@@ -1205,6 +1219,7 @@ https://example.com/stream.m3u8
 	categoryRepo := newMockCategoryRepoForIPTV()
 	epgRepo := newMockEPGRepo()
 	seeder := NewIPTVSeeder(channelRepo, streamRepo, categoryRepo, epgRepo)
+	seeder.remoteImport = fetchLocalRemoteImportForTest
 
 	// Cancel immediately
 	ctx, cancel := context.WithCancel(context.Background())
@@ -1241,6 +1256,7 @@ https://example.com/stream.m3u8
 	categoryRepo := newMockCategoryRepoForIPTV()
 	epgRepo := newMockEPGRepo()
 	seeder := NewIPTVSeeder(channelRepo, streamRepo, categoryRepo, epgRepo)
+	seeder.remoteImport = fetchLocalRemoteImportForTest
 
 	seeder.ImportWithOptions(IPTVImportOptions{
 		M3UURL: server.URL,
@@ -1265,12 +1281,15 @@ func TestIPTVSeeder_ImportEPG_MultipleProgrammes(t *testing.T) {
 <tv>
   <channel id="ch1"><display-name>Channel 1</display-name></channel>`
 
-	// Add 250+ programmes to test the batch loop
+	// Add 250+ future programmes to test the batch loop.
+	base := time.Now().UTC().Add(time.Hour)
 	for i := 0; i < 250; i++ {
+		start := base.Add(time.Duration(i) * time.Minute)
+		end := start.Add(30 * time.Minute)
 		epgXML += fmt.Sprintf(`
-  <programme start="20260320%02d0000 +0000" stop="20260320%02d3000 +0000" channel="ch1">
+  <programme start="%s" stop="%s" channel="ch1">
     <title>Show %d</title>
-  </programme>`, i%24, i%24, i)
+  </programme>`, start.Format("20060102150405 -0700"), end.Format("20060102150405 -0700"), i)
 	}
 	epgXML += `</tv>`
 
@@ -1285,9 +1304,10 @@ func TestIPTVSeeder_ImportEPG_MultipleProgrammes(t *testing.T) {
 	categoryRepo := newMockCategoryRepoForIPTV()
 	epgRepo := newMockEPGRepo()
 	seeder := NewIPTVSeeder(channelRepo, streamRepo, categoryRepo, epgRepo)
+	seeder.remoteImport = fetchLocalRemoteImportForTest
 
 	channelIDMap := map[string]uint{"ch1": 1}
-	seeder.importEPG(server.URL, channelIDMap)
+	seeder.importEPG(context.Background(), server.URL, channelIDMap)
 
 	// Should have imported programmes (filtering by future dates)
 	if len(epgRepo.entries) == 0 {

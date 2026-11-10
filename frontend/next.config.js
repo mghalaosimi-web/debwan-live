@@ -48,6 +48,18 @@ const nextConfig = {
   env: {
     NEXT_PUBLIC_APP_VERSION: appVersion,
   },
+
+  // Proxy browser API requests through Next.js to the standalone Go API.
+  // Keep the backend origin server-side; do not expose it as NEXT_PUBLIC_*.
+  async rewrites() {
+    const backendOrigin = (process.env.BACKEND_INTERNAL_URL || "https://debwan-live-api.onrender.com").replace(/\/$/, "");
+    return [
+      {
+        source: "/api/:path*",
+        destination: `${backendOrigin}/api/:path*`,
+      },
+    ];
+  },
 };
 
 module.exports = nextConfig;

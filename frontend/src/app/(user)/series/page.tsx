@@ -58,7 +58,7 @@ export default function SeriesPage() {
   }, [fetchSeries]);
 
   useEffect(() => {
-    document.title = `${t("series.title")} | TIVIFY`;
+    document.title = `${t("series.title")} | DEBWAN LIVE`;
   }, [t]);
 
   const handleCategoryChange = (categoryId: number | undefined) => {
