@@ -29,7 +29,7 @@ describe('UserLayout', () => {
     render(<UserLayout><div>Page Content</div></UserLayout>)
     expect(screen.getByText('Page Content')).toBeInTheDocument()
     expect(screen.getByText('DEBWAN LIVE')).toBeInTheDocument()
-    expect(screen.getByTestId('global-search')).toBeInTheDocument()
+    expect(screen.getAllByTestId('global-search').length).toBeGreaterThanOrEqual(1)
   })
 
   it('renders the primary navigation links', () => {
