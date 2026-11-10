@@ -58,6 +58,16 @@ func (h *ChannelHandler) ListActive(c *fiber.Ctx) error {
 }
 
 func (h *ChannelHandler) GetByID(c *fiber.Ctx) error {
+	return h.getByID(c, false)
+}
+
+// GetPublicByID returns the playable channel catalogue without exposing
+// upstream request headers or user-agent values stored for server-side use.
+func (h *ChannelHandler) GetPublicByID(c *fiber.Ctx) error {
+	return h.getByID(c, true)
+}
+
+func (h *ChannelHandler) getByID(c *fiber.Ctx, redactStreamCredentials bool) error {
 	id, err := strconv.ParseUint(c.Params("id"), 10, 32)
 	if err != nil {
 		return util.Error(c, fiber.StatusBadRequest, "ID invalido")
@@ -69,6 +79,13 @@ func (h *ChannelHandler) GetByID(c *fiber.Ctx) error {
 			return util.Error(c, fiber.StatusNotFound, "Canal no encontrado")
 		}
 		return util.Error(c, fiber.StatusInternalServerError, "Error obteniendo canal")
+	}
+
+	if redactStreamCredentials {
+		for i := range channel.Streams {
+			channel.Streams[i].UserAgent = ""
+			channel.Streams[i].Headers = ""
+		}
 	}
 	return util.Success(c, channel)
 }

@@ -1,7 +1,9 @@
 package handler
 
 import (
+	"encoding/json"
 	"fmt"
+	"strings"
 	"testing"
 
 	"github.com/tivify/backend/internal/model"
@@ -363,5 +365,58 @@ func TestChannelHandler_ListActive_WithSearch(t *testing.T) {
 	}
 	if !result.Success {
 		t.Error("ListActive() should return success=true")
+	}
+}
+
+// Public channel details must not disclose custom upstream headers or user-agent
+// values, while the admin detail route retains them for channel management.
+func TestChannelHandler_PublicGetByIDRedactsStreamCredentials(t *testing.T) {
+	h, repo, _ := setupChannelHandler()
+	channel := &model.Channel{
+		Name:     "Sports Channel",
+		Slug:     "sports-channel",
+		IsActive: true,
+		Streams: []model.Stream{{
+			URL:          "https://stream.example.test/live.m3u8",
+			StreamFormat: "hls",
+			IsActive:     true,
+			UserAgent:    "private-upstream-agent",
+			Headers:      `{"Authorization":"Bearer private-token","Cookie":"session=private"}`,
+		}},
+	}
+	repo.addChannel(channel)
+
+	app := testApp()
+	app.Get("/api/channels/:id", h.GetPublicByID)
+	publicResult, publicStatus := makeRequest(app, "GET", fmt.Sprintf("/api/channels/%d", channel.ID), "")
+	if publicStatus != 200 || !publicResult.Success {
+		t.Fatalf("public GetByID status=%d success=%v, want 200/success", publicStatus, publicResult.Success)
+	}
+	publicJSON, err := json.Marshal(publicResult.Data)
+	if err != nil {
+		t.Fatalf("marshal public response: %v", err)
+	}
+	if strings.Contains(string(publicJSON), "private-token") ||
+		strings.Contains(string(publicJSON), "session=private") ||
+		strings.Contains(string(publicJSON), "private-upstream-agent") {
+		t.Fatalf("public channel response leaked upstream credentials: %s", publicJSON)
+	}
+	if !strings.Contains(string(publicJSON), "https://stream.example.test/live.m3u8") {
+		t.Fatalf("public response omitted the playable stream URL: %s", publicJSON)
+	}
+
+	adminApp := testApp()
+	adminApp.Get("/api/admin/channels/:id", h.GetByID)
+	adminResult, adminStatus := makeRequest(adminApp, "GET", fmt.Sprintf("/api/admin/channels/%d", channel.ID), "")
+	if adminStatus != 200 || !adminResult.Success {
+		t.Fatalf("admin GetByID status=%d success=%v, want 200/success", adminStatus, adminResult.Success)
+	}
+	adminJSON, err := json.Marshal(adminResult.Data)
+	if err != nil {
+		t.Fatalf("marshal admin response: %v", err)
+	}
+	if !strings.Contains(string(adminJSON), "private-token") ||
+		!strings.Contains(string(adminJSON), "private-upstream-agent") {
+		t.Fatalf("admin response should retain stream credentials for management: %s", adminJSON)
 	}
 }
