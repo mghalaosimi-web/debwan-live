@@ -35,7 +35,7 @@ jobs:
       version: ${{ steps.ver.outputs.version }}
       sha:     ${{ steps.ver.outputs.sha }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           ref: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref }}
 
@@ -82,7 +82,7 @@ jobs:
             dockerfile: nginx/Dockerfile
             build-args: ''
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           ref: ${{ needs.meta.outputs.tag }}
 
@@ -177,7 +177,7 @@ jobs:
     needs: [meta, images]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           ref: ${{ needs.meta.outputs.tag }}
 
