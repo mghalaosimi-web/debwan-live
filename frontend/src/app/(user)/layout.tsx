@@ -45,7 +45,7 @@ export default function UserLayout({ children }: { children: React.ReactNode }) 
             <button
               type="button"
               onClick={() => setMobileMenuOpen((open) => !open)}
-              className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-white/10 text-dark-200 transition hover:bg-white/5 md:hidden"
+              className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-white/10 text-dark-200 transition hover:bg-white/5 lg:hidden"
               aria-label={mobileMenuOpen ? "إغلاق القائمة" : "فتح القائمة"}
               aria-expanded={mobileMenuOpen}
               aria-controls="mobile-nav-menu"
@@ -63,7 +63,7 @@ export default function UserLayout({ children }: { children: React.ReactNode }) 
               </span>
             </Link>
 
-            <nav className="hidden items-center gap-1 md:flex" aria-label="التنقل الرئيسي">
+            <nav className="hidden items-center gap-1 lg:flex" aria-label="التنقل الرئيسي">
               {navItems.map((item) => {
                 const active = isActivePath(pathname, item.href);
                 return (
@@ -88,7 +88,7 @@ export default function UserLayout({ children }: { children: React.ReactNode }) 
 
           <div className="flex shrink-0 items-center gap-2 sm:gap-3">
             <div className="hidden sm:block"><GlobalSearch /></div>
-            <Link href="/channels" className="hidden items-center gap-2 rounded-xl bg-emerald-400 px-3.5 py-2.5 text-xs font-extrabold text-slate-950 transition hover:bg-emerald-300 lg:inline-flex">
+            <Link href="/channels" className="hidden items-center gap-2 rounded-xl bg-emerald-400 px-3.5 py-2.5 text-xs font-extrabold text-slate-950 transition hover:bg-emerald-300 2xl:inline-flex">
               <Tv size={15} /> ابدأ المشاهدة <ChevronLeft size={14} />
             </Link>
             <div className="sm:hidden"><GlobalSearch /></div>
@@ -96,7 +96,7 @@ export default function UserLayout({ children }: { children: React.ReactNode }) 
         </div>
 
         {mobileMenuOpen && (
-          <div id="mobile-nav-menu" className="border-t border-white/10 bg-dark-950/98 px-4 pb-4 pt-3 shadow-2xl md:hidden">
+          <div id="mobile-nav-menu" className="border-t border-white/10 bg-dark-950/98 px-4 pb-4 pt-3 shadow-2xl lg:hidden">
             <nav className="grid grid-cols-2 gap-2" aria-label="قائمة الهاتف">
               {navItems.map((item) => {
                 const active = isActivePath(pathname, item.href);
