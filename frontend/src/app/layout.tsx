@@ -38,7 +38,12 @@ export const metadata: Metadata = {
   alternates: { canonical: "/" },
 };
 
-export const viewport: Viewport = {\n  themeColor: "#07111f",\n  colorScheme: "dark",\n};\n\nexport default function RootLayout({ children }: { children: React.ReactNode }) {
+export const viewport: Viewport = {
+  themeColor: "#07111f",
+  colorScheme: "dark",
+};
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ar" dir="rtl">
       <body className="antialiased">
