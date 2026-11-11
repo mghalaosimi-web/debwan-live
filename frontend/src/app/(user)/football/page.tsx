@@ -105,19 +105,53 @@ export default function FootballPage() {
         </div>
       </section>
 
-      <FootballInlinePlayer />
+      <nav aria-label="التنقل داخل مركز كرة القدم" className="sticky top-[72px] z-30 -mx-4 flex gap-2 overflow-x-auto border-y border-white/[0.07] bg-dark-950/95 px-4 py-3 backdrop-blur-xl sm:mx-0 sm:rounded-2xl sm:border sm:px-3">
+        {[
+          ["#today-matches", "مباريات اليوم"],
+          ["#competition-matches", "البطولات"],
+          ["#league-standings", "الترتيب"],
+          ["#club-directory", "الفرق واللاعبون"],
+          ["#top-performers", "الهدافون"],
+          ["#knockout-bracket", "الأدوار الإقصائية"],
+          ["#official-sources", "مصادر المشاهدة"],
+        ].map(([href, label]) => (
+          <a key={href} href={href} className="shrink-0 rounded-xl border border-white/[0.08] bg-white/[0.035] px-3.5 py-2 text-xs font-bold text-dark-200 transition hover:border-emerald-300/25 hover:bg-emerald-300/10 hover:text-emerald-200">
+            {label}
+          </a>
+        ))}
+      </nav>
 
-      <FootballGlobalMatches />
+      <section id="match-player" className="scroll-mt-32"><FootballInlinePlayer /></section>
 
-      <FootballMatches />
+      <section id="today-matches" className="scroll-mt-32 space-y-3">
+        <div className="flex items-center gap-3"><span className="h-7 w-1 rounded-full bg-emerald-300" /><div><p className="text-[10px] font-extrabold tracking-[0.18em] text-emerald-300">WORLDWIDE FIXTURES</p><h2 className="text-xl font-black text-white">مباريات اليوم حول العالم</h2></div></div>
+        <FootballGlobalMatches />
+      </section>
 
-      <FootballStandings />
+      <section id="competition-matches" className="scroll-mt-32 space-y-3">
+        <div className="flex items-center gap-3"><span className="h-7 w-1 rounded-full bg-sky-300" /><div><p className="text-[10px] font-extrabold tracking-[0.18em] text-sky-300">COMPETITIONS</p><h2 className="text-xl font-black text-white">مباريات البطولات</h2></div></div>
+        <FootballMatches />
+      </section>
 
-      <FootballDirectory />
+      <section id="league-standings" className="scroll-mt-32 space-y-3">
+        <div className="flex items-center gap-3"><span className="h-7 w-1 rounded-full bg-violet-300" /><div><p className="text-[10px] font-extrabold tracking-[0.18em] text-violet-300">LEAGUE TABLES</p><h2 className="text-xl font-black text-white">ترتيب البطولات</h2></div></div>
+        <FootballStandings />
+      </section>
 
-      <FootballScorers />
+      <section id="club-directory" className="scroll-mt-32 space-y-3">
+        <div className="flex items-center gap-3"><span className="h-7 w-1 rounded-full bg-amber-300" /><div><p className="text-[10px] font-extrabold tracking-[0.18em] text-amber-300">CLUBS & PLAYERS</p><h2 className="text-xl font-black text-white">دليل الأندية واللاعبين</h2></div></div>
+        <FootballDirectory />
+      </section>
 
-      <FootballBracket />
+      <section id="top-performers" className="scroll-mt-32 space-y-3">
+        <div className="flex items-center gap-3"><span className="h-7 w-1 rounded-full bg-rose-300" /><div><p className="text-[10px] font-extrabold tracking-[0.18em] text-rose-300">TOP PERFORMERS</p><h2 className="text-xl font-black text-white">الهدافون وصنّاع اللعب</h2></div></div>
+        <FootballScorers />
+      </section>
+
+      <section id="knockout-bracket" className="scroll-mt-32 space-y-3">
+        <div className="flex items-center gap-3"><span className="h-7 w-1 rounded-full bg-cyan-300" /><div><p className="text-[10px] font-extrabold tracking-[0.18em] text-cyan-300">KNOCKOUT STAGE</p><h2 className="text-xl font-black text-white">مسارات الأدوار الإقصائية</h2></div></div>
+        <FootballBracket />
+      </section>
 
       <section id="official-sources" className="space-y-4">
         <div className="flex flex-wrap items-end justify-between gap-3">
