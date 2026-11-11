@@ -35,7 +35,7 @@ export default function ChannelDetailPage() {
       const { data } = await userAPI.getChannel(id);
       setChannel(data.data);
     } catch {
-      toastRef.current.error("Error al cargar canal");
+      toastRef.current.error("تعذر تحميل بيانات القناة. تحقق من الاتصال ثم أعد المحاولة.");
     } finally {
       setLoading(false);
     }
@@ -85,7 +85,7 @@ export default function ChannelDetailPage() {
 
     if (bestStream.stream_format !== "hls") {
       setPlayerError(
-        `Los streams ${bestStream.stream_format.toUpperCase()} no se pueden reproducir en el navegador. Usa VLC u otro reproductor compatible.`
+        `صيغة البث ${bestStream.stream_format.toUpperCase()} غير مدعومة داخل مشغل المتصفح. يلزم مصدر HLS متوافق أو مشغل يدعم هذه الصيغة.`
       );
       return;
     }
@@ -123,7 +123,7 @@ export default function ChannelDetailPage() {
               hls.recoverMediaError();
               break;
             case Hls.ErrorTypes.NETWORK_ERROR:
-              setPlayerError("Error de red. Reintentando en 5 segundos...");
+              setPlayerError("حدث خطأ في الشبكة. ستتم إعادة المحاولة بعد 5 ثوانٍ...");
               // Auto-retry for network errors (common during live emission startup)
               retryTimeoutRef.current = setTimeout(() => {
                 setPlayerError(null);
@@ -131,7 +131,7 @@ export default function ChannelDetailPage() {
               }, 5000);
               break;
             default:
-              setPlayerError("Error al reproducir el stream.");
+              setPlayerError("تعذر تشغيل مصدر البث.");
               hls.destroy();
               hlsRef.current = null;
               // Auto-retry after 5s
@@ -163,7 +163,7 @@ export default function ChannelDetailPage() {
         { once: true }
       );
     } else {
-      setPlayerError("Tu navegador no soporta reproduccion HLS.");
+      setPlayerError("المتصفح الحالي لا يدعم تشغيل HLS.");
     }
 
     return () => {
@@ -185,7 +185,7 @@ export default function ChannelDetailPage() {
   if (!channel) {
     return (
       <div className="text-center py-12">
-        <p className="text-dark-400">Canal no encontrado</p>
+        <p className="text-dark-400">لم يتم العثور على القناة</p>
         <Link
           href="/channels"
           className="text-primary-400 hover:text-primary-300 mt-4 inline-block"
@@ -228,7 +228,7 @@ export default function ChannelDetailPage() {
             {isLive && (
               <span className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-red-600/20">
                 <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
-                <span className="text-xs font-bold text-red-400">EN VIVO</span>
+                <span className="text-xs font-bold text-red-400">مباشر</span>
               </span>
             )}
           </div>
@@ -280,10 +280,13 @@ export default function ChannelDetailPage() {
       ) : (
         <div className="rounded-xl bg-dark-800 border border-dark-700 p-12 text-center">
           <Tv size={48} className="mx-auto text-dark-600 mb-4" />
-          <p className="text-dark-400">Este canal no tiene streams disponibles</p>
-          <p className="text-dark-500 text-sm mt-2">
-            El administrador debe configurar streams para este canal.
+          <p className="text-lg font-bold text-dark-200">لا يوجد مصدر بث مفعّل لهذه القناة حاليًا</p>
+          <p className="mx-auto mt-2 max-w-lg text-sm leading-7 text-dark-400">
+            القناة مسجلة في المكتبة، لكن لم يُضف لها رابط تشغيل صالح بعد. لن نضع رابطًا تجريبيًا أو غير موثوق بدلًا منه.
           </p>
+          <Link href="/channels" className="mt-5 inline-flex rounded-xl border border-dark-600 px-4 py-2.5 text-sm font-semibold text-dark-200 transition hover:border-primary-400 hover:text-white">
+            العودة إلى دليل القنوات
+          </Link>
         </div>
       )}
 
