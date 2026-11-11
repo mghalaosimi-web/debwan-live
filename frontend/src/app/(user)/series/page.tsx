@@ -103,10 +103,34 @@ export default function SeriesPage() {
       {loading ? (
         <LoadingSpinner text={t("series.loadingSeries")} />
       ) : series.length === 0 ? (
-        <div className="text-center py-12">
-          <Film size={48} className="mx-auto text-dark-600 mb-4" />
-          <p className="text-dark-400">{t("series.noSeriesFound")}</p>
-        </div>
+        <section className="rounded-2xl border border-dark-700 bg-dark-800/70 px-5 py-10 text-center sm:px-8">
+          <Film size={44} className="mx-auto text-dark-500 mb-4" aria-hidden="true" />
+          <h2 className="text-lg font-bold text-dark-100">
+            {search || selectedCategory !== undefined ? "لا توجد نتائج مطابقة" : "مكتبة المسلسلات لم تُجهّز بعد"}
+          </h2>
+          <p className="mx-auto mt-2 max-w-xl text-sm leading-7 text-dark-400">
+            {search || selectedCategory !== undefined
+              ? "لم نعثر على مسلسل يطابق البحث والتصنيف الحاليين. غيّر عوامل التصفية أو امسحها."
+              : "لم تتم إضافة مسلسلات أو حلقات إلى المكتبة حتى الآن. سنعرض المحتوى هنا عند توفره بمصدر وحقوق مشاهدة مناسبة."}
+          </p>
+          {(search || selectedCategory !== undefined) && (
+            <button
+              type="button"
+              onClick={() => { setSearch(""); setSelectedCategory(undefined); setPage(1); }}
+              className="mt-5 rounded-xl border border-dark-600 px-4 py-2.5 text-sm font-semibold text-dark-200 transition hover:border-primary-400 hover:text-white"
+            >
+              مسح البحث والتصفية
+            </button>
+          )}
+          <div className="mt-6 flex flex-wrap justify-center gap-3">
+            <Link href="/channels" className="rounded-xl bg-primary-600 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-primary-500">
+              تصفح القنوات
+            </Link>
+            <Link href="/football" className="rounded-xl border border-dark-600 px-4 py-2.5 text-sm font-semibold text-dark-200 transition hover:bg-dark-700">
+              مركز كرة القدم
+            </Link>
+          </div>
+        </section>
       ) : (
         <>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
