@@ -131,9 +131,9 @@ export default function FootballGlobalMatches() {
     <section dir="rtl" className="space-y-4">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <p className="text-xs font-semibold tracking-widest text-primary-400">WORLDWIDE LIVE CENTRE</p>
-          <h2 className="mt-1 text-2xl font-bold text-dark-100">مباريات كرة القدم حول العالم</h2>
-          <p className="mt-1 text-sm text-dark-400">مباريات مباشرة ونتائج وجدول يومي من بطولات متعددة حول العالم</p>
+          <p className="text-xs font-semibold tracking-widest text-primary-400">PRIORITY MATCH CENTRE</p>
+          <h2 className="mt-1 text-2xl font-bold text-dark-100">أهم مباريات كرة القدم</h2>
+          <p className="mt-1 text-sm text-dark-400">الدوريات الخمسة الكبرى ودوري روشن وأبرز مواجهات المنتخبات الأوروبية</p>
         </div>
         <button type="button" onClick={() => void load(true)} disabled={loading || refreshing} className="inline-flex items-center gap-2 rounded-xl border border-dark-600 px-3 py-2 text-sm text-dark-200 transition hover:bg-dark-700 disabled:opacity-50">
           <RefreshCw size={15} className={refreshing ? "animate-spin" : ""} />
