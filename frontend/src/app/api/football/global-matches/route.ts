@@ -54,7 +54,7 @@ function isPriorityFixture(match: ProviderMatch): boolean {
   const home = normalizeCompetition(match.home || "");
   const away = normalizeCompetition(match.away || "");
   const isEuropeanNationalTeam = (team: string) => {
-    const country = team.replace(/\\s+national team$/, "");
+    const country = team.replace(/\s+national team$/, "");
     return EUROPEAN_NATIONAL_TEAMS.has(country);
   };
   return isEuropeanNationalTeam(home) && isEuropeanNationalTeam(away);
