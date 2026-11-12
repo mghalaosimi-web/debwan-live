@@ -3,6 +3,7 @@
 import Link from "next/link";
 import FootballGlobalMatches from "@/components/football/football-global-matches";
 import FootballInlinePlayer from "@/components/football/football-inline-player";
+import BeINEmbeddedPlayer from "@/components/football/bein-embedded-player";
 import FootballMatches from "@/components/football/football-matches";
 import FootballStandings from "@/components/football/football-standings";
 import FootballDirectory from "@/components/football/football-directory";
@@ -122,6 +123,7 @@ export default function FootballPage() {
       </nav>
 
       <section id="match-player" className="scroll-mt-32"><FootballInlinePlayer /></section>
+      <section id="bein-player" className="scroll-mt-32"><BeINEmbeddedPlayer /></section>
 
       <section id="today-matches" className="scroll-mt-32 space-y-3">
         <div className="flex items-center gap-3"><span className="h-7 w-1 rounded-full bg-emerald-300" /><div><p className="text-[10px] font-extrabold tracking-[0.18em] text-emerald-300">WORLDWIDE FIXTURES</p><h2 className="text-xl font-black text-white">مباريات اليوم حول العالم</h2></div></div>
