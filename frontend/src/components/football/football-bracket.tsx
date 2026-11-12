@@ -4,7 +4,17 @@ import { useCallback, useEffect, useState } from "react";
 import { GitBranch, RefreshCw } from "lucide-react";
 type Matchup={home?:string;away?:string;home_logo?:string;away_logo?:string;home_score?:number|string|null;away_score?:number|string|null;status?:string;winner?:string};
 type Round={name?:string;matchups?:Matchup[]};
-const competitions=[["uefa-champions-league","دوري أبطال أوروبا"],["uefa-europa-league","الدوري الأوروبي"],["uefa-conference-league","دوري المؤتمر الأوروبي"],["fifa-world-cup","كأس العالم"],["fa-cup","كأس الاتحاد الإنجليزي"],["efl-cup","كأس الرابطة الإنجليزية"],["copa-del-rey","كأس ملك إسبانيا"],["dfb-pokal","كأس ألمانيا"],["coppa-italia","كأس إيطاليا"],["coupe-de-france","كأس فرنسا"],["copa-america","كوبا أمريكا"],["afcon","كأس أمم أفريقيا"],["asiancup","كأس آسيا"],["gold-cup","الكأس الذهبية"],["concacaf-champions-cup","دوري أبطال الكونكاكاف"],["club-world-cup","كأس العالم للأندية"]];
+const competitions = [
+  ["uefa-champions-league", "دوري أبطال أوروبا"],
+  ["uefa-europa-league", "الدوري الأوروبي"],
+  ["uefa-conference-league", "دوري المؤتمر الأوروبي"],
+  ["fa-cup", "كأس الاتحاد الإنجليزي"],
+  ["copa-del-rey", "كأس ملك إسبانيا"],
+  ["dfb-pokal", "كأس ألمانيا"],
+  ["coppa-italia", "كأس إيطاليا"],
+  ["coupe-de-france", "كأس فرنسا"],
+  ["fifa-world-cup", "كأس العالم"],
+];
 export default function FootballBracket(){
  const [competition,setCompetition]=useState("uefa-champions-league");const [title,setTitle]=useState("");const [logo,setLogo]=useState("");const [rounds,setRounds]=useState<Round[]>([]);const [loading,setLoading]=useState(true);const [error,setError]=useState("");
  const load=useCallback(async()=>{setLoading(true);setError("");try{const r=await fetch(`/api/football/bracket?competition=${encodeURIComponent(competition)}`);const p=await r.json();if(!r.ok||!p.success)throw new Error(p.message||"تعذر تحميل المسار.");setTitle(p.competition||"");setLogo(p.competitionLogo||"");setRounds(Array.isArray(p.rounds)?p.rounds:[]);}catch(e){setRounds([]);setError(e instanceof Error?e.message:"حدث خطأ.");}finally{setLoading(false);}},[competition]);
