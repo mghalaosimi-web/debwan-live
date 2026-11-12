@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { RefreshCw, Trophy } from "lucide-react";
 
 type Standing = {
-  team?: { team_id?: string; name?: string; abbreviation?: string };
+  team?: { team_id?: string; name?: string; abbreviation?: string; logo?: string; logo_url?: string; image?: string; badge?: string };
   league_rank?: number;
   group_rank?: number;
   games_played?: number;
@@ -68,8 +68,8 @@ export default function FootballStandings() {
   }, [load]);
 
   return (
-    <section dir="rtl" className="space-y-4">
-      <div className="flex flex-wrap items-end justify-between gap-3">
+    <section dir="rtl" className="space-y-5">
+      <div className="flex flex-wrap items-end justify-between gap-3 rounded-2xl border border-dark-700 bg-dark-800/70 p-4 sm:p-5">
         <div>
           <p className="text-xs font-semibold tracking-widest text-primary-400">LEAGUE TABLES</p>
           <h2 className="mt-1 text-2xl font-bold text-dark-100">جداول الترتيب</h2>
@@ -86,7 +86,7 @@ export default function FootballStandings() {
         </button>
       </div>
 
-      <div className="grid gap-3 sm:grid-cols-2">
+      <div className="grid gap-3 rounded-2xl border border-dark-700 bg-dark-800 p-3 sm:grid-cols-2 sm:p-4">
         <label className="flex items-center gap-3 rounded-xl border border-dark-700 bg-dark-800 px-3 py-2">
           <Trophy size={18} className="text-primary-300" />
           <span className="sr-only">البطولة</span>
@@ -111,9 +111,9 @@ export default function FootballStandings() {
           <p className="mt-1 text-sm text-dark-400">جرّب بطولة أخرى أو اترك الموسم فارغاً لعرض الموسم الحالي.</p>
         </div>
       ) : (
-        <div className="overflow-x-auto rounded-2xl border border-dark-700 bg-dark-800">
+        <div className="overflow-x-auto rounded-2xl border border-dark-700 bg-dark-800 shadow-sm">
           <table className="w-full min-w-[680px] text-sm">
-            <thead className="bg-dark-900/80 text-xs text-dark-400">
+            <thead className="sticky top-0 bg-dark-900 text-xs text-dark-400">
               <tr>
                 <th className="px-3 py-3 text-right">#</th>
                 <th className="px-3 py-3 text-right">الفريق</th>
@@ -129,10 +129,10 @@ export default function FootballStandings() {
             </thead>
             <tbody>
               {rows.map((row, index) => (
-                <tr key={row.team?.team_id || `${row.team?.name || "team"}-${index}`} className="border-t border-dark-700/80 text-dark-200">
+                <tr key={row.team?.team_id || `${row.team?.name || "team"}-${index}`} className="border-t border-dark-700/80 text-dark-200 transition hover:bg-dark-700/30">
                   <td className="px-3 py-3 text-right font-semibold text-dark-400">{row.league_rank ?? row.group_rank ?? index + 1}</td>
                   <td className="px-3 py-3 text-right">
-                    <span className="font-semibold text-dark-100">{row.team?.name || "فريق غير محدد"}</span>
+                    {(row.team?.logo || row.team?.logo_url || row.team?.image || row.team?.badge) && <img src={row.team.logo || row.team.logo_url || row.team.image || row.team.badge} alt="" loading="lazy" className="ml-2 inline-block h-7 w-7 align-middle object-contain" />}<span className="font-semibold text-dark-100">{row.team?.name || "فريق غير محدد"}</span>
                     {row.group && <span className="mr-2 text-[10px] text-dark-500">{row.group}</span>}
                     {row.qualification && <span className="mt-1 block text-[10px] text-emerald-300">{row.qualification}</span>}
                   </td>
@@ -143,14 +143,14 @@ export default function FootballStandings() {
                   <td className="px-2 py-3 text-center tabular-nums">{row.goals_for ?? "—"}</td>
                   <td className="px-2 py-3 text-center tabular-nums">{row.goals_against ?? "—"}</td>
                   <td className="px-2 py-3 text-center tabular-nums">{row.goal_difference ?? "—"}</td>
-                  <td className="px-3 py-3 text-center font-extrabold tabular-nums text-white">{row.points ?? "—"}</td>
+                  <td className="px-3 py-3 text-center font-extrabold tabular-nums text-emerald-300">{row.points ?? "—"}</td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
       )}
-      {fetchedAt && <p className="text-[11px] text-dark-500">آخر جلب: {new Intl.DateTimeFormat("ar-YE", { timeZone: "Asia/Aden", hour: "2-digit", minute: "2-digit" }).format(new Date(fetchedAt))} · API Ninjas</p>}
+      {fetchedAt && <p className="text-[11px] text-dark-500">آخر تحديث: {new Intl.DateTimeFormat("ar-YE", { timeZone: "Asia/Aden", hour: "2-digit", minute: "2-digit" }).format(new Date(fetchedAt))} · API Ninjas</p>}
       <p className="text-[11px] leading-5 text-dark-500">الجداول تتحدث بعد انتهاء المباريات. تغطية المواسم السابقة قد تتطلب خطة مختلفة من مزود البيانات.</p>
     </section>
   );
