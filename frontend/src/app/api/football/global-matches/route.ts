@@ -34,12 +34,12 @@ function normalizeCompetition(value: string): string {
 function isPriorityFixture(match: ProviderMatch): boolean {
   const competition = normalizeCompetition(match.competition || "");
   const isTopLeague =
-    /premier league|english premier|epl/.test(competition) ||
-    /la liga|laliga|spanish league/.test(competition) ||
-    /bundesliga/.test(competition) ||
-    /serie a|italian league/.test(competition) ||
-    /ligue 1|ligue one|french league/.test(competition) ||
-    /saudi pro|roshn|saudi professional/.test(competition);
+    /^(english )?premier league$/.test(competition) ||
+    /^(spanish )?la liga$/.test(competition) ||
+    /^(german )?bundesliga$/.test(competition) ||
+    /^(italian )?serie a$/.test(competition) ||
+    /^(french )?ligue 1$/.test(competition) ||
+    /(saudi.*(pro|professional)|roshn)/.test(competition);
 
   const isUefaClubCompetition =
     /uefa champions league|champions league/.test(competition) ||
@@ -47,7 +47,7 @@ function isPriorityFixture(match: ProviderMatch): boolean {
     /uefa conference league|conference league/.test(competition);
 
   const isMajorEuropeanNationalCompetition =
-    /euro|european championship|nations league|world cup qualification.*europe|uefa.*qualif|european qualifiers|world cup/.test(competition);
+    /uefa euro|european championship|nations league|world cup qualification.*europe|uefa.*qualif|european qualifiers|fifa world cup/.test(competition);
   if (isTopLeague || isUefaClubCompetition) return true;
   if (!isMajorEuropeanNationalCompetition) return false;
 
