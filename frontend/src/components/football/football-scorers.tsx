@@ -6,13 +6,14 @@ import { Award, RefreshCw } from "lucide-react";
 
 type Scorer = { rank: number; player: string; player_logo?: string; player_slug: string; team: string; team_slug: string; team_logo?: string; goals: number; assists: number; matches: number; minutes: number; rating?: number };
 const competitions = [
-  ["english-premier-league","الدوري الإنجليزي"], ["saudi-professional-league","دوري روشن السعودي"],
-  ["uefa-champions-league","دوري أبطال أوروبا"], ["uefa-europa-league","الدوري الأوروبي"],
-  ["fifa-world-cup","كأس العالم"], ["spanish-la-liga","الدوري الإسباني"],
-  ["german-bundesliga","الدوري الألماني"], ["italian-serie-a","الدوري الإيطالي"],
-  ["french-ligue-1","الدوري الفرنسي"], ["eredivisie","الدوري الهولندي"],
-  ["portuguese-liga","الدوري البرتغالي"], ["brazilian-serie-a","الدوري البرازيلي"],
-  ["major-league-soccer","الدوري الأمريكي"],
+  ["english-premier-league", "الدوري الإنجليزي"],
+  ["spanish-la-liga", "الدوري الإسباني"],
+  ["german-bundesliga", "الدوري الألماني"],
+  ["italian-serie-a", "الدوري الإيطالي"],
+  ["french-ligue-1", "الدوري الفرنسي"],
+  ["saudi-professional-league", "دوري روشن السعودي"],
+  ["uefa-champions-league", "دوري أبطال أوروبا"],
+  ["uefa-europa-league", "الدوري الأوروبي"],
 ];
 
 export default function FootballScorers() {
