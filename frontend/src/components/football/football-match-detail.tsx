@@ -20,7 +20,50 @@ function timeLabel(value?: string) {
   const date = new Date(value);
   return Number.isNaN(date.getTime()) ? "موعد غير متاح" : new Intl.DateTimeFormat("ar-YE", { timeZone: "Asia/Aden", dateStyle: "full", timeStyle: "short" }).format(date);
 }
-export default function FootballMatchDetail({ slug }: { slug: string }) {
+
+type LineupPlayer = { name?: string; player?: string; player_name?: string; number?: number | string; jersey_number?: number | string; position?: string; role?: string; photo?: string; image?: string; picture?: string; avatar?: string; slug?: string; captain?: boolean; [key: string]: unknown };
+function asRecord(value: unknown): Record<string, unknown> | null {
+  return value && typeof value === "object" && !Array.isArray(value) ? value as Record<string, unknown> : null;
+}
+function playerList(value: unknown): LineupPlayer[] {
+  if (Array.isArray(value)) return value.filter((item): item is LineupPlayer => Boolean(item) && typeof item === "object");
+  const record = asRecord(value);
+  if (!record) return [];
+  for (const key of ["players", "lineup", "starting", "starters", "starting_xi", "startingXI"]) {
+    if (Array.isArray(record[key])) return (record[key] as unknown[]).filter((item): item is LineupPlayer => Boolean(item) && typeof item === "object");
+  }
+  return [];
+}
+function LineupTeam({ name, value }: { name: string; value: unknown }) {
+  const record = asRecord(value);
+  const starters = playerList(value);
+  const substitutes = playerList(record?.substitutes ?? record?.bench);
+  const formation = typeof record?.formation === "string" ? record.formation : typeof record?.system === "string" ? record.system : null;
+  const renderPlayer = (player: LineupPlayer, index: number) => {
+    const playerName = String(player.name || player.player_name || player.player || "لاعب");
+    const photo = [player.photo, player.image, player.picture, player.avatar].find((item): item is string => typeof item === "string" && /^https?:\/\//.test(item));
+    return <li key={String(player.slug || playerName) + index} className="flex min-w-0 items-center gap-2.5 rounded-xl border border-dark-700/80 bg-dark-900/70 px-3 py-2">
+      <span className="flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-full bg-dark-700 text-[11px] font-black text-dark-200">{photo ? <img src={photo} alt="" loading="lazy" className="h-full w-full object-cover"/> : player.number || player.jersey_number || "•"}</span>
+      <span className="min-w-0 flex-1"><span className="block truncate text-xs font-bold text-dark-100">{playerName}{player.captain ? " (C)" : ""}</span><span className="mt-0.5 block truncate text-[10px] text-dark-500">{String(player.position || player.role || "مركز غير محدد")}</span></span>
+      {(player.number || player.jersey_number) && <span className="text-[10px] font-bold tabular-nums text-dark-400">{player.number || player.jersey_number}</span>}
+    </li>;
+  };
+  return <article className="min-w-0 rounded-2xl border border-dark-700 bg-dark-800 p-4 sm:p-5">
+    <div className="mb-4 flex items-center justify-between gap-3"><h3 className="font-black text-dark-100">{name}</h3>{formation && <span className="rounded-lg bg-emerald-400/10 px-2.5 py-1 text-[11px] font-black text-emerald-300">{formation}</span>}</div>
+    {starters.length ? <><p className="mb-2 text-[10px] font-bold text-emerald-300">التشكيلة الأساسية · {starters.length}</p><ol className="grid gap-2 sm:grid-cols-2">{starters.map(renderPlayer)}</ol></> : <p className="rounded-xl bg-dark-900 p-3 text-xs text-dark-400">التشكيلة الأساسية لم تُعلن أو لا يوفرها المصدر لهذه المباراة.</p>}
+    {substitutes.length > 0 && <><p className="mb-2 mt-5 text-[10px] font-bold text-dark-400">البدلاء · {substitutes.length}</p><ol className="grid gap-2 sm:grid-cols-2">{substitutes.map(renderPlayer)}</ol></>}
+  </article>;
+}
+function LineupsPanel({ lineups, home, away }: { lineups: unknown; home: string; away: string }) {
+  const root = asRecord(lineups);
+  const homeData = root?.home ?? root?.home_team ?? root?.team1 ?? root?.localteam;
+  const awayData = root?.away ?? root?.away_team ?? root?.team2 ?? root?.visitorteam;
+  const hasStructuredTeams = Boolean(homeData || awayData);
+  if (!lineups) return <section className="rounded-2xl border border-dark-700 bg-dark-800 p-5"><h2 className="text-lg font-bold text-dark-100">التشكيلات</h2><p className="mt-2 text-sm text-dark-400">لم يعلن مزود البيانات التشكيلات لهذه المباراة بعد. ستظهر هنا عند توفرها رسمياً.</p></section>;
+  if (!hasStructuredTeams) return <section className="rounded-2xl border border-dark-700 bg-dark-800 p-5"><h2 className="text-lg font-bold text-dark-100">التشكيلات</h2><p className="mt-2 text-sm text-dark-400">وصلت بيانات تشكيلات من المصدر، لكن بنيتها لا تسمح بعرض أسماء اللاعبين بشكل موثوق. لن نعرض بيانات تخمينية.</p></section>;
+  return <section className="space-y-3"><div><h2 className="text-lg font-black text-dark-100">تشكيلات الفريقين</h2><p className="mt-1 text-xs text-dark-500">التشكيلة الرسمية والبدلاء حسب ما يعلنه مزود بيانات المباراة.</p></div><div className="grid gap-3 lg:grid-cols-2"><LineupTeam name={home} value={homeData}/><LineupTeam name={away} value={awayData}/></div></section>;
+}
+\nexport default function FootballMatchDetail({ slug }: { slug: string }) {
   const [match, setMatch] = useState<Match | null>(null);
   const [h2h, setH2h] = useState<H2H | null>(null);
   const [error, setError] = useState("");
@@ -66,10 +109,7 @@ export default function FootballMatchDetail({ slug }: { slug: string }) {
             {h2h.matches?.length ? <div className="mt-4 space-y-2">{h2h.matches.map((game,i)=><div key={i} className="flex flex-wrap items-center justify-between gap-2 rounded-lg bg-dark-900 px-3 py-2 text-xs"><span className="text-dark-300">{game.home} — {game.away}</span><b className="text-white">{game.home_score ?? "—"} : {game.away_score ?? "—"}</b><span className="text-dark-500">{game.competition || ""}</span></div>)}</div> : null}
           </section>
         )}
-        <section className="rounded-2xl border border-dark-700 bg-dark-800 p-5">
-          <h2 className="text-lg font-bold text-dark-100">التشكيلات</h2>
-          {match.lineups ? <pre className="mt-3 overflow-x-auto whitespace-pre-wrap text-xs text-dark-300">{JSON.stringify(match.lineups,null,2)}</pre> : <p className="mt-2 text-sm text-dark-400">لم يعلن مزود البيانات التشكيلات لهذه المباراة بعد.</p>}
-        </section>
+        <LineupsPanel lineups={match.lineups} home={match.home} away={match.away} />
         <div className="flex flex-wrap items-center justify-between gap-3"><p className="text-xs text-dark-500">بيانات المباراة من SportScore وقد تختلف تفاصيل الأحداث والتشكيلات حسب التغطية.</p>{match.url && <a href={`https://sportscore.com${match.url}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-xs font-semibold text-primary-300">المصدر الأصلي <ExternalLink size={13}/></a>}</div>
         <a href="https://sportscore.com/" rel="dofollow" target="_blank" className="inline-flex rounded-md border border-dark-600 bg-dark-900 px-3 py-1.5 text-xs font-semibold text-dark-300">Powered by SportScore</a>
        </>}
