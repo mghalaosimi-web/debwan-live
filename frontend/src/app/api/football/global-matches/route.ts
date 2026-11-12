@@ -28,7 +28,7 @@ const EUROPEAN_NATIONAL_TEAMS = new Set([
 ]);
 
 function normalizeCompetition(value: string): string {
-  return value.normalize("NFD").replace(/[\\u0300-\\u036f]/g, "").toLowerCase();
+  return value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
 }
 
 function isPriorityFixture(match: ProviderMatch): boolean {
