@@ -18,6 +18,47 @@ type ProviderMatch = {
   url?: string;
 };
 
+const EUROPEAN_NATIONAL_TEAMS = new Set([
+  "england", "france", "germany", "spain", "italy", "portugal", "netherlands",
+  "holland", "belgium", "croatia", "denmark", "sweden", "norway", "switzerland",
+  "austria", "poland", "serbia", "ukraine", "turkey", "scotland", "wales",
+  "czech republic", "czechia", "greece", "romania", "hungary", "slovakia",
+  "slovenia", "finland", "iceland", "northern ireland", "ireland", "bosnia",
+  "albania", "georgia", "montenegro", "north macedonia", "kosovo",
+]);
+
+function normalizeCompetition(value: string): string {
+  return value.normalize("NFD").replace(/[\\u0300-\\u036f]/g, "").toLowerCase();
+}
+
+function isPriorityFixture(match: ProviderMatch): boolean {
+  const competition = normalizeCompetition(match.competition || "");
+  const isTopLeague =
+    /premier league|english premier|epl/.test(competition) ||
+    /la liga|laliga|spanish league/.test(competition) ||
+    /bundesliga/.test(competition) ||
+    /serie a|italian league/.test(competition) ||
+    /ligue 1|ligue one|french league/.test(competition) ||
+    /saudi pro|roshn|saudi professional/.test(competition);
+
+  const isUefaClubCompetition =
+    /uefa champions league|champions league/.test(competition) ||
+    /uefa europa league|europa league/.test(competition) ||
+    /uefa conference league|conference league/.test(competition);
+
+  const isMajorEuropeanNationalCompetition =
+    /euro|european championship|nations league|world cup qualification.*europe|uefa.*qualif|european qualifiers|world cup/.test(competition);
+  if (isTopLeague || isUefaClubCompetition) return true;
+  if (!isMajorEuropeanNationalCompetition) return false;
+
+  const home = normalizeCompetition(match.home || "");
+  const away = normalizeCompetition(match.away || "");
+  const isEuropeanNationalTeam = (team: string) =>
+    EUROPEAN_NATIONAL_TEAMS.has(team) ||
+    [...EUROPEAN_NATIONAL_TEAMS].some((country) => team === country + " national team");
+  return isEuropeanNationalTeam(home) && isEuropeanNationalTeam(away);
+}
+
 function validDate(value: string): boolean {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
   const date = new Date(`${value}T00:00:00.000Z`);
@@ -92,7 +133,7 @@ export async function GET(request: NextRequest) {
     });
 
     const matches = localDateMatches
-      .filter((match) => Boolean(match.home && match.away && match.time && match.status))
+      .filter((match) => Boolean(match.home && match.away && match.time && match.status) && isPriorityFixture(match))
       .map((match) => ({
         home: match.home as string,
         away: match.away as string,
