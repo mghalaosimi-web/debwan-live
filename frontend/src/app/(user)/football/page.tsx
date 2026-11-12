@@ -3,6 +3,7 @@
 import Link from "next/link";
 import FootballGlobalMatches from "@/components/football/football-global-matches";
 import FootballInlinePlayer from "@/components/football/football-inline-player";
+import BeINEmbeddedPlayer from "@/components/football/bein-embedded-player";
 import FootballMatches from "@/components/football/football-matches";
 import FootballStandings from "@/components/football/football-standings";
 import FootballDirectory from "@/components/football/football-directory";
@@ -106,6 +107,8 @@ export default function FootballPage() {
       </section>
 
       <FootballInlinePlayer />
+
+      <BeINEmbeddedPlayer />
 
       <FootballGlobalMatches />
 
