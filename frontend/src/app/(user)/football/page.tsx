@@ -67,6 +67,49 @@ const officialSources = [
   },
 ];
 
+const featuredFixtures = [
+  {
+    competition: "دوري الأمم الأوروبية",
+    home: "النرويج",
+    away: "ويلز",
+    time: "8:00 مساءً",
+    links: [
+      "https://buff.ly/6wVGDF1",
+      "https://buff.ly/K1QuNmv",
+    ],
+  },
+  {
+    competition: "دوري الأمم الأوروبية",
+    home: "البرتغال",
+    away: "الدنمارك",
+    time: "10:45 مساءً",
+    links: [
+      "https://buff.ly/FBl6UU4",
+      "https://buff.ly/jfy9Hbb",
+    ],
+  },
+  {
+    competition: "دوري الأمم الأوروبية",
+    home: "السويد",
+    away: "البوسنة والهرسك",
+    time: "10:45 مساءً",
+    links: [
+      "https://buff.ly/Sr5jlk6",
+      "https://buff.ly/kvgaNUZ",
+    ],
+  },
+  {
+    competition: "تصفيات أمم أفريقيا",
+    home: "الجزائر",
+    away: "توغو",
+    time: "10:00 مساءً",
+    links: [
+      "https://buff.ly/2ZCBS5C",
+      "https://buff.ly/2RqEzKd",
+    ],
+  },
+];
+
 export default function FootballPage() {
   return (
     <main dir="rtl" className="space-y-8">
@@ -108,6 +151,42 @@ export default function FootballPage() {
       <FootballInlinePlayer />
 
       <FootballGlobalMatches />
+
+      <section aria-labelledby="featured-fixtures-title" className="space-y-4">
+        <div className="flex flex-wrap items-end justify-between gap-3">
+          <div>
+            <p className="text-xs font-semibold tracking-widest text-primary-400">MATCH WATCH LINKS</p>
+            <h2 id="featured-fixtures-title" className="mt-1 text-2xl font-bold text-dark-100">مباريات اليوم — روابط المشاهدة</h2>
+            <p className="mt-1 text-sm text-dark-400">روابط إضافية للمباريات، بجانب مصادر المشاهدة الموجودة في دبوان لايف — التوقيت بتوقيت اليمن</p>
+          </div>
+          <span className="rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-1 text-xs text-emerald-300">4 مباريات · رابطان لكل مباراة</span>
+        </div>
+
+        <div className="grid gap-4 lg:grid-cols-2">
+          {featuredFixtures.map((match) => (
+            <article key={match.home + match.away} className="rounded-2xl border border-dark-700 bg-dark-800 p-5">
+              <div className="flex items-center justify-between gap-3">
+                <span className="rounded-full bg-primary-500/10 px-3 py-1 text-xs font-semibold text-primary-300">{match.competition}</span>
+                <span className="inline-flex shrink-0 items-center gap-1.5 text-xs text-dark-300"><Clock3 size={14} />{match.time}</span>
+              </div>
+              <div className="my-5 grid grid-cols-[1fr_auto_1fr] items-center gap-3 text-center">
+                <h3 className="break-words text-base font-extrabold text-dark-100 sm:text-lg">{match.home}</h3>
+                <span className="rounded-lg bg-dark-700 px-3 py-1.5 text-xs font-black text-dark-300">VS</span>
+                <h3 className="break-words text-base font-extrabold text-dark-100 sm:text-lg">{match.away}</h3>
+              </div>
+              <div className="grid grid-cols-2 gap-2 border-t border-dark-700 pt-4">
+                {match.links.map((href, index) => (
+                  <a key={href} href={href} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2 rounded-xl bg-primary-500 px-3 py-3 text-sm font-bold text-white transition hover:bg-primary-400">
+                    رابط المشاهدة {index + 1}
+                    <ExternalLink size={15} />
+                  </a>
+                ))}
+              </div>
+            </article>
+          ))}
+        </div>
+        <p className="text-xs leading-6 text-dark-500">هذه روابط خارجية مختصرة مقدمة من المستخدم؛ يتم فتحها لدى مصادرها الخارجية، ولم يتم التحقق مسبقاً من استمرار عملها أو من حقوق بث المحتوى.</p>
+      </section>
 
       <FootballMatches />
 
