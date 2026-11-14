@@ -1,13 +1,20 @@
 "use client";
 
 import FootballSectionLayout from "@/components/football/football-section-layout";
-import { ArrowUpLeft, ExternalLink, Play, Radio, ShieldCheck, Trophy } from "lucide-react";
+import { ArrowUpLeft, Clock3, ExternalLink, Play, Radio, ShieldCheck, Trophy } from "lucide-react";
 
 const STREAM_DESTINATIONS = [
   { label: "البث الأول", href: "https://19.pinkshooters.com/bein-sports-hd-1/", detail: "وجهة المشاهدة الأولى", image: "/branding/stream-1.svg" },
   { label: "البث الثاني", href: "https://syriashdab.com/", detail: "مباريات اليوم والمشاهدة", image: "/branding/stream-2.svg" },
   { label: "البث الثالث", href: "https://koora.watch/", detail: "كورة لايف", image: "/branding/stream-3.svg" },
   { label: "البث الرابع", href: "https://ostora-live.com/", detail: "الأسطورة لايف", image: "/branding/stream-4.svg" },
+];
+
+const TODAY_MATCHES = [
+  { competition: "دوري الأمم الأوروبية", home: "النرويج", away: "ويلز", time: "8:00 مساءً", links: ["https://buff.ly/6wVGDF1", "https://buff.ly/K1QuNmv"] },
+  { competition: "دوري الأمم الأوروبية", home: "البرتغال", away: "الدنمارك", time: "10:45 مساءً", links: ["https://buff.ly/FBl6UU4", "https://buff.ly/jfy9Hbb"] },
+  { competition: "دوري الأمم الأوروبية", home: "السويد", away: "البوسنة والهرسك", time: "10:45 مساءً", links: ["https://buff.ly/Sr5jlk6", "https://buff.ly/kvgaNUZ"] },
+  { competition: "تصفيات أمم أفريقيا", home: "الجزائر", away: "توغو", time: "10:00 مساءً", links: ["https://buff.ly/2ZCBS5C", "https://buff.ly/2RqEzKd"] },
 ];
 
 export default function FootballWatchPage() {
@@ -65,6 +72,40 @@ export default function FootballWatchPage() {
               </article>
             ))}
           </div>
+        </section>
+
+        <section id="today-match-links" aria-labelledby="today-match-links-title" className="space-y-4">
+          <div className="flex flex-wrap items-end justify-between gap-2">
+            <div>
+              <p className="text-xs font-bold tracking-wider text-emerald-300">MATCH WATCH LINKS</p>
+              <h2 id="today-match-links-title" className="mt-1 text-xl font-black text-white">مباريات اليوم — روابط إضافية</h2>
+              <p className="mt-1 text-xs leading-6 text-slate-400">روابط المباريات المضافة بجانب مصادر المشاهدة أعلاه، بتوقيت اليمن.</p>
+            </div>
+            <span className="text-xs text-slate-400">4 مباريات · رابطان لكل مباراة</span>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-2">
+            {TODAY_MATCHES.map((match) => (
+              <article key={match.home + match.away} className="rounded-2xl border border-white/10 bg-[#0d1a2a] p-4 sm:p-5">
+                <div className="flex items-center justify-between gap-2">
+                  <span className="rounded-full bg-emerald-300/10 px-2.5 py-1 text-[11px] font-bold text-emerald-200">{match.competition}</span>
+                  <span className="inline-flex shrink-0 items-center gap-1 text-xs text-slate-300"><Clock3 size={13}/>{match.time}</span>
+                </div>
+                <div className="my-5 grid grid-cols-[1fr_auto_1fr] items-center gap-2 text-center">
+                  <h3 className="break-words text-sm font-black text-white sm:text-base">{match.home}</h3>
+                  <span className="rounded-lg bg-white/[0.07] px-3 py-1.5 text-[11px] font-black text-slate-400">VS</span>
+                  <h3 className="break-words text-sm font-black text-white sm:text-base">{match.away}</h3>
+                </div>
+                <div className="grid grid-cols-2 gap-2 border-t border-white/[0.08] pt-3">
+                  {match.links.map((href, index) => (
+                    <a key={href} href={href} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-10 items-center justify-center gap-1.5 rounded-xl bg-emerald-300 px-2 py-2.5 text-xs font-black text-[#06251c] transition hover:bg-emerald-200">
+                      رابط المشاهدة {index + 1}<ExternalLink size={13}/>
+                    </a>
+                  ))}
+                </div>
+              </article>
+            ))}
+          </div>
+          <p className="text-[11px] leading-6 text-slate-500">روابط خارجية مختصرة أُضيفت كما وردت؛ قد يتغير توفرها أو محتواها لدى المصدر الخارجي.</p>
         </section>
 
         <section className="relative isolate overflow-hidden rounded-2xl border border-sky-300/15 bg-[#101e30]">
