@@ -34,6 +34,25 @@ export default function Home() {
         </div>
       </header>
 
+      <section className="relative z-10 mx-auto max-w-7xl px-5 pt-7 sm:px-8 sm:pt-9">
+        <Link href="/football" aria-label="افتح مركز كرة القدم" className="group relative block min-h-[220px] overflow-hidden rounded-[1.75rem] border border-emerald-200/25 bg-[#0b2630] shadow-2xl shadow-emerald-950/25 transition duration-300 hover:-translate-y-1 hover:border-emerald-200/60 sm:min-h-[270px]">
+          <img src="/branding/football-promo.svg" alt="" className="absolute inset-0 h-full w-full object-cover transition duration-500 group-hover:scale-[1.025]" />
+          <div className="absolute inset-0 bg-gradient-to-l from-[#04131d]/95 via-[#04131d]/65 to-transparent" />
+          <div className="relative flex min-h-[220px] items-center px-6 py-8 sm:min-h-[270px] sm:px-10">
+            <div className="max-w-2xl">
+              <span className="inline-flex items-center gap-2 rounded-full border border-emerald-200/30 bg-emerald-300/10 px-3 py-1.5 text-[11px] font-bold text-emerald-100">
+                <Trophy size={14} /> الأولوية لعشاق كرة القدم
+              </span>
+              <h2 className="mt-4 text-3xl font-black leading-tight text-white sm:text-4xl">مركز كرة القدم</h2>
+              <p className="mt-3 max-w-xl text-sm leading-7 text-slate-200 sm:text-base">المباريات والبطولات والنتائج وترتيب الفرق وخيارات المشاهدة — ادخل إلى عالم كرة القدم من هنا.</p>
+              <span className="mt-5 inline-flex items-center gap-2 rounded-xl bg-emerald-300 px-5 py-3 text-sm font-extrabold text-[#062018] shadow-lg shadow-emerald-950/30 transition group-hover:bg-emerald-200">
+                افتح مركز كرة القدم <ArrowLeft size={17} />
+              </span>
+            </div>
+          </div>
+        </Link>
+      </section>
+
       <section className="relative z-10 mx-auto grid min-h-[570px] max-w-7xl items-center gap-12 px-5 py-16 sm:px-8 lg:grid-cols-[1.1fr_0.9fr] lg:py-20">
         <div>
           <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-emerald-300/20 bg-emerald-300/[0.07] px-4 py-2 text-xs font-semibold text-emerald-200">
