@@ -55,8 +55,14 @@ const nextConfig = {
     const backendOrigin = (process.env.BACKEND_INTERNAL_URL || "https://debwan-live-api.onrender.com").replace(/\/$/, "");
     return [
       {
-        source: "/api/:path*",
-        destination: `${backendOrigin}/api/:path*`,
+        // The Go backend owns only its versioned API namespace.
+        // Keep /api/football/* on Next.js route handlers in this app.
+        source: "/api/v1/:path*",
+        destination: `${backendOrigin}/api/v1/:path*`,
+      },
+      {
+        source: "/api/version",
+        destination: `${backendOrigin}/api/version`,
       },
     ];
   },
