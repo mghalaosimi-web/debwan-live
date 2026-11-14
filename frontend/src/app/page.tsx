@@ -64,7 +64,7 @@ export default function Home() {
             <span className="mt-2 block bg-gradient-to-l from-emerald-200 via-sky-200 to-white bg-clip-text text-transparent">يبدأ من هنا</span>
           </h1>
           <p className="mt-7 max-w-2xl text-base leading-8 text-slate-300 sm:text-lg">
-            أهلاً بك في دبوان لايف؛ وجهتك لمتابعة كرة القدم واستكشاف القنوات والمحتوى الترفيهي، ضمن تجربة موحدة بتصميم واضح وسهل الاستخدام.
+            دبوان لايف (DEBWAN LIVE) منصة عربية تركز حالياً على مركز كرة القدم لمتابعة المباريات والبطولات والنتائج وترتيب الفرق وإحصائيات اللاعبين. بقية أقسام المشاهدة قيد التطوير، ويظهر توفر كل خدمة بوضوح.
           </p>
           <div className="mt-9 flex flex-wrap gap-3">
             <Link href="/home" className="inline-flex items-center justify-center gap-3 rounded-xl bg-emerald-300 px-6 py-3.5 text-sm font-extrabold text-[#062018] shadow-lg shadow-emerald-900/20 transition hover:-translate-y-0.5 hover:bg-emerald-200">
@@ -103,7 +103,7 @@ export default function Home() {
         <div className="mx-auto max-w-7xl px-5 py-16 sm:px-8">
           <div className="mb-8">
             <p className="text-xs font-bold tracking-[0.2em] text-emerald-300">EXPLORE DEBWAN</p>
-            <h2 className="mt-3 text-2xl font-extrabold sm:text-3xl">كل ما تحتاجه في مكان واحد</h2>
+            <h2 className="mt-3 text-2xl font-extrabold sm:text-3xl">اكتشف أقسام دبوان لايف</h2>
             <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-400">تصفح أقسام المنصة مباشرة وانتقل إلى المحتوى الذي تبحث عنه بسهولة.</p>
           </div>
           <div className="grid gap-4 md:grid-cols-3">
@@ -114,6 +114,28 @@ export default function Home() {
                 <p className="mt-2 text-sm leading-7 text-slate-400">{description}</p>
               </article>
             ))}
+          </div>
+        </div>
+      </section>
+
+      <section id="developer" className="relative z-10 border-t border-white/10 bg-[#0b1929]">
+        <div className="mx-auto grid max-w-7xl gap-8 px-5 py-14 sm:px-8 lg:grid-cols-[220px_1fr] lg:items-center">
+          <div className="mx-auto h-44 w-44 overflow-hidden rounded-3xl border border-emerald-200/25 shadow-2xl shadow-emerald-950/30 lg:mx-0">
+            <img src="https://raw.githubusercontent.com/mghalaosimi-web/debwan-live/main/public/branding/1794669075512.jpg" alt="محمد غالب العصيمي، مطور دبوان لايف" className="h-full w-full object-cover" />
+          </div>
+          <div>
+            <p className="text-xs font-bold tracking-[0.2em] text-emerald-300">DEVELOPER & SOFTWARE ENGINEER</p>
+            <h2 className="mt-3 text-2xl font-black sm:text-3xl">تعرّف على مطور دبوان لايف</h2>
+            <h3 className="mt-2 text-lg font-extrabold text-emerald-100">محمد غالب العصيمي <span className="text-slate-400">| M.GH.AL</span></h3>
+            <p className="mt-4 max-w-4xl text-sm leading-8 text-slate-300">
+              مطور برمجيات شامل ومهتم بهندسة التطبيقات وبناء منتجات رقمية متكاملة. يعمل على تطوير دبوان لايف كمنصة ويب عربية تجمع تجربة متابعة كرة القدم وتنظيم الوصول إلى أقسام المشاهدة، مع التركيز على بنية التطبيق وتجربة المستخدم ووضوح حالة الخدمات ومصادرها.
+            </p>
+            <div className="mt-5 flex flex-wrap gap-3 text-xs font-bold">
+              <a href="https://mghalaosimi-web.vercel.app/" target="_blank" rel="noopener noreferrer" className="rounded-xl bg-emerald-300 px-4 py-3 text-slate-950 transition hover:bg-emerald-200">الموقع الرسمي للمطور</a>
+              <a href="https://github.com/mghalaosimi-web" target="_blank" rel="noopener noreferrer" className="rounded-xl border border-white/15 px-4 py-3 text-white transition hover:bg-white/5">GitHub</a>
+              <a href="https://www.linkedin.com/in/mohammed-alaosimi-038155443/" target="_blank" rel="noopener noreferrer" className="rounded-xl border border-white/15 px-4 py-3 text-white transition hover:bg-white/5">LinkedIn</a>
+              <a href="https://www.credly.com/users/mohammed-ghaleb-al-aosimi" target="_blank" rel="noopener noreferrer" className="rounded-xl border border-white/15 px-4 py-3 text-white transition hover:bg-white/5">Credly</a>
+            </div>
           </div>
         </div>
       </section>
