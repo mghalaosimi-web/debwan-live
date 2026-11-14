@@ -63,7 +63,8 @@ function LineupsPanel({ lineups, home, away }: { lineups: unknown; home: string;
   if (!hasStructuredTeams) return <section className="rounded-2xl border border-dark-700 bg-dark-800 p-5"><h2 className="text-lg font-bold text-dark-100">التشكيلات</h2><p className="mt-2 text-sm text-dark-400">وصلت بيانات تشكيلات من المصدر، لكن بنيتها لا تسمح بعرض أسماء اللاعبين بشكل موثوق. لن نعرض بيانات تخمينية.</p></section>;
   return <section className="space-y-3"><div><h2 className="text-lg font-black text-dark-100">تشكيلات الفريقين</h2><p className="mt-1 text-xs text-dark-500">التشكيلة الرسمية والبدلاء حسب ما يعلنه مزود بيانات المباراة.</p></div><div className="grid gap-3 lg:grid-cols-2"><LineupTeam name={home} value={homeData}/><LineupTeam name={away} value={awayData}/></div></section>;
 }
-\nexport default function FootballMatchDetail({ slug }: { slug: string }) {
+
+export default function FootballMatchDetail({ slug }: { slug: string }) {
   const [match, setMatch] = useState<Match | null>(null);
   const [h2h, setH2h] = useState<H2H | null>(null);
   const [error, setError] = useState("");
