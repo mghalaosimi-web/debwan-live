@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { AuthProvider } from "@/context/auth-context";
 import { ToastProvider } from "@/context/toast-context";
+import PWAInstallGate from "@/components/PWAInstallGate";
 import "./globals.css";
 
 const siteName = "دبوان لايف";
@@ -113,7 +114,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="antialiased">
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData).replace(/</g, "\\u003c") }} />
         <AuthProvider>
-          <ToastProvider>{children}</ToastProvider>
+          <ToastProvider>{children}<PWAInstallGate /></ToastProvider>
         </AuthProvider>
       </body>
     </html>
