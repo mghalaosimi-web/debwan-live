@@ -13,6 +13,7 @@ export default function PWAInstallGate() {
   const [installed, setInstalled] = useState(false);
   const [message, setMessage] = useState("");
   const [showHelp, setShowHelp] = useState(false);
+  const isAndroid = typeof navigator !== "undefined" && /Android/i.test(navigator.userAgent);
 
   useEffect(() => {
     const standalone = () =>
@@ -56,7 +57,9 @@ export default function PWAInstallGate() {
   async function installApp() {
     if (!promptEvent) {
       setShowHelp(true);
-      setMessage("استخدم خيار «تثبيت التطبيق» أو «إضافة إلى الشاشة الرئيسية» من قائمة المتصفح، ثم افتح دبوان لايف من أيقونته.");
+      setMessage(isAndroid
+        ? "نافذة التثبيت المباشر غير متاحة في هذا المتصفح حالياً. افتح الرابط في Google Chrome على أندرويد، ثم اختر «تثبيت التطبيق» من قائمة ⋮ إذا لم تظهر النافذة تلقائياً."
+        : "نافذة التثبيت المباشر غير متاحة في هذا المتصفح. استخدم خيار تثبيت التطبيق من قائمة المتصفح.");
       return;
     }
 
@@ -65,9 +68,10 @@ export default function PWAInstallGate() {
       const choice = await promptEvent.userChoice;
       setPromptEvent(null);
       if (choice.outcome === "accepted") {
-        setMessage("وافقت على التثبيت. أكمل خطوة التثبيت في نافذة المتصفح ثم افتح التطبيق من أيقونته.");
+        setMessage("تم قبول طلب التثبيت. انتظر اكتمال التثبيت، ثم افتح دبوان لايف من أيقونته على الشاشة الرئيسية.");
+        setShowHelp(false);
       } else {
-        setMessage("لم يتم التثبيت. لن يُفتح محتوى الموقع قبل تثبيت التطبيق.");
+        setMessage("لم توافق على التثبيت. اضغط «تثبيت التطبيق» مرة أخرى لإعادة فتح نافذة التثبيت.");
       }
     } catch {
       setMessage("تعذر فتح نافذة التثبيت. افتح قائمة المتصفح واختر «تثبيت التطبيق» أو «إضافة إلى الشاشة الرئيسية».");
@@ -90,7 +94,7 @@ export default function PWAInstallGate() {
         <p className="mt-6 text-xs font-bold tracking-[0.28em] text-emerald-200">DEBWAN LIVE</p>
         <h1 className="mt-3 text-3xl font-black">ثبّت تطبيق دبوان لايف</h1>
         <p className="mt-4 text-sm leading-8 text-slate-300">
-          للحصول على تجربة مستقرة وسريعة، ثبّت دبوان لايف على جهازك. بعد التثبيت افتح التطبيق من أيقونته للوصول إلى المنصة.
+          اضغط الزر لفتح نافذة تثبيت دبوان لايف مباشرةً على أندرويد. وافق على التثبيت في نافذة Chrome، ثم افتح التطبيق من أيقونته.
         </p>
         <button onClick={installApp} className="mt-7 flex w-full items-center justify-center gap-3 rounded-2xl bg-emerald-300 px-5 py-4 text-base font-black text-[#062018] shadow-lg shadow-emerald-950/30 transition hover:bg-emerald-200 active:scale-[0.99]">
           <svg viewBox="0 0 24 24" aria-hidden="true" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -102,13 +106,12 @@ export default function PWAInstallGate() {
         {showHelp && (
           <div className="mt-4 rounded-xl border border-sky-200/15 bg-sky-300/[0.07] p-4 text-right text-xs leading-7 text-slate-200">
             <p className="font-bold text-sky-100">طريقة التثبيت اليدوي</p>
-            <p>• Android: افتح قائمة المتصفح (⋮) ثم اختر «تثبيت التطبيق» أو «إضافة إلى الشاشة الرئيسية».</p>
-            <p>• iPhone وiPad: اضغط «مشاركة» في Safari ثم «إضافة إلى الشاشة الرئيسية».</p>
-            <p>• الكمبيوتر: استخدم رمز التثبيت بجوار شريط العنوان، أو خيار تثبيت الصفحة من قائمة المتصفح.</p>
-            <p className="mt-2 text-slate-400">بعد التثبيت، افتح التطبيق من الأيقونة. لا يمكن للمتصفح تأكيد التثبيت اليدوي من داخل الصفحة في بعض الأجهزة.</p>
+            <p>• افتح دبوان لايف باستخدام Google Chrome على أندرويد، وتأكد من اتصال الإنترنت.</p>
+            <p>• إذا لم تظهر نافذة التثبيت، افتح قائمة Chrome (⋮) واختر «تثبيت التطبيق» أو «إضافة إلى الشاشة الرئيسية».</p>
+            <p className="mt-2 text-slate-400">قد لا يعرض المتصفح نافذة التثبيت إذا كان التطبيق مثبتاً مسبقاً أو لم تتحقق شروط التثبيت في المتصفح.</p>
           </div>
         )}
-        <p className="mt-6 text-[11px] leading-6 text-slate-500">التثبيت مطلوب قبل الدخول إلى محتوى المنصة. إذا لم تظهر نافذة التثبيت، اتبع التعليمات أعلاه.</p>
+        <p className="mt-6 text-[11px] leading-6 text-slate-500">التثبيت مطلوب قبل الدخول إلى محتوى المنصة. يتطلب إكمال التثبيت موافقتك في نافذة أندرويد.</p>
       </section>
     </div>
   );
