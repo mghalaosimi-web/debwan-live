@@ -1,17 +1,19 @@
 {
-  "name": "دبوان لايف | DEBWAN LIVE",\n  "id": "/",
+  "id": "/",
+  "name": "دبوان لايف | DEBWAN LIVE",
   "short_name": "دبوان لايف",
-  "description": "منصة دبوان لايف لمتابعة كرة القدم والمباريات والنتائج والبطولات.",
+  "description": "تطبيق دبوان لايف لمتابعة كرة القدم والمباريات والنتائج والبطولات.",
+  "lang": "ar",
+  "dir": "rtl",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
+  "orientation": "any",
   "background_color": "#07111f",
   "theme_color": "#07111f",
+  "categories": ["sports", "entertainment"],
+  "prefer_related_applications": false,
   "icons": [
-    {
-      "src": "https://raw.githubusercontent.com/mghalaosimi-web/debwan-live/main/public/branding/1794669237125.jpg",
-      "sizes": "any",
-      "type": "image/jpeg",
-      "purpose": "any"
-    }
+    { "src": "/branding/debwan-app-icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
   ]
 }
