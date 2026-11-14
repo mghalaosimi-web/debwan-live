@@ -4,7 +4,9 @@ import { ToastProvider } from "@/context/toast-context";
 import "./globals.css";
 
 const siteName = "دبوان لايف";
-const siteDescription = "منصة عربية لمتابعة مباريات كرة القدم والنتائج والبطولات، واستكشاف القنوات ومصادر المشاهدة الرسمية والمحتوى الترفيهي.";
+const siteDescription = "دبوان لايف — وجهتك لمتابعة كرة القدم واستكشاف القنوات والمحتوى الترفيهي.";
+const brandIcon = "https://raw.githubusercontent.com/mghalaosimi-web/debwan-live/main/public/branding/1794669075512.jpg";
+const brandHero = "https://raw.githubusercontent.com/mghalaosimi-web/debwan-live/main/public/branding/1794669237125.jpg";
 
 export const metadata: Metadata = {
   title: {
@@ -16,7 +18,11 @@ export const metadata: Metadata = {
   keywords: ["دبوان لايف", "كرة القدم", "مباريات اليوم", "نتائج المباريات", "القنوات المباشرة", "البث الرسمي", "الأفلام", "المسلسلات"],
   metadataBase: process.env.NEXT_PUBLIC_BASE_URL ? new URL(process.env.NEXT_PUBLIC_BASE_URL) : new URL("https://debwan-live-football-web.onrender.com"),
   manifest: "/site.webmanifest",
-  icons: { icon: [{ url: "/icon.svg", type: "image/svg+xml" }] },
+  icons: {
+    icon: [{ url: brandIcon, type: "image/jpeg" }],
+    shortcut: [{ url: brandIcon, type: "image/jpeg" }],
+    apple: [{ url: brandIcon, type: "image/jpeg" }],
+  },
   robots: {
     index: true,
     follow: true,
@@ -29,6 +35,7 @@ export const metadata: Metadata = {
     type: "website",
     siteName,
     locale: "ar_YE",
+    images: [{ url: brandHero, width: 1200, height: 630, alt: "DEBWAN LIVE" }],
   },
   twitter: {
     card: "summary_large_image",
