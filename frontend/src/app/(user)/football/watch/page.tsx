@@ -80,9 +80,19 @@ export default function FootballWatchPage() {
           </div>
         </section>
 
-        <p className="rounded-xl border border-amber-200/15 bg-amber-200/[0.04] p-4 text-xs leading-7 text-slate-300">
-          تنويه: الصور والبطاقات هنا ترويجية لتنظيم خيارات المشاهدة، ولا تعني أن البث متصل أو متاح حالياً. روابط البث تفتح مواقع خارجية، وتشغيل الفيديو والصوت وجودة المشاهدة وتوفرها تخضع للمصدر الخارجي.
-        </p>
+        <section className="rounded-2xl border border-emerald-300/15 bg-[#0d1a2a] p-5 sm:p-6">
+          <p className="text-[10px] font-bold tracking-[0.2em] text-emerald-300">DEVELOPER</p>
+          <div className="mt-2 flex flex-wrap items-center justify-between gap-4">
+            <div>
+              <h2 className="text-lg font-black text-white">تطوير وإشراف</h2>
+              <p className="mt-1 text-sm font-semibold text-slate-300">محمد غالب العصيمي</p>
+              <p className="mt-1 text-xs text-slate-500">مؤسس ومطور دبوان لايف</p>
+            </div>
+            <a href="https://github.com/mghalaosimi-web" target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-emerald-300/25 bg-emerald-300/10 px-4 py-3 text-xs font-bold text-emerald-200 transition hover:bg-emerald-300/15">
+              رابط المطور <ExternalLink size={14} />
+            </a>
+          </div>
+        </section>
       </main>
     </FootballSectionLayout>
   );
