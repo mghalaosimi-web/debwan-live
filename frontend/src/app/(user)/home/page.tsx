@@ -3,7 +3,7 @@
 import Link from "next/link";
 import {
   ArrowLeft, ArrowUpLeft, CalendarDays, CheckCircle2, Clapperboard,
-  Compass, Heart, Play, Radio, ShieldCheck, Trophy, Tv, Users,
+  Compass, Heart, Play, Radio, ShieldCheck, Trophy, Tv, Users, Clock3,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
@@ -15,7 +15,8 @@ const sections = [
     icon: Trophy,
     accent: "from-emerald-400/20 to-teal-500/5",
     iconColor: "text-emerald-300",
-    tag: "مركز البيانات الرياضية",
+    tag: "متاح الآن",
+    status: "active",
   },
   {
     href: "/channels",
@@ -24,7 +25,8 @@ const sections = [
     icon: Tv,
     accent: "from-sky-400/20 to-blue-500/5",
     iconColor: "text-sky-300",
-    tag: "قنوات ومصادر",
+    tag: "قيد التطوير",
+    status: "development",
   },
   {
     href: "/vod",
@@ -33,7 +35,8 @@ const sections = [
     icon: Clapperboard,
     accent: "from-violet-400/20 to-purple-500/5",
     iconColor: "text-violet-300",
-    tag: "مكتبة الفيديو",
+    tag: "قيد التطوير",
+    status: "development",
   },
   {
     href: "/series",
@@ -42,7 +45,8 @@ const sections = [
     icon: Radio,
     accent: "from-amber-400/20 to-orange-500/5",
     iconColor: "text-amber-300",
-    tag: "مكتبة الحلقات",
+    tag: "قيد التطوير",
+    status: "development",
   },
 ];
 
@@ -76,15 +80,15 @@ export default function HomePage() {
               <span className="block bg-gradient-to-l from-emerald-200 via-teal-100 to-white bg-clip-text text-transparent">أقرب وأسهل</span>
             </h1>
             <p className="mt-5 max-w-2xl text-sm leading-8 text-slate-300 sm:text-base">
-              تابع عالم كرة القدم، واستكشف القنوات والمحتوى الترفيهي من واجهة عربية موحدة. نوضح حالة المحتوى ومصدر المشاهدة، ولا نعرض الروابط غير المتحقق منها على أنها تعمل.
+              مركز كرة القدم هو القسم المتاح حالياً ويضم بيانات المباريات والبطولات والفرق واللاعبين. بقية أقسام المشاهدة تظهر بوضوح على أنها قيد التطوير حتى تكتمل مصادرها وتجربتها.
             </p>
             <div className="mt-7 flex flex-wrap gap-3">
               <Link href="/football" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-emerald-300 px-5 py-3 text-sm font-extrabold text-slate-950 shadow-lg shadow-emerald-950/30 transition hover:-translate-y-0.5 hover:bg-emerald-200">
                 <Trophy size={17} /> افتح مركز كرة القدم <ArrowLeft size={16} />
               </Link>
-              <Link href="/channels" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/[0.04] px-5 py-3 text-sm font-bold text-white transition hover:bg-white/[0.09]">
-                <Tv size={17} /> تصفح القنوات
-              </Link>
+              <span className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border border-amber-200/20 bg-amber-200/[0.06] px-5 py-3 text-sm font-bold text-amber-100">
+                <Clock3 size={17} /> بقية الأقسام قيد التطوير
+              </span>
             </div>
             <div className="mt-7 flex flex-wrap gap-x-5 gap-y-2 text-xs text-slate-400">
               <span className="inline-flex items-center gap-2"><ShieldCheck size={15} className="text-emerald-300" /> مصادر مشاهدة موضحة</span>
@@ -117,24 +121,34 @@ export default function HomePage() {
           <div>
             <p className="text-[11px] font-extrabold tracking-[0.18em] text-emerald-300">EXPLORE</p>
             <h2 className="mt-2 text-xl font-black text-white sm:text-2xl">{t("home.explore", "استكشف المنصة")}</h2>
-            <p className="mt-1.5 text-sm text-slate-400">اختر وجهتك، وستجد أدواتها ومحتواها في صفحة مستقلة.</p>
+            <p className="mt-1.5 text-sm text-slate-400">مركز كرة القدم متاح الآن؛ والقنوات والأفلام والمسلسلات قيد التطوير.</p>
           </div>
           <span className="hidden items-center gap-2 text-xs text-slate-500 sm:inline-flex"><Users size={15} /> تجربة مناسبة للهاتف والحاسوب</span>
         </div>
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-          {sections.map(({ href, title, description, icon: Icon, accent, iconColor, tag }) => (
-            <Link key={href} href={href} className="group relative flex min-h-[220px] flex-col overflow-hidden rounded-2xl border border-white/[0.08] bg-dark-900/80 p-5 transition duration-200 hover:-translate-y-1 hover:border-emerald-300/25 hover:shadow-xl hover:shadow-black/20">
-              <div aria-hidden="true" className={`pointer-events-none absolute -left-12 -top-12 h-36 w-36 rounded-full bg-gradient-to-br ${accent} blur-2xl transition group-hover:scale-125`} />
-              <div className="relative flex items-start justify-between gap-3">
-                <span className={`flex h-12 w-12 items-center justify-center rounded-2xl bg-white/[0.06] ring-1 ring-inset ring-white/[0.06] ${iconColor}`}><Icon size={24} /></span>
-                <span className="rounded-full border border-white/[0.07] bg-black/10 px-2.5 py-1 text-[10px] font-semibold text-slate-400">{tag}</span>
-              </div>
-              <h3 className="relative mt-5 text-base font-extrabold text-white">{title}</h3>
-              <p className="relative mt-2 flex-1 text-xs leading-7 text-slate-400 sm:text-sm">{description}</p>
-              <span className="relative mt-4 inline-flex items-center gap-2 text-xs font-extrabold text-emerald-300">افتح القسم <ArrowLeft size={14} className="transition group-hover:-translate-x-1" /></span>
-            </Link>
-          ))}
+          {sections.map(({ href, title, description, icon: Icon, accent, iconColor, tag, status }) => {
+            const content = (
+              <>
+                <div aria-hidden="true" className={`pointer-events-none absolute -left-12 -top-12 h-36 w-36 rounded-full bg-gradient-to-br ${accent} blur-2xl transition group-hover:scale-125`} />
+                <div className="relative flex items-start justify-between gap-3">
+                  <span className={`flex h-12 w-12 items-center justify-center rounded-2xl bg-white/[0.06] ring-1 ring-inset ring-white/[0.06] ${iconColor}`}><Icon size={24} /></span>
+                  <span className={`rounded-full border px-2.5 py-1 text-[10px] font-semibold ${status === "active" ? "border-emerald-300/20 bg-emerald-300/[0.08] text-emerald-200" : "border-amber-200/20 bg-amber-200/[0.06] text-amber-100"}`}>{tag}</span>
+                </div>
+                <h3 className="relative mt-5 text-base font-extrabold text-white">{title}</h3>
+                <p className="relative mt-2 flex-1 text-xs leading-7 text-slate-400 sm:text-sm">{description}</p>
+                <span className={`relative mt-4 inline-flex items-center gap-2 text-xs font-extrabold ${status === "active" ? "text-emerald-300" : "text-amber-100"}`}>
+                  {status === "active" ? <>افتح مركز كرة القدم <ArrowLeft size={14} className="transition group-hover:-translate-x-1" /></> : <><Clock3 size={14} /> سيُتاح عند اكتمال التطوير</>}
+                </span>
+              </>
+            );
+            const className = `group relative flex min-h-[220px] flex-col overflow-hidden rounded-2xl border bg-dark-900/80 p-5 ${status === "active" ? "border-emerald-300/25 transition duration-200 hover:-translate-y-1 hover:border-emerald-300/50 hover:shadow-xl hover:shadow-black/20" : "cursor-not-allowed border-white/[0.08] opacity-85"}`;
+            return status === "active" ? (
+              <Link key={href} href={href} aria-label={`افتح ${title}`} className={className}>{content}</Link>
+            ) : (
+              <article key={href} aria-disabled="true" className={className}>{content}</article>
+            );
+          })}
         </div>
       </section>
 
