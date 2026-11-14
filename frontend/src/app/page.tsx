@@ -21,7 +21,7 @@ export default function Home() {
         <div className="mx-auto flex h-[76px] max-w-7xl items-center justify-between px-5 sm:px-8">
           <Link href="/" className="flex items-center gap-3" aria-label="دبوان لايف - الرئيسية">
             <span className="relative h-12 w-12 overflow-hidden rounded-2xl border border-emerald-200/50 bg-gradient-to-br from-emerald-300 via-sky-500 to-[#142c4a] p-[2px] shadow-lg shadow-emerald-950/30">
-              <img src="https://raw.githubusercontent.com/mghalaosimi-web/debwan-live/main/public/branding/1794669075512.jpg" alt="" className="h-full w-full rounded-[14px] object-cover object-center" />
+              <img src="https://raw.githubusercontent.com/mghalaosimi-web/debwan-live/main/public/branding/1794669237125.jpg" alt="" className="h-full w-full rounded-[14px] object-cover object-center" />
             </span>
             <span>
               <span className="block text-lg font-extrabold tracking-wide">دبوان لايف</span>
@@ -62,7 +62,7 @@ export default function Home() {
         <div className="relative mx-auto w-full max-w-lg">
           <div className="absolute -inset-5 rounded-[2.5rem] bg-gradient-to-br from-emerald-300/25 via-sky-500/15 to-blue-700/20 blur-2xl" />
           <div className="relative min-h-[460px] overflow-hidden rounded-[2rem] border border-white/15 bg-[#102238] shadow-2xl shadow-black/50 sm:min-h-[530px]">
-            <img src="https://raw.githubusercontent.com/mghalaosimi-web/debwan-live/main/public/branding/1794669237125.jpg" alt="صورة مؤسس دبوان لايف" className="absolute inset-0 h-full w-full object-cover object-center" />
+            <img src="https://raw.githubusercontent.com/mghalaosimi-web/debwan-live/main/public/branding/1794669075512.jpg" alt="صورة مؤسس دبوان لايف" className="absolute inset-0 h-full w-full object-cover object-center" />
             <div className="absolute inset-0 bg-gradient-to-t from-[#06111f] via-[#07111f]/35 to-[#0b1c30]/10" />
             <div className="absolute inset-0 bg-gradient-to-br from-emerald-400/15 via-transparent to-sky-500/20 mix-blend-screen" />
             <div className="absolute inset-x-0 bottom-0 p-6 sm:p-8">
