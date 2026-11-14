@@ -1,36 +1,16 @@
-import type { MetadataRoute } from 'next'
+import type { MetadataRoute } from "next";
 
-export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://example.com'
+const siteUrl = "https://debwan-live-football-web.onrender.com";
 
-  // Static pages
-  const staticRoutes: MetadataRoute.Sitemap = [
-    {
-      url: `${baseUrl}/`,
-      changeFrequency: 'weekly',
-      priority: 1,
-    },
-    {
-      url: `${baseUrl}/channels`,
-      changeFrequency: 'daily',
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/vod`,
-      changeFrequency: 'daily',
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/series`,
-      changeFrequency: 'daily',
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/login`,
-      changeFrequency: 'monthly',
-      priority: 0.5,
-    },
-  ]
-
-  return staticRoutes
+export default function sitemap(): MetadataRoute.Sitemap {
+  const lastModified = new Date();
+  return [
+    { url: siteUrl, lastModified, changeFrequency: "weekly", priority: 1 },
+    { url: `${siteUrl}/football`, lastModified, changeFrequency: "daily", priority: 0.95 },
+    { url: `${siteUrl}/football/matches`, lastModified, changeFrequency: "daily", priority: 0.9 },
+    { url: `${siteUrl}/football/competitions`, lastModified, changeFrequency: "weekly", priority: 0.8 },
+    { url: `${siteUrl}/football/standings`, lastModified, changeFrequency: "daily", priority: 0.8 },
+    { url: `${siteUrl}/football/teams`, lastModified, changeFrequency: "weekly", priority: 0.75 },
+    { url: `${siteUrl}/football/scorers`, lastModified, changeFrequency: "daily", priority: 0.75 }
+  ];
 }
