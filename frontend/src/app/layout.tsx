@@ -100,7 +100,6 @@ export const metadata: Metadata = {
     description: siteDescription,
     images: [{ url: brandHero, alt: "دبوان لايف - DEBWAN LIVE" }],
   },
-  alternates: { canonical: "/" },
 };
 
 export const viewport: Viewport = {
@@ -112,6 +111,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="ar" dir="rtl">
       <body className="antialiased">
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData).replace(/</g, "\\u003c") }} />
         <AuthProvider>
           <ToastProvider>{children}</ToastProvider>
         </AuthProvider>
