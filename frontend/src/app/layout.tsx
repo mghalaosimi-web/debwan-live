@@ -5,8 +5,8 @@ import "./globals.css";
 
 const siteName = "دبوان لايف";
 const siteDescription = "دبوان لايف — وجهتك لمتابعة كرة القدم واستكشاف القنوات والمحتوى الترفيهي.";
-const brandIcon = "https://raw.githubusercontent.com/mghalaosimi-web/debwan-live/main/public/branding/1794669075512.jpg";
-const brandHero = "https://raw.githubusercontent.com/mghalaosimi-web/debwan-live/main/public/branding/1794669237125.jpg";
+const brandIcon = "https://raw.githubusercontent.com/mghalaosimi-web/debwan-live/main/public/branding/1794669237125.jpg";
+const brandHero = "https://raw.githubusercontent.com/mghalaosimi-web/debwan-live/main/public/branding/1794669075512.jpg";
 
 export const metadata: Metadata = {
   title: {
