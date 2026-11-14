@@ -1,16 +1,17 @@
 {
-  "name": "Debwan Live",
-  "short_name": "Debwan",
-  "description": "Televisión en directo, películas y series en una plataforma autoalojada.",
+  "name": "دبوان لايف | DEBWAN LIVE",
+  "short_name": "دبوان لايف",
+  "description": "وجهتك لمتابعة كرة القدم واستكشاف القنوات والمحتوى الترفيهي.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#0B1528",
-  "theme_color": "#172B4D",
+  "background_color": "#07111f",
+  "theme_color": "#07111f",
   "icons": [
     {
-      "src": "/icon.svg",
+      "src": "https://raw.githubusercontent.com/mghalaosimi-web/debwan-live/main/public/branding/1794669075512.jpg",
       "sizes": "any",
-      "type": "image/svg+xml"
+      "type": "image/jpeg",
+      "purpose": "any"
     }
   ]
 }
