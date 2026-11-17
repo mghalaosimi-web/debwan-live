@@ -6,6 +6,7 @@ import {
   ArrowLeft, ShieldCheck,
 } from "lucide-react";
 import FootballSectionLayout from "@/components/football/football-section-layout";
+import FootballHubOverview from "@/components/football/football-hub-overview";
 
 const sections = [
   { href: "/football/matches", title: "المباريات", description: "مواعيد اليوم والنتائج وحالة اللقاء.", icon: CalendarDays, tone: "text-emerald-300", tag: "مباشر والجدول" },
@@ -24,6 +25,8 @@ export default function FootballPage() {
       eyebrow="DEBWAN LIVE · FOOTBALL"
       description="المباريات والبطولات والإحصائيات في مساحة واحدة، بتنقل واضح وواجهة أخف."
     >
+      <FootballHubOverview />
+
       <section className="mb-5 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-emerald-300/15 bg-emerald-300/[0.045] px-4 py-3.5">
         <div className="flex min-w-0 items-center gap-3">
           <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-300/10 text-emerald-200"><ShieldCheck size={19}/></span>
