@@ -73,7 +73,8 @@ export const metadata: Metadata = {
   creator: "محمد غالب العصيمي | M.GH.AL",
   publisher: "DEBWAN LIVE",
   category: "Sports",
-  metadataBase: process.env.NEXT_PUBLIC_BASE_URL ? new URL(process.env.NEXT_PUBLIC_BASE_URL) : new URL("https://debwan-live-football-web.onrender.com"),
+  metadataBase: new URL("https://debwan-live-football-web.onrender.com"),
+  alternates: { canonical: "/" },
   manifest: "/site.webmanifest",
   icons: {
     icon: [{ url: brandIcon, type: "image/jpeg" }],
