@@ -1,24 +1,11 @@
-# Robots.txt for TIVIFY streaming platform
-# Block crawlers from indexing private/admin areas
-
+# Debwan Live — public crawler rules
 User-agent: *
-Disallow: /admin
-Disallow: /api
+Allow: /
+Disallow: /api/
 Disallow: /login
-Disallow: /.next
+Disallow: /register
+Disallow: /profile
+Disallow: /settings
+Disallow: /admin
 
-# Allow public catalog
-Allow: /channels
-Allow: /vod
-Allow: /series
-Allow: /categories
-
-# Sitemap
-Sitemap: https://example.com/sitemap.xml
-
-# Common crawlers optimization
-User-agent: Googlebot
-Crawl-delay: 0
-
-User-agent: Bingbot
-Crawl-delay: 1
+Sitemap: https://debwan-live-football-web.onrender.com/sitemap.xml
