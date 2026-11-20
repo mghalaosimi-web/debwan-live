@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 type InstallPromptEvent = Event & {
   prompt: () => Promise<void>;
@@ -8,78 +8,86 @@ type InstallPromptEvent = Event & {
 };
 
 export default function PWAInstallGate() {
-  const [ready, setReady] = useState(false);
-  const [promptEvent, setPromptEvent] = useState<InstallPromptEvent | null>(null);
+  const promptRef = useRef<InstallPromptEvent | null>(null);
+  const [promptAvailable, setPromptAvailable] = useState(false);
   const [installed, setInstalled] = useState(false);
   const [message, setMessage] = useState("");
   const [showHelp, setShowHelp] = useState(false);
   const isAndroid = typeof navigator !== "undefined" && /Android/i.test(navigator.userAgent);
 
   useEffect(() => {
-    const standalone = () =>
+    const isStandalone = () =>
       window.matchMedia("(display-mode: standalone)").matches ||
       window.matchMedia("(display-mode: fullscreen)").matches ||
       (navigator as Navigator & { standalone?: boolean }).standalone === true;
 
-    if (standalone()) {
-      setInstalled(true);
-      setReady(true);
-    }
+    if (isStandalone()) setInstalled(true);
 
     const onBeforeInstall = (event: Event) => {
       event.preventDefault();
-      setPromptEvent(event as InstallPromptEvent);
-      setReady(true);
+      promptRef.current = event as InstallPromptEvent;
+      setPromptAvailable(true);
     };
+
     const onInstalled = () => {
+      promptRef.current = null;
+      setPromptAvailable(false);
       setInstalled(true);
-      setPromptEvent(null);
-      setMessage("تم تثبيت دبوان لايف بنجاح. جارٍ فتح التطبيق…");
-      setReady(true);
+      setMessage("تم تثبيت دبوان لايف بنجاح.");
     };
 
     window.addEventListener("beforeinstallprompt", onBeforeInstall);
     window.addEventListener("appinstalled", onInstalled);
 
     if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("/sw.js").catch(() => {
-        // Installation remains available even if service-worker registration fails.
+      navigator.serviceWorker.register("/sw.js", { scope: "/" }).catch(() => {
+        // PWA installation prompt can still work if service-worker registration fails.
       });
     }
 
-    setReady(true);
     return () => {
       window.removeEventListener("beforeinstallprompt", onBeforeInstall);
       window.removeEventListener("appinstalled", onInstalled);
     };
   }, []);
 
-  async function installApp() {
-    if (!promptEvent) {
-      setShowHelp(true);
-      setMessage(isAndroid
-        ? "نافذة التثبيت المباشر غير متاحة في هذا المتصفح حالياً. افتح الرابط في Google Chrome على أندرويد، ثم اختر «تثبيت التطبيق» من قائمة ⋮ إذا لم تظهر النافذة تلقائياً."
-        : "نافذة التثبيت المباشر غير متاحة في هذا المتصفح. استخدم خيار تثبيت التطبيق من قائمة المتصفح.");
+  function installApp() {
+    const event = promptRef.current;
+
+    // Invoke prompt synchronously in the click handler to preserve browser user activation.
+    if (event) {
+      promptRef.current = null;
+      setPromptAvailable(false);
+      setMessage("");
+      setShowHelp(false);
+
+      void (async () => {
+        try {
+          const choicePromise = event.userChoice;
+          await event.prompt();
+          const choice = await choicePromise;
+          if (choice.outcome === "accepted") {
+            setMessage("تم قبول طلب التثبيت. أكمل التأكيد في نافذة المتصفح.");
+          } else {
+            setMessage("تم إلغاء التثبيت. يمكنك الضغط على الزر مجدداً إذا أتاح المتصفح نافذة التثبيت.");
+          }
+        } catch {
+          setMessage("لم يتمكن المتصفح من فتح نافذة التثبيت. استخدم خيار تثبيت التطبيق من قائمة المتصفح.");
+          setShowHelp(true);
+        }
+      })();
       return;
     }
 
-    try {
-      await promptEvent.prompt();
-      const choice = await promptEvent.userChoice;
-      setPromptEvent(null);
-      if (choice.outcome === "accepted") {
-        setMessage("تم قبول طلب التثبيت. انتظر اكتمال التثبيت، ثم افتح دبوان لايف من أيقونته على الشاشة الرئيسية.");
-        setShowHelp(false);
-      } else {
-        setMessage("لم توافق على التثبيت. اضغط «تثبيت التطبيق» مرة أخرى لإعادة فتح نافذة التثبيت.");
-      }
-    } catch {
-      setMessage("تعذر فتح نافذة التثبيت. افتح قائمة المتصفح واختر «تثبيت التطبيق» أو «إضافة إلى الشاشة الرئيسية».");
-      setShowHelp(true);
-    }
+    setShowHelp(true);
+    setMessage(
+      isAndroid
+        ? "التثبيت المباشر غير متاح في المتصفح الحالي الآن. افتح الموقع في Google Chrome، ثم اختر «تثبيت التطبيق» من قائمة المتصفح."
+        : "التثبيت المباشر غير متاح في هذا المتصفح. استخدم خيار تثبيت التطبيق من قائمة المتصفح."
+    );
   }
 
-  if (!ready || installed) return null;
+  if (installed) return null;
 
   return (
     <div dir="rtl" className="fixed inset-0 z-[99999] flex min-h-[100dvh] items-center justify-center overflow-y-auto bg-[#050d18] px-4 py-8 text-white">
@@ -94,7 +102,7 @@ export default function PWAInstallGate() {
         <p className="mt-6 text-xs font-bold tracking-[0.28em] text-emerald-200">DEBWAN LIVE</p>
         <h1 className="mt-3 text-3xl font-black">ثبّت تطبيق دبوان لايف</h1>
         <p className="mt-4 text-sm leading-8 text-slate-300">
-          اضغط الزر لفتح نافذة تثبيت دبوان لايف مباشرةً على أندرويد. وافق على التثبيت في نافذة Chrome، ثم افتح التطبيق من أيقونته.
+          اضغط الزر لفتح نافذة تثبيت دبوان لايف مباشرةً عندما يدعم المتصفح ذلك، ثم وافق على التثبيت.
         </p>
         <button onClick={installApp} className="mt-7 flex w-full items-center justify-center gap-3 rounded-2xl bg-emerald-300 px-5 py-4 text-base font-black text-[#062018] shadow-lg shadow-emerald-950/30 transition hover:bg-emerald-200 active:scale-[0.99]">
           <svg viewBox="0 0 24 24" aria-hidden="true" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -106,12 +114,12 @@ export default function PWAInstallGate() {
         {showHelp && (
           <div className="mt-4 rounded-xl border border-sky-200/15 bg-sky-300/[0.07] p-4 text-right text-xs leading-7 text-slate-200">
             <p className="font-bold text-sky-100">طريقة التثبيت اليدوي</p>
-            <p>• افتح دبوان لايف باستخدام Google Chrome على أندرويد، وتأكد من اتصال الإنترنت.</p>
-            <p>• إذا لم تظهر نافذة التثبيت، افتح قائمة Chrome (⋮) واختر «تثبيت التطبيق» أو «إضافة إلى الشاشة الرئيسية».</p>
-            <p className="mt-2 text-slate-400">قد لا يعرض المتصفح نافذة التثبيت إذا كان التطبيق مثبتاً مسبقاً أو لم تتحقق شروط التثبيت في المتصفح.</p>
+            <p>• افتح دبوان لايف باستخدام Google Chrome على أندرويد.</p>
+            <p>• افتح قائمة Chrome (⋮) واختر «تثبيت التطبيق» أو «إضافة إلى الشاشة الرئيسية».</p>
+            <p className="mt-2 text-slate-400">قد لا يعرض المتصفح نافذة التثبيت إذا كان التطبيق مثبتاً مسبقاً أو لم تتحقق شروط التثبيت.</p>
           </div>
         )}
-        <p className="mt-6 text-[11px] leading-6 text-slate-500">التثبيت مطلوب قبل الدخول إلى محتوى المنصة. يتطلب إكمال التثبيت موافقتك في نافذة أندرويد.</p>
+        <p className="mt-6 text-[11px] leading-6 text-slate-500">إكمال التثبيت يتطلب موافقتك في نافذة المتصفح.</p>
       </section>
     </div>
   );
